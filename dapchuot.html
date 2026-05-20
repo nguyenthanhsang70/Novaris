@@ -3,234 +3,489 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Đập Chuột - Realistic Version</title>
+    <title>Đập Chuột Chũi - Goggles Mole Style</title>
     <style>
         :root {
-            --grass-color: #567d46;
+            --grass-color: #4caf50;
             --dirt-color: #5d4037;
-            --dirt-light: #795548;
-            --dirt-shadow: #3e2723;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent;
+        }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--grass-color);
             background-image:
-                radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1) 0%, transparent 10%),
-                repeating-linear-gradient(45deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 2px, transparent 2px, transparent 10px);
+                radial-gradient(circle at 50% 50%, rgba(255,255,255,0.15) 0%, transparent 20%),
+                repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 10px);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             color: white;
-            padding: 8px;
-            overflow-y: auto;
+            padding: 10px;
+            overflow: hidden;
             user-select: none;
-            cursor: default;          /* con trỏ bình thường mặc định */
-            touch-action: manipulation;
+            -webkit-user-select: none;
+            cursor: default;
         }
-        body.game-active {
-            cursor: none;             /* ẩn con trỏ khi đang chơi */
+        
+        @media (min-width: 769px) {
+            body.game-active {
+                cursor: none;
+            }
         }
+
         .game-container {
             text-align: center;
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(5px);
-            border-radius: 16px;
-            padding: 15px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            background: rgba(33, 33, 33, 0.35);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
             width: 100%;
-            max-width: 640px;
+            max-width: 410px;
             border: 2px solid rgba(255, 255, 255, 0.1);
             position: relative;
-            z-index: 1;
-            min-height: 65vh;
+        }
+        
+        .header-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            position: relative;
         }
         h1 {
-            margin-bottom: 12px;
-            font-size: clamp(1.8em, 7vw, 2.6em);
+            font-size: clamp(1.6em, 6vw, 2.2em);
             color: #ffca28;
-            text-shadow: 2px 2px 0px #3e2723, 4px 4px 8px rgba(0,0,0,0.5);
-            letter-spacing: 1.5px;
+            text-shadow: 2px 2px 0px #4e342e, 3px 3px 6px rgba(0,0,0,0.4);
+            letter-spacing: 1px;
         }
+        .help-icon-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        .help-icon-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
         .game-info {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             background: #3e2723;
-            padding: 10px;
-            border-radius: 12px;
-            border: 2px solid #795548;
-            box-shadow: inset 0 4px 8px rgba(0,0,0,0.5);
+            padding: 8px 16px;
+            border-radius: 14px;
+            border: 2px solid #6d4c41;
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.5);
         }
         .info-item {
-            font-size: clamp(0.95em, 4vw, 1.2em);
+            font-size: clamp(0.95em, 4vw, 1.15em);
             font-weight: bold;
-            color: #ffcc80;
+            color: #ffe082;
         }
+        
         .difficulty-selector {
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             display: flex;
             justify-content: center;
             gap: 8px;
-            flex-wrap: wrap;
         }
         .diff-btn {
-            padding: 8px 16px;
+            padding: 6px 12px;
             border: none;
-            border-radius: 40px;
+            border-radius: 20px;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.2s;
-            min-width: 80px;
-            font-size: 0.9em;
+            transition: all 0.15s ease;
+            flex: 1;
+            font-size: 0.8em;
+            outline: none;
+            color: #fff;
+            opacity: 0.5;
         }
-        .diff-btn.easy { background: #66bb6a; box-shadow: 0 3px 0 #388e3c; }
-        .diff-btn.medium { background: #ffa726; box-shadow: 0 3px 0 #f57c00; }
-        .diff-btn.hard { background: #ef5350; box-shadow: 0 3px 0 #c62828; color: white; }
-        .diff-btn.active { transform: translateY(3px); box-shadow: 0 0 0; }
+        .diff-btn.easy { background: #81c784; box-shadow: 0 3px 0 #388e3c; }
+        .diff-btn.medium { background: #ffb74d; box-shadow: 0 3px 0 #f57c00; }
+        .diff-btn.hard { background: #e57373; box-shadow: 0 3px 0 #d32f2f; }
+        
+        .diff-btn.active { 
+            transform: translateY(3px); 
+            box-shadow: 0 0 0 transparent !important;
+            opacity: 1;
+            filter: brightness(1.05);
+        }
+        .difficulty-selector.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        
         .game-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 12px;
-            margin: 0 auto;
-            max-width: 500px;
-            perspective: 800px;
+            margin: 0 auto 12px auto;
         }
+        
         .hole {
-            position: relative; width: 100%; padding-top: 95%; border-radius: 50%;
-            background: radial-gradient(ellipse at center, #251612 0%, #3e2723 60%, #5d4037 100%);
-            box-shadow: inset 0 8px 16px rgba(0,0,0,0.9), 0 4px 0 #3e2723, 0 8px 16px rgba(0,0,0,0.4);
-            overflow: hidden; border-bottom: 3px solid rgba(255,255,255,0.1);
+            position: relative; 
+            width: 100%; 
+            padding-top: 100%; 
+            border-radius: 50%;
+            background: radial-gradient(ellipse at center, #110705 0%, #2d1815 60%, #4e342e 100%);
+            box-shadow: 
+                inset 0 10px 16px rgba(0,0,0,0.85), 
+                0 4px 0 rgba(0,0,0,0.15);
+            overflow: hidden; 
         }
+        
+        /* CHUỘT CHŨI GOGGLES */
         .mole {
-            width: 65%; height: 85%; background: radial-gradient(circle at 30% 30%, #a1887f, #5d4037);
-            border-radius: 40% 40% 10% 10%; position: absolute; bottom: 0; left: 50%;
-            transform: translateX(-50%) translateY(100%);
-            transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: inset -4px -4px 8px rgba(0,0,0,0.5); z-index: 2;
+            width: 76%; 
+            height: 85%; 
+            background: radial-gradient(circle at 50% 25%, #616161 0%, #424242 50%, #212121 100%);
+            border-radius: 50% 50% 35% 35%; 
+            position: absolute; 
+            bottom: -2%; 
+            left: 12%;
+            transform: translateY(100%);
+            transition: transform 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.15);
+            box-shadow: 
+                inset -3px -5px 10px rgba(0,0,0,0.7),
+                inset 3px 5px 8px rgba(255,255,255,0.1),
+                0 4px 6px rgba(0,0,0,0.4); 
+            z-index: 2;
         }
-        .mole::before { content: ''; position: absolute; top: 25%; left: 50%; transform: translateX(-50%);
-            width: 32px; height: 8px; background:
-                radial-gradient(circle at 8px 4px, white 1px, black 3px, transparent 4px),
-                radial-gradient(circle at 24px 4px, white 1px, black 3px, transparent 4px);
+
+        .mole-face {
+            position: absolute;
+            top: 15%;
+            left: 0;
+            width: 100%;
+            height: 70%;
+            pointer-events: none;
         }
-        .mole::after { content: ''; position: absolute; top: 40%; left: 50%; transform: translateX(-50%);
-            width: 16px; height: 12px; background: #ffab91; border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-        .mole.show { transform: translateX(-50%) translateY(8%); }
-        .mole.hit { transform: translateX(-50%) translateY(8%) scale(0.95);
-            filter: brightness(1.5) sepia(1) hue-rotate(-50deg) saturate(3); transition: 0.1s;
-        }
-        .hammer {
-            position: fixed; pointer-events: none; z-index: 1000;
-            width: 80px; height: 80px; transform-origin: bottom right;
-            transition: transform 0.08s ease; filter: drop-shadow(5px 5px 7px rgba(0,0,0,0.6));
-            opacity: 0; transition: opacity 0.2s, transform 0.08s;
-        }
-        .hammer.visible { opacity: 1; }
-        .hammer.active { transform: rotate(-50deg) scale(1.1) !important; }
-        .hammer-head { position: absolute; top: 0; left: 0; width: 60px; height: 40px;
-            background: linear-gradient(to bottom, #cfd8dc, #607d8b, #455a64);
-            border-radius: 10px; border: 3px solid #37474f;
-        }
-        .hammer-handle { position: absolute; top: 22px; left: 25px; width: 10px; height: 65px;
-            background: linear-gradient(to right, #8d6e63, #4e342e); border-radius: 0 0 5px 5px;
-        }
-        .controls {
-            margin-top: 20px;
+        
+        .goggles {
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 28%;
+            background: #ffb300;
+            border-radius: 20px;
+            padding: 2px 6px;
             display: flex;
-            gap: 12px;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.4);
+            border: 2px solid #212121;
+        }
+        .goggle-lens {
+            width: 24px;
+            height: 18px;
+            background: #212121;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #ffeb3b;
+        }
+        .goggle-lens::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 4px;
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+        }
+        .goggle-lens::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            right: 3px;
+            width: 12px;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            transform: rotate(-30deg);
+        }
+
+        .mole-cheeks {
+            position: absolute;
+            top: 38%;
+            left: 12%;
+            width: 76%;
+            height: 20%;
+            display: flex;
+            justify-content: space-between;
+        }
+        .mole-cheeks::before, .mole-cheeks::after {
+            content: '';
+            width: 14px;
+            height: 10px;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 110, 64, 0.6) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .mole-nose {
+            position: absolute;
+            top: 36%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 18px;
+            height: 13px;
+            background: radial-gradient(circle at 40% 35%, #ff8a80 20%, #ff5252 70%, #c62828 100%);
+            border-radius: 50% 50% 45% 45%;
+            box-shadow: 0 3px 4px rgba(0,0,0,0.3);
+            z-index: 3;
+        }
+
+        .mole-teeth {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 14px;
+            height: 8px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 2;
+        }
+        .mole-teeth::before, .mole-teeth::after {
+            content: '';
+            width: 6.5px;
+            height: 100%;
+            background: #ffffff;
+            border-radius: 0 0 2px 2px;
+            border: 1px solid #d7ccc8;
+            border-top: none;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .mole-whiskers {
+            position: absolute;
+            top: 42%;
+            left: -5%;
+            width: 110%;
+            height: 30%;
+            background: 
+                linear-gradient(6deg, transparent 46%, #b0bec5 48%, #b0bec5 52%, transparent 54%) 0% 20%/40% 25% no-repeat,
+                linear-gradient(-6deg, transparent 46%, #b0bec5 48%, #b0bec5 52%, transparent 54%) 0% 70%/40% 25% no-repeat,
+                linear-gradient(-6deg, transparent 46%, #b0bec5 48%, #b0bec5 52%, transparent 54%) 100% 20%/40% 25% no-repeat,
+                linear-gradient(6deg, transparent 46%, #b0bec5 48%, #b0bec5 52%, transparent 54%) 100% 70%/40% 25% no-repeat;
+        }
+
+        .mole.show { 
+            transform: translateY(8%); 
+        }
+        .mole.show .mole-whiskers {
+            animation: moleTwitch 0.3s ease-in-out infinite alternate;
+        }
+        @keyframes moleTwitch {
+            0% { transform: scaleY(0.9) rotate(0.5deg); }
+            100% { transform: scaleY(1.1) rotate(-0.5deg); }
+        }
+
+        .mole.hit { 
+            transform: translateY(48%) scale(1.08, 0.52);
+            filter: brightness(0.5) contrast(1.2); 
+            transition: transform 0.06s ease;
+        }
+        
+        /* BÚA ĐẬP */
+        .hammer {
+            position: absolute; 
+            pointer-events: none; 
+            z-index: 9999;
+            width: 60px; 
+            height: 60px; 
+            transform-origin: bottom right;
+            transform: translate(-25px, -40px) rotate(15deg);
+            display: none;
+            filter: drop-shadow(3px 5px 4px rgba(0,0,0,0.5));
+        }
+        .hammer.visible { display: block; }
+        .hammer.active { transform: translate(-25px, -40px) rotate(-45deg) scale(1.1); }
+        
+        .hammer-head { 
+            position: absolute; top: 0; left: 0; width: 46px; height: 30px;
+            background: linear-gradient(to bottom, #ff7043, #d84315);
+            border-radius: 6px; border: 2px solid #5d4037;
+        }
+        .hammer-handle { 
+            position: absolute; top: 18px; left: 19px; width: 8px; height: 42px;
+            background: linear-gradient(to right, #ffe082, #ffb300); border-radius: 0 0 3px 3px;
+        }
+        
+        /* KHU VỰC NÚT ĐIỀU KHIỂN */
+        .controls {
+            display: flex;
+            gap: 10px;
             justify-content: center;
-            flex-wrap: wrap;
         }
         .btn {
-            background: linear-gradient(to bottom, #ffeb3b, #fbc02d);
-            border: none; padding: 10px 30px; border-radius: 40px;
-            font-size: 1em; font-weight: bold; color: #3e2723; cursor: pointer;
-            box-shadow: 0 4px 0 #f57f17, 0 8px 8px rgba(0,0,0,0.3);
-            transition: all 0.1s; text-transform: uppercase; position: relative; z-index: 10;
+            flex: 1;
+            background: linear-gradient(to bottom, #ffca28, #ffa000);
+            border: none; 
+            padding: 11px 16px; 
+            border-radius: 30px;
+            font-size: 0.95em; 
+            font-weight: bold; 
+            color: #3e2723; 
+            cursor: pointer;
+            box-shadow: 0 4px 0 #bf360c, 0 5px 10px rgba(0,0,0,0.35);
+            transition: all 0.1s; 
+            text-transform: uppercase;
+            outline: none;
         }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #f57f17, 0 12px 12px rgba(0,0,0,0.3); }
-        .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #f57f17; }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 5px 0 #bf360c, 0 6px 12px rgba(0,0,0,0.4); }
+        .btn:active { transform: translateY(4px); box-shadow: 0 0 0 transparent; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; box-shadow: 0 4px 0 #bf360c !important; }
+        
         .btn-back {
-            background: linear-gradient(to bottom, #42a5f5, #1976d2);
-            box-shadow: 0 4px 0 #1565c0;
+            background: linear-gradient(to bottom, #4fc3f7, #0288d1);
+            box-shadow: 0 4px 0 #01579b;
+            color: white;
         }
-        .dirt-particle { position: absolute; background: #5d4037; width: 5px; height: 5px; border-radius: 50%; pointer-events: none; z-index: 10; }
-        .score-popup { position: absolute; color: #fff; font-weight: 900; font-size: 1.3em;
-            text-shadow: 2px 2px 0 #000; pointer-events: none; animation: floatUp 0.6s ease-out forwards; z-index: 100;
+        .btn-back:hover { box-shadow: 0 5px 0 #01579b, 0 6px 12px rgba(0,0,0,0.4); }
+        
+        /* Hiệu ứng hạt sao và điểm */
+        .dirt-particle { position: absolute; background: #ffe082; width: 5px; height: 5px; border-radius: 50%; pointer-events: none; z-index: 10; }
+        .score-popup { 
+            position: absolute; color: #fff59d; font-weight: 900; font-size: 1.5em;
+            text-shadow: 2px 2px 0 #e65100, -1px -1px 0 #e65100; pointer-events: none; 
+            animation: floatUp 0.45s ease-out forwards; z-index: 100;
         }
-        @keyframes floatUp { 0% { transform: translate(-50%,0) scale(1); opacity: 1; } 100% { transform: translate(-50%,-50px) scale(1.2); opacity: 0; } }
-        .shake { animation: shake 0.25s cubic-bezier(.36,.07,.19,.97) both; }
-        @keyframes shake { 10%,90%{transform:translate3d(-1px,0,0)} 20%,80%{transform:translate3d(2px,0,0)} 30%,50%,70%{transform:translate3d(-3px,0,0)} 40%,60%{transform:translate3d(3px,0,0)} }
-        .game-over { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85);
-            display:flex; justify-content:center; align-items:center; z-index:2000; opacity:0; visibility:hidden; transition:0.3s;
+        @keyframes floatUp { 
+            0% { transform: translate(-50%, -15px) scale(0.8); opacity: 1; } 
+            100% { transform: translate(-50%, -65px) scale(1.2); opacity: 0; } 
         }
-        .game-over.show { opacity:1; visibility:visible; }
-        .game-over-content { background:linear-gradient(135deg,#fff,#f5f5f5); padding:30px; border-radius:16px; text-align:center;
-            color:#333; box-shadow:0 0 40px rgba(255,193,7,0.5); border:4px solid #ffca28;
+        
+        .shake { animation: shake 0.14s ease-in-out; }
+        @keyframes shake { 
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px) translateY(-1px); }
+            75% { transform: translateX(2px) translateY(1px); }
         }
-        /* RESPONSIVE */
-        @media (max-width: 600px) {
-            .game-container { padding: 12px; border-radius: 14px; max-width: 96%; }
-            h1 { font-size: clamp(1.6em, 7.5vw, 2.2em); margin-bottom: 8px; }
-            .game-info { padding: 8px; flex-direction: column; gap: 6px; }
-            .difficulty-selector { gap: 6px; margin-bottom: 12px; }
-            .diff-btn { padding: 7px 14px; min-width: 75px; font-size: 0.85em; }
-            .game-grid { gap: 10px; max-width: 100%; }
-            .hole { padding-top: 100%; }
-            .controls { margin-top: 16px; flex-direction: column; gap: 10px; }
-            .btn { padding: 12px 35px; font-size: 1em; width: 100%; max-width: 260px; margin: 0 auto; }
-            .hammer { width: 100px; height: 100px; transform-origin: center center; }
+        
+        /* MODAL POP-UP (HẾT GIỜ / HƯỚNG DẪN) */
+        .modal { 
+            position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8);
+            display:flex; justify-content:center; align-items:center; z-index:99999; opacity:0; visibility:hidden; transition: 0.2s ease;
         }
-        @media (max-width: 480px) {
-            body { padding: 6px; }
-            .game-container { padding: 10px; }
-            .btn { padding: 12px; font-size: 0.95em; max-width: 240px; }
-            .hammer { width: 90px; height: 90px; }
+        .modal.show { opacity:1; visibility:visible; }
+        .modal-content { 
+            background: white; padding: 25px; border-radius: 24px; text-align: center;
+            color:#333; box-shadow:0 0 30px rgba(255,152,0,0.4); border:4px solid #ffa000;
+            width: 85%; max-width: 340px;
+        }
+
+        /* Thẩm mỹ trang hướng dẫn */
+        .tutorial-list {
+            text-align: left;
+            margin: 15px 0 22px 0;
+            list-style: none;
+        }
+        .tutorial-list li {
+            margin-bottom: 12px;
+            font-size: 0.95em;
+            line-height: 1.4;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .tutorial-list .icon {
+            font-size: 1.2em;
+            line-height: 1;
         }
     </style>
 </head>
 <body>
+
+    <!-- Búa đập hoạt hình -->
     <div class="hammer" id="hammer">
         <div class="hammer-head"></div>
         <div class="hammer-handle"></div>
     </div>
+
     <div class="game-container" id="gameContainer">
-        <h1>ĐẬP CHUỘT</h1>
+        <div class="header-area">
+            <h1>ĐẬP CHUỘT</h1>
+            <button class="help-icon-btn" id="helpBtn" title="Xem hướng dẫn">ℹ</button>
+        </div>
+        
         <div class="game-info">
             <div class="info-item">Điểm: <span id="score">0</span></div>
             <div class="info-item">Thời gian: <span id="time">30</span>s</div>
         </div>
-        <div class="difficulty-selector">
-            <button class="diff-btn easy active" data-diff="easy">DỄ</button>
-            <button class="diff-btn medium" data-diff="medium">TRUNG BÌNH</button>
+        
+        <!-- BỘ CHỌN CHẾ ĐỘ CHƠI -->
+        <div class="difficulty-selector" id="diffSelector">
+            <button class="diff-btn easy" data-diff="easy">DỄ</button>
+            <button class="diff-btn medium active" data-diff="medium">VỪA</button>
             <button class="diff-btn hard" data-diff="hard">KHÓ</button>
         </div>
+        
+        <!-- BÀN CỜ CHUỘT CHŨI -->
         <div class="game-grid">
-            <div class="hole" data-index="0"><div class="mole"></div></div>
-            <div class="hole" data-index="1"><div class="mole"></div></div>
-            <div class="hole" data-index="2"><div class="mole"></div></div>
-            <div class="hole" data-index="3"><div class="mole"></div></div>
-            <div class="hole" data-index="4"><div class="mole"></div></div>
-            <div class="hole" data-index="5"><div class="mole"></div></div>
-            <div class="hole" data-index="6"><div class="mole"></div></div>
-            <div class="hole" data-index="7"><div class="mole"></div></div>
-            <div class="hole" data-index="8"><div class="mole"></div></div>
+            <div class="hole"><div class="mole"><div class="mole-face"><div class="goggles"><div class="goggle-lens"></div><div class="goggle-lens"></div></div><div class="mole-cheeks"></div><div class="mole-nose"></div><div class="mole-teeth"></div><div class="mole-whiskers"></div></div></div></div>
+            <div class="hole"><div class="mole"><div class="mole-face"><div class="goggles"><div class="goggle-lens"></div><div class="goggle-lens"></div></div><div class="mole-cheeks"></div><div class="mole-nose"></div><div class="mole-teeth"></div><div class="mole-whiskers"></div></div></div></div>
+            <div class="hole"><div class="mole"><div class="mole-face"><div class="goggles"><div class="goggle-lens"></div><div class="goggle-lens"></div></div><div class="mole-cheeks"></div><div class="mole-nose"></div><div class="mole-teeth"></div><div class="mole-whiskers"></div></div></div></div>
+            <div class="hole"><div class="mole"><div class="mole-face"><div class="goggles"><div class="goggle-lens"></div><div class="goggle-lens"></div></div><div class="mole-cheeks"></div><div class="mole-nose"></div><div class="mole-teeth"></div><div class="mole-whiskers"></div></div></div></div>
+            <div class="hole"><div class="mole"><div class="mole-face"><div class="goggles"><div class="goggle-lens"></div><div class="goggle-lens"></div></div><div class="mole-cheeks"></div><div class="mole-nose"></div><div class="mole-teeth"></div><div class="mole-whiskers"></div></div></div></div>
+            <div class="hole"><div class="mole"><div class="mole-face"><div class="goggles"><div class="goggle-lens"></div><div class="goggle-lens"></div></div><div class="mole-cheeks"></div><div class="mole-nose"></div><div class="mole-teeth"></div><div class="mole-whiskers"></div></div></div></div>
+            <div class="hole"><div class="mole"><div class="mole-face"><div class="goggles"><div class="goggle-lens"></div><div class="goggle-lens"></div></div><div class="mole-cheeks"></div><div class="mole-nose"></div><div class="mole-teeth"></div><div class="mole-whiskers"></div></div></div></div>
+            <div class="hole"><div class="mole"><div class="mole-face"><div class="goggles"><div class="goggle-lens"></div><div class="goggle-lens"></div></div><div class="mole-cheeks"></div><div class="mole-nose"></div><div class="mole-teeth"></div><div class="mole-whiskers"></div></div></div></div>
+            <div class="hole"><div class="mole"><div class="mole-face"><div class="goggles"><div class="goggle-lens"></div><div class="goggle-lens"></div></div><div class="mole-cheeks"></div><div class="mole-nose"></div><div class="mole-teeth"></div><div class="mole-whiskers"></div></div></div></div>
         </div>
+        
         <div class="controls">
             <button class="btn" id="startBtn">BẮT ĐẦU</button>
             <button class="btn btn-back" onclick="window.location.href='game.html'">QUAY LẠI</button>
         </div>
     </div>
-    <div class="game-over" id="gameOver">
-        <div class="game-over-content">
-            <h2 style="font-size:1.8em;margin-bottom:8px;color:#d32f2f;">HẾT GIỜ!</h2>
-            <p style="font-size:1.3em;margin-bottom:16px;">Điểm của bạn: <strong id="finalScore" style="color:#f57f17;font-size:1.4em;">0</strong></p>
-            <button class="btn" onclick="resetGame()">CHƠI LẠI</button>
-            <button class="btn btn-back" style="margin-top:12px;" onclick="window.location.href='game.html'">QUAY LẠI MENU</button>
+
+    <!-- BẢNG HƯỚNG DẪN CHƠI BAN ĐẦU -->
+    <div class="modal" id="tutorialModal">
+        <div class="modal-content">
+            <h2 style="font-size:1.6em; color:#ffa000; margin-bottom:5px;">🐹 HƯỚNG DẪN CHƠI</h2>
+            <p style="color:#666; font-size:0.9em; font-style:italic;">Chào mừng bạn đến với trò chơi Đập Chuột Chũi!</p>
+            
+            <ul class="tutorial-list">
+                <li><span class="icon">🎯</span><span><strong>Mục tiêu:</strong> Hãy đập thật nhiều chú chuột chũi đeo kính bảo hộ ngoi lên từ hố trước khi hết thời gian.</span></li>
+                <li><span class="icon">⚡</span><span><strong>Cách chơi:</strong> Nhấp chuột (trên PC) hoặc chạm tay (trên điện thoại) trực tiếp vào chú chuột để ghi điểm.</span></li>
+                <li><span class="icon">⚙️</span><span><strong>Độ khó:</strong> Chọn các chế độ <strong>DỄ, VỪA, KHÓ</strong> trước khi bắt đầu để thử thách phản xạ của bản thân.</span></li>
+                <li><span class="icon">⏱️</span><span>Mỗi lượt chơi sẽ có <strong>30 giây</strong> đếm ngược. Hãy nhanh tay lên nhé!</span></li>
+            </ul>
+            
+            <button class="btn" id="closeTutorialBtn" style="width:100%;">Đã hiểu, Chơi thôi!</button>
+        </div>
+    </div>
+
+    <!-- MÀN HÌNH HẾT GIỜ -->
+    <div class="modal" id="gameOver">
+        <div class="modal-content">
+            <h2 style="font-size:1.8em; margin-bottom:8px; color:#d32f2f;">HẾT GIỜ!</h2>
+            <p style="font-size:1.1em; margin-bottom:16px;">Điểm số của bạn: <strong id="finalScore" style="color:#e65100; font-size:1.4em;">0</strong></p>
+            <button class="btn" onclick="resetGame()" style="width:100%; margin-bottom:10px;">CHƠI LẠI</button>
+            <button class="btn btn-back" style="width:100%;" onclick="window.location.href='game.html'">MENU CHÍNH</button>
         </div>
     </div>
 
@@ -244,66 +499,137 @@
         const gameContainer = document.getElementById('gameContainer');
         const gameOverScreen = document.getElementById('gameOver');
         const finalScoreBoard = document.getElementById('finalScore');
+        const diffSelector = document.getElementById('diffSelector');
         const diffButtons = document.querySelectorAll('.diff-btn');
+        
+        // Các yếu tố điều khiển Hướng dẫn chơi
+        const tutorialModal = document.getElementById('tutorialModal');
+        const closeTutorialBtn = document.getElementById('closeTutorialBtn');
+        const helpBtn = document.getElementById('helpBtn');
 
-        let lastHole, timeUp = false, score = 0, timeLeft = 30, timer, moleTimer;
+        let lastHole;
+        let timeUp = false;
+        let score = 0;
+        let timeLeft = 30;
+        let timerInterval;
+        let moleTimeout;
         let currentDifficulty = 'medium';
+        let isPlaying = false;
+
         const difficulties = {
-            easy: { minTime: 1200, maxTime: 2200 },
-            medium: { minTime: 600, maxTime: 1200 },
-            hard: { minTime: 300, maxTime: 700 }
+            easy: { minTime: 950, maxTime: 1600 },
+            medium: { minTime: 550, maxTime: 1000 },
+            hard: { minTime: 280, maxTime: 650 }
         };
 
-        // Chọn độ khó
+        // Tự động hiển thị bảng hướng dẫn khi vừa tải xong trang
+        window.addEventListener('DOMContentLoaded', () => {
+            tutorialModal.classList.add('show');
+        });
+
+        // Đóng bảng hướng dẫn bằng nút bấm
+        closeTutorialBtn.addEventListener('click', () => {
+            tutorialModal.classList.remove('show');
+        });
+
+        // Bấm vào icon (i) để xem lại hướng dẫn
+        helpBtn.addEventListener('click', () => {
+            if (isPlaying) return; // Không cho xem khi đang trong trận
+            tutorialModal.classList.add('show');
+        });
+
         diffButtons.forEach(btn => {
             btn.addEventListener('click', () => {
+                if (isPlaying) return;
                 diffButtons.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 currentDifficulty = btn.dataset.diff;
             });
         });
 
-        function showHammer(x, y) {
-            hammer.style.left = `${x}px`;
-            hammer.style.top = `${y}px`;
+        function triggerHammerEffect(pageX, pageY) {
+            hammer.style.left = `${pageX}px`;
+            hammer.style.top = `${pageY}px`;
             hammer.classList.add('visible', 'active');
-            setTimeout(() => hammer.classList.remove('active'), 100);
-            setTimeout(() => hammer.classList.remove('visible'), 300);
+            
+            setTimeout(() => hammer.classList.remove('active'), 60);
+            if (window.innerWidth <= 768) {
+                setTimeout(() => hammer.classList.remove('visible'), 200);
+            }
         }
 
-        // Di chuyển búa theo chuột (PC)
         document.addEventListener('mousemove', e => {
             if (window.innerWidth > 768) {
                 hammer.style.left = `${e.pageX}px`;
                 hammer.style.top = `${e.pageY}px`;
-                hammer.classList.add('visible');
+                if (isPlaying) hammer.classList.add('visible');
             }
         });
 
-        document.addEventListener('mousedown', e => showHammer(e.pageX, e.pageY));
-        document.addEventListener('touchstart', e => {
-            e.preventDefault();
-            const t = e.touches[0];
-            showHammer(t.pageX, t.pageY);
+        document.addEventListener('pointerdown', e => {
+            if (!isPlaying) return;
+            if (e.target.closest('.controls') || e.target.closest('.difficulty-selector') || e.target.closest('.modal-content') || e.target.closest('.help-icon-btn')) return;
+            
+            triggerHammerEffect(e.pageX, e.pageY);
         });
 
-        function createDirtParticles(x, y) {
-            for (let i = 0; i < 8; i++) {
+        function bonk(e) {
+            if (!e.isTrusted) return;
+            if (!isPlaying || timeUp) return;
+            
+            const mole = this;
+            if (!mole.classList.contains('show')) return;
+
+            score++;
+            scoreBoard.textContent = score;
+            
+            mole.classList.remove('show');
+            mole.classList.add('hit');
+
+            const rect = mole.getBoundingClientRect();
+            const x = window.scrollX + rect.left + rect.width / 2;
+            const y = window.scrollY + rect.top + rect.height / 2;
+
+            createScorePopup(x, y);
+            createSparkleParticles(x, y);
+
+            gameContainer.classList.add('shake');
+            setTimeout(() => gameContainer.classList.remove('shake'), 140);
+            setTimeout(() => mole.classList.remove('hit'), 150);
+        }
+
+        moles.forEach(mole => {
+            mole.addEventListener('pointerdown', bonk);
+        });
+
+        function createScorePopup(x, y) {
+            const popup = document.createElement('div');
+            popup.classList.add('score-popup');
+            popup.textContent = '+1';
+            popup.style.left = `${x}px`;
+            popup.style.top = `${y}px`;
+            document.body.appendChild(popup);
+            setTimeout(() => popup.remove(), 450);
+        }
+
+        function createSparkleParticles(x, y) {
+            for (let i = 0; i < 6; i++) {
                 const p = document.createElement('div');
                 p.classList.add('dirt-particle');
-                const ox = (Math.random() - 0.5) * 70;
-                const oy = (Math.random() - 0.5) * 70;
-                p.style.left = `${x + ox}px`;
-                p.style.top = `${y + oy}px`;
+                const ox = (Math.random() - 0.5) * 60;
+                const oy = (Math.random() - 0.5) * 60;
+                p.style.left = `${x}px`;
+                p.style.top = `${y}px`;
                 document.body.appendChild(p);
+                
                 p.animate([
-                    {transform:'translate(0,0) scale(1)', opacity:1},
-                    {transform:`translate(${ox}px,-50px) scale(0)`, opacity:0}
+                    { transform: 'translate(0,0) scale(1.2)', opacity: 1 },
+                    { transform: `translate(${ox * 1.3}px, ${oy - 20}px) scale(0)`, opacity: 0 }
                 ], {
-                    duration:500+Math.random()*300,
-                    easing:'cubic-bezier(0.25,1,0.5,1)'
+                    duration: 300 + Math.random() * 150,
+                    easing: 'cubic-bezier(0.1, 0.8, 0.3, 1)'
                 });
-                setTimeout(() => p.remove(), 800);
+                setTimeout(() => p.remove(), 450);
             }
         }
 
@@ -321,29 +647,43 @@
         }
 
         function peep() {
-            if (timeUp) return;
+            if (timeUp || !isPlaying) return;
             const time = randomTime();
             const hole = randomHole(holes);
             const mole = hole.querySelector('.mole');
+            
             mole.classList.add('show');
-            moleTimer = setTimeout(() => {
+            
+            moleTimeout = setTimeout(() => {
                 mole.classList.remove('show');
                 if (!timeUp) peep();
             }, time);
         }
 
         function startGame() {
-            score = 0; timeLeft = 30; timeUp = false;
-            scoreBoard.textContent = 0; timeBoard.textContent = 30;
+            if (isPlaying) return;
+            
+            isPlaying = true;
+            score = 0; 
+            timeLeft = 30; 
+            timeUp = false;
+            
+            scoreBoard.textContent = 0; 
+            timeBoard.textContent = 30;
             gameOverScreen.classList.remove('show');
+            tutorialModal.classList.remove('show'); // Đóng hướng dẫn nếu đang mở
+            
             startBtn.disabled = true;
-            startBtn.textContent = "Đang chơi...";
-            startBtn.style.opacity = "0.7";
+            startBtn.textContent = "Đang chơi";
+            helpBtn.style.opacity = "0.3"; // Làm mờ nút hướng dẫn khi đang chơi
+            
+            diffSelector.classList.add('disabled');
+            document.body.classList.add('game-active');
 
-            document.body.classList.add('game-active');  // Ẩn con trỏ khi chơi
-
+            moles.forEach(m => m.classList.remove('show', 'hit'));
             peep();
-            timer = setInterval(() => {
+            
+            timerInterval = setInterval(() => {
                 timeLeft--;
                 timeBoard.textContent = timeLeft;
                 if (timeLeft <= 0) endGame();
@@ -352,15 +692,21 @@
 
         function endGame() {
             timeUp = true;
-            clearInterval(timer);
-            clearTimeout(moleTimer);
+            isPlaying = false;
+            clearInterval(timerInterval);
+            clearTimeout(moleTimeout);
+            
             startBtn.disabled = false;
             startBtn.textContent = "Bắt Đầu";
-            startBtn.style.opacity = "1";
+            helpBtn.style.opacity = "1";
+            
+            diffSelector.classList.remove('disabled');
+            
             finalScoreBoard.textContent = score;
-            setTimeout(() => gameOverScreen.classList.add('show'), 400);
+            setTimeout(() => gameOverScreen.classList.add('show'), 300);
 
-            document.body.classList.remove('game-active');  // Hiện lại con trỏ
+            document.body.classList.remove('game-active');
+            hammer.classList.remove('visible');
         }
 
         function resetGame() {
@@ -368,52 +714,7 @@
             startGame();
         }
 
-        function bonk(e) {
-            if (!e.isTrusted) return;
-            const mole = this;
-            if (!mole.classList.contains('show')) return;
-
-            score++;
-            scoreBoard.textContent = score;
-            mole.classList.remove('show');
-            mole.classList.add('hit');
-
-            const rect = mole.getBoundingClientRect();
-            const x = rect.left + rect.width / 2;
-            const y = rect.top + rect.height / 2;
-
-            const popup = document.createElement('div');
-            popup.classList.add('score-popup');
-            popup.textContent = '+1';
-            popup.style.left = `${x}px`;
-            popup.style.top = `${y}px`;
-            document.body.appendChild(popup);
-            setTimeout(() => popup.remove(), 600);
-
-            createDirtParticles(x, y);
-            gameContainer.classList.add('shake');
-            setTimeout(() => gameContainer.classList.remove('shake'), 250);
-            setTimeout(() => mole.classList.remove('hit'), 180);
-        }
-
-        moles.forEach(mole => {
-            mole.addEventListener('mousedown', bonk);
-            mole.addEventListener('touchstart', bonk);
-        });
-
         startBtn.addEventListener('click', startGame);
-
-        // Tùy chọn: Hiện con trỏ khi hover vào nút (mượt hơn trên PC)
-        document.querySelectorAll('.controls, .btn, .diff-btn').forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                document.body.classList.remove('game-active');
-            });
-            el.addEventListener('mouseleave', () => {
-                if (!timeUp && startBtn.disabled) {  // chỉ ẩn nếu đang chơi
-                    document.body.classList.add('game-active');
-                }
-            });
-        });
     </script>
 </body>
 </html>
