@@ -28,8 +28,11 @@
             padding: 20px 0;
             overflow-x: hidden;
         }
+
         h2 { font-size: 2.5rem; margin: 20px 0; text-shadow: 0 4px 10px rgba(0,0,0,0.5); letter-spacing: 2px; }
+
         .container { width: 100%; max-width: 600px; text-align: center; }
+
         .controls {
             background: rgba(255,255,255,0.1);
             backdrop-filter: blur(10px);
@@ -39,47 +42,144 @@
             border: 1px solid rgba(255,255,255,0.18);
             margin-bottom: 30px;
         }
-        .input-row { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; }
-        input, select, button { padding: 14px 20px; border-radius: 12px; border: none; font-size: 1rem; outline: none; }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        input, select, button {
+            padding: 14px 20px;
+            border-radius: 12px;
+            border: none;
+            font-size: 1rem;
+            outline: none;
+        }
+
         input { flex: 2; background: rgba(255,255,255,0.9); color: #333; }
         select { flex: 1; background: white; cursor: pointer; }
-        button { background: var(--primary); color: white; font-weight: bold; cursor: pointer; box-shadow: 0 5px 0 var(--primary-dark); transition: all 0.2s; }
-        button:active { transform: translateY(5px); box-shadow: 0 0 0 var(--primary-dark); }
-        .button-row { display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 10px; flex-wrap: wrap; }
+
+        button {
+            background: var(--primary);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 0 var(--primary-dark);
+            transition: all 0.2s;
+        }
+
+        button:active {
+            transform: translateY(5px);
+            box-shadow: 0 0 0 var(--primary-dark);
+        }
+
+        /* DÃY NÚT CHÍNH: LẮC NGAY + QUAY LẠI CÙNG HÀNG */
+        .button-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
         .back-btn-inline {
-            display: flex; align-items: center; gap: 10px; padding: 14px 28px;
-            background: rgba(255,255,255,0.15); backdrop-filter: blur(12px); border-radius: 50px;
-            color: white; text-decoration: none; font-weight: 600; font-size: 1.1rem;
-            border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(12px);
+            border-radius: 50px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            white-space: nowrap;
         }
-        .back-btn-inline:hover { transform: translateY(-4px); background: rgba(255,255,255,0.25); box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
-        .back-btn-inline i { transition: transform 0.3s; }
-        .back-btn-inline:hover i { transform: translateX(-5px); }
+
+        .back-btn-inline:hover {
+            transform: translateY(-4px);
+            background: rgba(255,255,255,0.25);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+
+        .back-btn-inline i {
+            transition: transform 0.3s;
+        }
+
+        .back-btn-inline:hover i {
+            transform: translateX(-5px);
+        }
+
+        /* Ẩn nút back cũ (nếu còn) */
         .back-btn { display: none !important; }
-        .dice-platform { display: flex; justify-content: center; gap: 80px; padding: 40px 0; transform-style: preserve-3d; }
-        .dice-wrapper { position: relative; width: var(--dice-size); height: var(--dice-size); }
-        .cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 1.5s cubic-bezier(0.15, 0.9, 0.34, 1); }
-        .face {
-            position: absolute; width: 100%; height: 100%;
-            background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
-            border-radius: 18px; border: 1px solid #ddd;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
-            backface-visibility: hidden; display: grid;
-            grid-template: repeat(3,1fr)/repeat(3,1fr); gap: 8px; padding: 12px;
+
+        /* Xúc xắc 3D */
+        .dice-platform {
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            padding: 40px 0;
+            transform-style: preserve-3d;
         }
+
+        .dice-wrapper {
+            position: relative;
+            width: var(--dice-size);
+            height: var(--dice-size);
+        }
+
+        .cube {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1.5s cubic-bezier(0.15, 0.9, 0.34, 1);
+        }
+
+        .face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+            border-radius: 18px;
+            border: 1px solid #ddd;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+            backface-visibility: hidden;
+            display: grid;
+            grid-template: repeat(3,1fr)/repeat(3,1fr);
+            gap: 8px;
+            padding: 12px;
+        }
+
         .dot {
-            background: #111; border-radius: 50%; width: 22%; height: 22%;
-            min-width: 14px; min-height: 14px; align-self: center; justify-self: center;
+            background: #111;
+            border-radius: 50%;
+            width: 22%;
+            height: 22%;
+            min-width: 14px;
+            min-height: 14px;
+            align-self: center;
+            justify-self: center;
             box-shadow: inset 0 4px 8px rgba(0,0,0,0.7), 0 2px 4px rgba(255,255,255,0.3);
         }
+
         .face-1 .dot { background: var(--dot-red); width: 30%; height: 30%; min-width: 20px; min-height: 20px; }
+
         .face-1 { transform: rotateY(0deg) translateZ(calc(var(--dice-size)/2)); }
         .face-2 { transform: rotateX(-90deg) translateZ(calc(var(--dice-size)/2)); }
         .face-3 { transform: rotateY(90deg) translateZ(calc(var(--dice-size)/2)); }
         .face-4 { transform: rotateY(-90deg) translateZ(calc(var(--dice-size)/2)); }
         .face-5 { transform: rotateX(90deg) translateZ(calc(var(--dice-size)/2)); }
         .face-6 { transform: rotateY(180deg) translateZ(calc(var(--dice-size)/2)); }
+
+        /* Vị trí chấm */
         .face-1 .dot:nth-child(1) { grid-area: 2/2; }
         .face-2 .dot:nth-child(1) { grid-area: 1/1; } .face-2 .dot:nth-child(2) { grid-area: 3/3; }
         .face-3 .dot:nth-child(1) { grid-area: 1/1; } .face-3 .dot:nth-child(2) { grid-area: 2/2; } .face-3 .dot:nth-child(3) { grid-area: 3/3; }
@@ -91,50 +191,159 @@
         .face-6 .dot:nth-child(1) { grid-area: 1/1; } .face-6 .dot:nth-child(2) { grid-area: 2/1; }
         .face-6 .dot:nth-child(3) { grid-area: 3/1; } .face-6 .dot:nth-child(4) { grid-area: 1/3; }
         .face-6 .dot:nth-child(5) { grid-area: 2/3; } .face-6 .dot:nth-child(6) { grid-area: 3/3; }
+
         .shadow {
-            width: 100%; height: 20px;
+            width: 100%;
+            height: 20px;
             background: radial-gradient(ellipse at center, rgba(0,0,0,0.6) 0%, transparent 70%);
-            position: absolute; bottom: -50px; left: 0; opacity: 0.8; z-index: -1; transition: all 0.5s;
+            position: absolute;
+            bottom: -50px;
+            left: 0;
+            opacity: 0.8;
+            z-index: -1;
+            transition: all 0.5s;
         }
+
         .dice-wrapper.jumping { animation: jump 0.8s ease-in-out; }
         .dice-wrapper.jumping .shadow { animation: shadow-shrink 0.8s ease-in-out; }
+
         @keyframes jump { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-150px) scale(1.1); } }
         @keyframes shadow-shrink { 0%,100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(0.5); opacity: 0.3; } }
+
+        /* Bảng kết quả */
         .result-container {
-            margin-top: 20px; background: rgba(255,255,255,0.12); backdrop-filter: blur(12px);
-            border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            margin-top: 20px;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
             border: 1px solid rgba(255,255,255,0.2);
         }
-        .result-header { background: linear-gradient(135deg, #34495e, #2c3e50); color: white; padding: 16px; font-size: 1.3rem; font-weight: bold; letter-spacing: 1px; }
-        .result-scroll { max-height: 280px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #e74c3c #34495e; }
+
+        .result-header {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+            padding: 16px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .result-scroll {
+            max-height: 280px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #e74c3c #34495e;
+        }
+
         .result-scroll::-webkit-scrollbar { width: 8px; }
         .result-scroll::-webkit-scrollbar-track { background: #34495e; border-radius: 10px; }
         .result-scroll::-webkit-scrollbar-thumb { background: #e74c3c; border-radius: 10px; }
         .result-scroll::-webkit-scrollbar-thumb:hover { background: #c0392b; }
-        .result-table { width: 100%; border-collapse: collapse; background: rgba(255,255,255,0.95); color: #333; }
-        .result-table th { background: #2c3e50; color: white; padding: 14px; font-weight: bold; }
-        .result-table td { padding: 14px 12px; text-align: center; border-bottom: 1px solid #eee; transition: background 0.3s; }
+
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255,255,255,0.95);
+            color: #333;
+        }
+
+        .result-table th {
+            background: #2c3e50;
+            color: white;
+            padding: 14px;
+            font-weight: bold;
+        }
+
+        .result-table td {
+            padding: 14px 12px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            transition: background 0.3s;
+        }
+
         .result-table tr:hover td { background: #f0f8ff; }
-        .result-table tr:first-child td { background: linear-gradient(90deg, #e8f6f3, #d5f4e6); font-weight: bold; color: #e74c3c; font-size: 1.1em; }
+        .result-table tr:first-child td {
+            background: linear-gradient(90deg, #e8f6f3, #d5f4e6);
+            font-weight: bold;
+            color: #e74c3c;
+            font-size: 1.1em;
+        }
+
+        /* CSS PHẦN HƯỚNG DẪN CHƠI (MODAL GUIDE) */
         .guide-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.75); backdrop-filter: blur(5px); z-index: 9999;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
         }
-        .guide-overlay.show { opacity: 1; pointer-events: auto; }
+        .guide-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
         .guide-modal {
-            background: linear-gradient(135deg, #34495e, #2c3e50); width: 90%; max-width: 450px;
-            padding: 30px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6); text-align: center;
-            transform: scale(0.8); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); color: white;
+            background: #2c3e50;
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            width: 90%;
+            max-width: 450px;
+            padding: 30px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            text-align: center;
+            transform: scale(0.8);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: white;
         }
-        .guide-overlay.show .guide-modal { transform: scale(1); }
-        .guide-modal h3 { font-size: 1.8rem; color: #e74c3c; margin-bottom: 20px; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .guide-steps { text-align: left; margin-bottom: 25px; }
-        .guide-step { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 15px; font-size: 1.05rem; line-height: 1.5; }
-        .guide-step i { color: #e74c3c; font-size: 1.2rem; margin-top: 3px; width: 20px; text-align: center; }
-        .guide-btn { width: 100%; padding: 14px; font-size: 1.1rem; background: #e74c3c; }
+        .guide-overlay.show .guide-modal {
+            transform: scale(1);
+        }
+        .guide-modal h3 {
+            font-size: 1.8rem;
+            color: #e74c3c;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .guide-steps {
+            text-align: left;
+            margin-bottom: 25px;
+        }
+        .guide-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
+        .guide-step i {
+            color: #e74c3c;
+            font-size: 1.2rem;
+            margin-top: 3px;
+            width: 20px;
+            text-align: center;
+        }
+        .guide-btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 1.1rem;
+            background: #e74c3c;
+            border-shadow: 0 4px 0 #c0392b;
+        }
+
+        /* Responsive */
         @media (max-width: 600px) {
             :root { --dice-size: 78px; }
             .dice-platform { gap: 50px; }
@@ -154,46 +363,49 @@
 </head>
 <body>
 
+    <!-- GIAO DIỆN HƯỚNG DẪN CHƠI (POPUP MODAL) -->
     <div class="guide-overlay" id="guideOverlay">
         <div class="guide-modal">
-            <h3><i class="fas fa-gamepad"></i> <span data-i18n="guide.title">HƯỚNG DẪN CHƠI</span></h3>
+            <h3><i class="fas fa-gamepad"></i> HƯỚNG DẪN CHƠI</h3>
             <div class="guide-steps">
                 <div class="guide-step">
                     <i class="fas fa-user-edit"></i>
-                    <span><strong data-i18n="guide.step1.label">Bước 1:</strong> <span data-i18n="guide.step1.text">Nhập tên của bạn vào ô trống trước khi bắt đầu.</span></span>
+                    <span><strong>Bước 1:</strong> Nhập tên của bạn vào ô trống trước khi bắt đầu.</span>
                 </div>
                 <div class="guide-step">
                     <i class="fas fa-layer-group"></i>
-                    <span><strong data-i18n="guide.step2.label">Bước 2:</strong> <span data-i18n="guide.step2.text">Chọn số lượng xúc xắc muốn lắc (1 viên hoặc 2 viên).</span></span>
+                    <span><strong>Bước 2:</strong> Chọn số lượng xúc xắc muốn lắc (1 viên hoặc 2 viên).</span>
                 </div>
                 <div class="guide-step">
                     <i class="fas fa-dice"></i>
-                    <span><strong data-i18n="guide.step3.label">Bước 3:</strong> <span data-i18n="guide.step3.text">Nhấn nút LẮC NGAY để xúc xắc xoay ngẫu nhiên.</span></span>
+                    <span><strong>Bước 3:</strong> Nhấn nút <strong>LẮC NGAY</strong> để xúc xắc xoay ngẫu nhiên.</span>
                 </div>
                 <div class="guide-step">
                     <i class="fas fa-history"></i>
-                    <span><strong data-i18n="guide.step4.label">Bước 4:</strong> <span data-i18n="guide.step4.text">Kết quả sẽ hiển thị dạng 3D trực quan và lưu lại dưới bảng lịch sử.</span></span>
+                    <span><strong>Bước 4:</strong> Kết quả sẽ hiển thị dạng 3D trực quan và lưu lại dưới bảng lịch sử.</span>
                 </div>
             </div>
-            <button class="guide-btn" onclick="closeGuide()" data-i18n="guide.btn">ĐÃ HIỂU &amp; CHƠI NGAY</button>
+            <button class="guide-btn" onclick="closeGuide()">ĐÃ HIỂU & CHƠI NGAY</button>
         </div>
     </div>
 
     <div class="container">
         <h2>XÚC XẮC <span style="color:#e74c3c"></span></h2>
-
+         
         <div class="controls">
             <div class="input-row">
-                <input type="text" id="nameInput" data-i18n-placeholder="input.placeholder" placeholder="Nhập tên của bạn...">
+                <input type="text" id="nameInput" placeholder="Nhập tên của bạn...">
                 <select id="diceCount" onchange="toggleDice()">
-                    <option value="1" selected data-i18n="select.one">1 Viên</option>
-                    <option value="2" data-i18n="select.two">2 Viên</option>
+                    <option value="1" selected>1 Viên</option>
+                    <option value="2">2 Viên</option>
                 </select>
             </div>
+
+            <!-- NÚT LẮC NGAY + QUAY LẠI CÙNG HÀNG -->
             <div class="button-row">
-                <button onclick="rollDice()" data-i18n="btn.roll">LẮC NGAY</button>
+                <button onclick="rollDice()">LẮC NGAY</button>
                 <a href="game.html" class="back-btn-inline">
-                    <i class="fas fa-arrow-left"></i> <span data-i18n="btn.back">Quay lại</span>
+                    <i class="fas fa-arrow-left"></i> Quay lại
                 </a>
             </div>
         </div>
@@ -210,6 +422,7 @@
                 </div>
                 <div class="shadow"></div>
             </div>
+
             <div class="dice-wrapper" id="diceWrap2" style="display: none;">
                 <div class="cube" id="cube2">
                     <div class="face face-1"><div class="dot"></div></div>
@@ -223,15 +436,13 @@
             </div>
         </div>
 
+        <!-- Bảng lịch sử -->
         <div class="result-container">
-            <div class="result-header" data-i18n="history.title">LỊCH SỬ LẮC XÚC XẮC</div>
+            <div class="result-header">LỊCH SỬ LẮC XÚC XẮC</div>
             <div class="result-scroll">
                 <table class="result-table" id="resultTable">
                     <thead>
-                        <tr>
-                            <th data-i18n="table.player">Người chơi</th>
-                            <th data-i18n="table.result">Kết quả</th>
-                        </tr>
+                        <tr><th>Người chơi</th><th>Kết quả</th></tr>
                     </thead>
                     <tbody></tbody>
                 </table>
@@ -242,132 +453,91 @@
     <audio id="soundRoll" src="xucxaclan.mp3" preload="auto"></audio>
 
     <script>
-    'use strict';
+        let currentRotations = { cube1: { x: 0, y: 0 }, cube2: { x: 0, y: 0 } };
 
-    var DICE_T = {
-      vi:{'page.title':'Xúc Xắc - NTS','guide.title':'HƯỚNG DẪN CHƠI','guide.step1.label':'Bước 1:','guide.step1.text':'Nhập tên của bạn vào ô trống trước khi bắt đầu.','guide.step2.label':'Bước 2:','guide.step2.text':'Chọn số lượng xúc xắc muốn lắc (1 viên hoặc 2 viên).','guide.step3.label':'Bước 3:','guide.step3.text':'Nhấn nút LẮC NGAY để xúc xắc xoay ngẫu nhiên.','guide.step4.label':'Bước 4:','guide.step4.text':'Kết quả sẽ hiển thị dạng 3D trực quan và lưu lại dưới bảng lịch sử.','guide.btn':'ĐÃ HIỂU & CHƠI NGAY','input.placeholder':'Nhập tên của bạn...','select.one':'1 Viên','select.two':'2 Viên','btn.roll':'LẮC NGAY','btn.back':'Quay lại','history.title':'LỊCH SỬ LẮC XÚC XẮC','table.player':'Người chơi','table.result':'Kết quả','alert.name':'Vui lòng nhập tên!'},
-      en:{'page.title':'Dice - NTS','guide.title':'HOW TO PLAY','guide.step1.label':'Step 1:','guide.step1.text':'Enter your name before starting.','guide.step2.label':'Step 2:','guide.step2.text':'Choose how many dice to roll (1 or 2).','guide.step3.label':'Step 3:','guide.step3.text':'Press ROLL NOW to spin the dice randomly.','guide.step4.label':'Step 4:','guide.step4.text':'The result is shown in 3D and saved in the history table.','guide.btn':'GOT IT & PLAY NOW','input.placeholder':'Enter your name...','select.one':'1 Die','select.two':'2 Dice','btn.roll':'ROLL NOW','btn.back':'Go back','history.title':'DICE ROLL HISTORY','table.player':'Player','table.result':'Result','alert.name':'Please enter your name!'},
-      'en-US':{'page.title':'Dice - NTS','guide.title':'HOW TO PLAY','guide.step1.label':'Step 1:','guide.step1.text':'Enter your name before starting.','guide.step2.label':'Step 2:','guide.step2.text':'Choose how many dice to roll (1 or 2).','guide.step3.label':'Step 3:','guide.step3.text':'Press ROLL NOW to spin the dice randomly.','guide.step4.label':'Step 4:','guide.step4.text':'The result is shown in 3D and saved in the history table.','guide.btn':'GOT IT & PLAY NOW','input.placeholder':'Enter your name...','select.one':'1 Die','select.two':'2 Dice','btn.roll':'ROLL NOW','btn.back':'Go back','history.title':'DICE ROLL HISTORY','table.player':'Player','table.result':'Result','alert.name':'Please enter your name!'},
-      'en-NZ':{'page.title':'Dice - NTS','guide.title':'HOW TO PLAY','guide.step1.label':'Step 1:','guide.step1.text':'Enter your name before starting.','guide.step2.label':'Step 2:','guide.step2.text':'Choose how many dice to roll (1 or 2).','guide.step3.label':'Step 3:','guide.step3.text':'Press ROLL NOW to spin the dice.','guide.step4.label':'Step 4:','guide.step4.text':'The result shows in 3D and is saved to the history table.','guide.btn':'SWEET, LET\'S PLAY!','input.placeholder':'Enter your name...','select.one':'1 Die','select.two':'2 Dice','btn.roll':'ROLL NOW','btn.back':'Go back','history.title':'DICE ROLL HISTORY','table.player':'Player','table.result':'Result','alert.name':'Please enter your name!'},
-      ja:{'page.title':'サイコロ - NTS','guide.title':'ゲームの遊び方','guide.step1.label':'ステップ 1:','guide.step1.text':'開始する前に名前を入力してください。','guide.step2.label':'ステップ 2:','guide.step2.text':'サイコロの数を選んでください（1個または2個）。','guide.step3.label':'ステップ 3:','guide.step3.text':'「今すぐ振る」ボタンを押してランダムに転がします。','guide.step4.label':'ステップ 4:','guide.step4.text':'結果が3Dで表示され、履歴テーブルに保存されます。','guide.btn':'了解！今すぐプレイ','input.placeholder':'名前を入力...','select.one':'1個','select.two':'2個','btn.roll':'今すぐ振る','btn.back':'戻る','history.title':'サイコロ履歴','table.player':'プレイヤー','table.result':'結果','alert.name':'名前を入力してください！'},
-      zh:{'page.title':'骰子 - NTS','guide.title':'游戏说明','guide.step1.label':'第一步：','guide.step1.text':'开始前请输入您的名字。','guide.step2.label':'第二步：','guide.step2.text':'选择要掷的骰子数量（1个或2个）。','guide.step3.label':'第三步：','guide.step3.text':'点击"立即掷骰"按钮随机旋转骰子。','guide.step4.label':'第四步：','guide.step4.text':'结果将以3D形式显示并保存在历史记录表中。','guide.btn':'明白了，开始游戏！','input.placeholder':'请输入您的名字...','select.one':'1个','select.two':'2个','btn.roll':'立即掷骰','btn.back':'返回','history.title':'掷骰历史记录','table.player':'玩家','table.result':'结果','alert.name':'请输入您的名字！'},
-      'zh-TW':{'page.title':'骰子 - NTS','guide.title':'遊戲說明','guide.step1.label':'第一步：','guide.step1.text':'開始前請輸入您的名字。','guide.step2.label':'第二步：','guide.step2.text':'選擇要擲的骰子數量（1個或2個）。','guide.step3.label':'第三步：','guide.step3.text':'點擊「立即擲骰」按鈕隨機旋轉骰子。','guide.step4.label':'第四步：','guide.step4.text':'結果將以3D形式顯示並保存在歷史記錄表中。','guide.btn':'明白了，開始遊戲！','input.placeholder':'請輸入您的名字...','select.one':'1個','select.two':'2個','btn.roll':'立即擲骰','btn.back':'返回','history.title':'擲骰歷史記錄','table.player':'玩家','table.result':'結果','alert.name':'請輸入您的名字！'},
-      'zh-HK':{'page.title':'骰子 - NTS','guide.title':'遊戲說明','guide.step1.label':'第一步：','guide.step1.text':'開始前輸入你嘅名字。','guide.step2.label':'第二步：','guide.step2.text':'選擇要擲嘅骰子數量（1個或2個）。','guide.step3.label':'第三步：','guide.step3.text':'按「立即擲骰」隨機旋轉骰子。','guide.step4.label':'第四步：','guide.step4.text':'結果會以3D形式顯示並保存喺歷史表格。','guide.btn':'明白咗，開始玩！','input.placeholder':'請輸入你嘅名字...','select.one':'1個','select.two':'2個','btn.roll':'立即擲骰','btn.back':'返回','history.title':'擲骰歷史記錄','table.player':'玩家','table.result':'結果','alert.name':'請輸入你嘅名字！'},
-      'zh-MO':{'page.title':'骰子 - NTS','guide.title':'遊戲說明','guide.step1.label':'第一步：','guide.step1.text':'開始前輸入你嘅名字。','guide.step2.label':'第二步：','guide.step2.text':'選擇要擲嘅骰子數量（1個或2個）。','guide.step3.label':'第三步：','guide.step3.text':'按「立即擲骰」隨機旋轉骰子。','guide.step4.label':'第四步：','guide.step4.text':'結果會以3D形式顯示並保存喺歷史表格。','guide.btn':'明白，開始玩！','input.placeholder':'請輸入你嘅名字...','select.one':'1個','select.two':'2個','btn.roll':'立即擲骰','btn.back':'返回','history.title':'擲骰歷史記錄','table.player':'玩家','table.result':'結果','alert.name':'請輸入你嘅名字！'},
-      ko:{'page.title':'주사위 - NTS','guide.title':'게임 방법','guide.step1.label':'1단계:','guide.step1.text':'시작하기 전에 이름을 입력하세요.','guide.step2.label':'2단계:','guide.step2.text':'굴릴 주사위 수를 선택하세요 (1개 또는 2개).','guide.step3.label':'3단계:','guide.step3.text':'지금 굴리기 버튼을 눌러 주사위를 무작위로 굴립니다.','guide.step4.label':'4단계:','guide.step4.text':'결과가 3D로 표시되고 기록 테이블에 저장됩니다.','guide.btn':'알겠어요! 지금 플레이','input.placeholder':'이름을 입력하세요...','select.one':'1개','select.two':'2개','btn.roll':'지금 굴리기','btn.back':'돌아가기','history.title':'주사위 굴리기 기록','table.player':'플레이어','table.result':'결과','alert.name':'이름을 입력해 주세요!'},
-      kp:{'page.title':'주사위 - NTS','guide.title':'유희 방법','guide.step1.label':'첫째 단계:','guide.step1.text':'시작하기 전에 이름을 입력하십시오.','guide.step2.label':'둘째 단계:','guide.step2.text':'굴릴 주사위 수를 선택하십시오 (1개 또는 2개).','guide.step3.label':'셋째 단계:','guide.step3.text':'지금 굴리기 단추를 눌러 주사위를 무작위로 굴립니다.','guide.step4.label':'넷째 단계:','guide.step4.text':'결과가 3D로 표시되고 기록표에 보존됩니다.','guide.btn':'알았습니다! 지금 유희','input.placeholder':'이름을 입력하십시오...','select.one':'1개','select.two':'2개','btn.roll':'지금 굴리기','btn.back':'돌아가기','history.title':'주사위 굴리기 기록','table.player':'유희자','table.result':'결과','alert.name':'이름을 입력하십시오!'},
-      th:{'page.title':'ลูกเต๋า - NTS','guide.title':'วิธีเล่น','guide.step1.label':'ขั้นที่ 1:','guide.step1.text':'ใส่ชื่อของคุณในช่องก่อนเริ่มเล่น','guide.step2.label':'ขั้นที่ 2:','guide.step2.text':'เลือกจำนวนลูกเต๋าที่ต้องการ (1 หรือ 2 ลูก)','guide.step3.label':'ขั้นที่ 3:','guide.step3.text':'กดปุ่ม "ทอยเลย" เพื่อหมุนลูกเต๋าแบบสุ่ม','guide.step4.label':'ขั้นที่ 4:','guide.step4.text':'ผลลัพธ์จะแสดงในรูปแบบ 3D และบันทึกไว้ในตารางประวัติ','guide.btn':'เข้าใจแล้ว เล่นเลย!','input.placeholder':'ใส่ชื่อของคุณ...','select.one':'1 ลูก','select.two':'2 ลูก','btn.roll':'ทอยเลย','btn.back':'กลับ','history.title':'ประวัติการทอยลูกเต๋า','table.player':'ผู้เล่น','table.result':'ผลลัพธ์','alert.name':'กรุณาใส่ชื่อของคุณ!'},
-      km:{'page.title':'ឡុកឡាក់ - NTS','guide.title':'របៀបលេង','guide.step1.label':'ជំហានទី ១:','guide.step1.text':'បញ្ចូលឈ្មោះរបស់អ្នកមុននឹងចាប់ផ្ដើម។','guide.step2.label':'ជំហានទី ២:','guide.step2.text':'ជ្រើសរើសចំនួនឡុកឡាក់ (១ ឬ ២)។','guide.step3.label':'ជំហានទី ៣:','guide.step3.text':'ចុចប៊ូតុង "គ្រវីឥឡូវ" ដើម្បីបង្វិលភ្លាម។','guide.step4.label':'ជំហានទី ៤:','guide.step4.text':'លទ្ធផលនឹងបង្ហាញក្នុងទម្រង់ 3D និងរក្សាទុកក្នុងតារាង។','guide.btn':'យល់ហើយ លេងទៅ!','input.placeholder':'បញ្ចូលឈ្មោះ...','select.one':'១ គ្រាប់','select.two':'២ គ្រាប់','btn.roll':'គ្រវីឥឡូវ','btn.back':'ត្រឡប់','history.title':'ប្រវត្តិការគ្រវី','table.player':'អ្នកលេង','table.result':'លទ្ធផល','alert.name':'សូមបញ្ចូលឈ្មោះ!'},
-      lo:{'page.title':'ລູກຂວ້າງ - NTS','guide.title':'ວິທີຫຼິ້ນ','guide.step1.label':'ຂັ້ນຕອນ 1:','guide.step1.text':'ໃສ່ຊື່ຂອງທ່ານກ່ອນເລີ່ມ.','guide.step2.label':'ຂັ້ນຕອນ 2:','guide.step2.text':'ເລືອກຈໍານວນລູກຂວ້າງ (1 ຫຼື 2).','guide.step3.label':'ຂັ້ນຕອນ 3:','guide.step3.text':'ກົດ "ຂວ້າງດຽວນີ້" ເພື່ອຫຼິ້ນ.','guide.step4.label':'ຂັ້ນຕອນ 4:','guide.step4.text':'ຜົນໄດ້ຮັບຈະສະແດງໃນ 3D ແລະ ບັນທຶກໃນຕາຕະລາງ.','guide.btn':'ເຂົ້າໃຈ ຫຼິ້ນເລີຍ!','input.placeholder':'ໃສ່ຊື່...','select.one':'1 ລູກ','select.two':'2 ລູກ','btn.roll':'ຂວ້າງດຽວນີ້','btn.back':'ກັບຄືນ','history.title':'ປະຫວັດການຂວ້າງ','table.player':'ຜູ້ຫຼິ້ນ','table.result':'ຜົນ','alert.name':'ກະລຸນາໃສ່ຊື່!'},
-      id:{'page.title':'Dadu - NTS','guide.title':'CARA BERMAIN','guide.step1.label':'Langkah 1:','guide.step1.text':'Masukkan nama Anda sebelum mulai bermain.','guide.step2.label':'Langkah 2:','guide.step2.text':'Pilih jumlah dadu yang ingin dilempar (1 atau 2).','guide.step3.label':'Langkah 3:','guide.step3.text':'Tekan tombol LEMPAR SEKARANG untuk memutar dadu.','guide.step4.label':'Langkah 4:','guide.step4.text':'Hasilnya ditampilkan dalam 3D dan disimpan di tabel riwayat.','guide.btn':'MENGERTI & MAIN SEKARANG','input.placeholder':'Masukkan nama Anda...','select.one':'1 Dadu','select.two':'2 Dadu','btn.roll':'LEMPAR SEKARANG','btn.back':'Kembali','history.title':'RIWAYAT LEMPARAN DADU','table.player':'Pemain','table.result':'Hasil','alert.name':'Silakan masukkan nama Anda!'},
-      ms:{'page.title':'Dadu - NTS','guide.title':'CARA BERMAIN','guide.step1.label':'Langkah 1:','guide.step1.text':'Masukkan nama anda sebelum mula bermain.','guide.step2.label':'Langkah 2:','guide.step2.text':'Pilih bilangan dadu yang ingin dilempar (1 atau 2).','guide.step3.label':'Langkah 3:','guide.step3.text':'Tekan butang LEMPAR SEKARANG untuk memutar dadu.','guide.step4.label':'Langkah 4:','guide.step4.text':'Hasilnya dipaparkan dalam 3D dan disimpan dalam jadual sejarah.','guide.btn':'FAHAM & MAIN SEKARANG','input.placeholder':'Masukkan nama anda...','select.one':'1 Dadu','select.two':'2 Dadu','btn.roll':'LEMPAR SEKARANG','btn.back':'Kembali','history.title':'SEJARAH LEMPARAN DADU','table.player':'Pemain','table.result':'Hasil','alert.name':'Sila masukkan nama anda!'},
-      hi:{'page.title':'पासा - NTS','guide.title':'खेलने का तरीका','guide.step1.label':'चरण 1:','guide.step1.text':'शुरू करने से पहले अपना नाम दर्ज करें।','guide.step2.label':'चरण 2:','guide.step2.text':'पासों की संख्या चुनें (1 या 2)।','guide.step3.label':'चरण 3:','guide.step3.text':'पासे को यादृच्छिक रूप से घुमाने के लिए "अभी फेंकें" दबाएं।','guide.step4.label':'चरण 4:','guide.step4.text':'परिणाम 3D में दिखाया जाएगा और इतिहास तालिका में सहेजा जाएगा।','guide.btn':'समझ गया, अभी खेलें!','input.placeholder':'अपना नाम दर्ज करें...','select.one':'1 पासा','select.two':'2 पासे','btn.roll':'अभी फेंकें','btn.back':'वापस जाएं','history.title':'पासा फेंकने का इतिहास','table.player':'खिलाड़ी','table.result':'परिणाम','alert.name':'कृपया अपना नाम दर्ज करें!'},
-      ar:{'page.title':'النرد - NTS','guide.title':'كيفية اللعب','guide.step1.label':'الخطوة 1:','guide.step1.text':'أدخل اسمك قبل البدء.','guide.step2.label':'الخطوة 2:','guide.step2.text':'اختر عدد النرد للرمي (1 أو 2).','guide.step3.label':'الخطوة 3:','guide.step3.text':'اضغط "ارمِ الآن" لتدوير النرد عشوائيًا.','guide.step4.label':'الخطوة 4:','guide.step4.text':'تظهر النتيجة بشكل ثلاثي الأبعاد وتُحفظ في جدول السجل.','guide.btn':'فهمت، العب الآن!','input.placeholder':'أدخل اسمك...','select.one':'1 نردة','select.two':'2 نرد','btn.roll':'ارمِ الآن','btn.back':'رجوع','history.title':'سجل رمي النرد','table.player':'اللاعب','table.result':'النتيجة','alert.name':'يرجى إدخال اسمك!'},
-      tr:{'page.title':'Zar - NTS','guide.title':'NASIL OYNANIR','guide.step1.label':'Adım 1:','guide.step1.text':'Başlamadan önce adınızı girin.','guide.step2.label':'Adım 2:','guide.step2.text':'Atmak istediğiniz zar sayısını seçin (1 veya 2).','guide.step3.label':'Adım 3:','guide.step3.text':'Zarı rastgele döndürmek için "ŞİMDİ AT" düğmesine basın.','guide.step4.label':'Adım 4:','guide.step4.text':'Sonuç 3D olarak gösterilir ve geçmiş tablosuna kaydedilir.','guide.btn':'ANLADIM, ŞİMDİ OYNA','input.placeholder':'Adınızı girin...','select.one':'1 Zar','select.two':'2 Zar','btn.roll':'ŞİMDİ AT','btn.back':'Geri','history.title':'ZAR ATMA GEÇMİŞİ','table.player':'Oyuncu','table.result':'Sonuç','alert.name':'Lütfen adınızı girin!'},
-      de:{'page.title':'Würfel - NTS','guide.title':'SPIELANLEITUNG','guide.step1.label':'Schritt 1:','guide.step1.text':'Gib deinen Namen ein, bevor du anfängst.','guide.step2.label':'Schritt 2:','guide.step2.text':'Wähle die Anzahl der Würfel (1 oder 2).','guide.step3.label':'Schritt 3:','guide.step3.text':'Drücke "JETZT WÜRFELN" um die Würfel zu drehen.','guide.step4.label':'Schritt 4:','guide.step4.text':'Das Ergebnis wird 3D angezeigt und im Verlauf gespeichert.','guide.btn':'VERSTANDEN & JETZT SPIELEN','input.placeholder':'Namen eingeben...','select.one':'1 Würfel','select.two':'2 Würfel','btn.roll':'JETZT WÜRFELN','btn.back':'Zurück','history.title':'WÜRFELVERLAUF','table.player':'Spieler','table.result':'Ergebnis','alert.name':'Bitte Namen eingeben!'},
-      'de-CH':{'page.title':'Würfel - NTS','guide.title':'SPIELANLEITUNG','guide.step1.label':'Schritt 1:','guide.step1.text':'Gib deinen Namen ein, bevor du anfängst.','guide.step2.label':'Schritt 2:','guide.step2.text':'Wähle die Anzahl der Würfel (1 oder 2).','guide.step3.label':'Schritt 3:','guide.step3.text':'Drücke "JETZT WÜRFELN" um die Würfel zu drehen.','guide.step4.label':'Schritt 4:','guide.step4.text':'Das Ergebnis wird 3D angezeigt und im Verlauf gespeichert.','guide.btn':'VERSTANDEN & JETZT SPIELEN','input.placeholder':'Namen eingeben...','select.one':'1 Würfel','select.two':'2 Würfel','btn.roll':'JETZT WÜRFELN','btn.back':'Zurück','history.title':'WÜRFELVERLAUF','table.player':'Spieler','table.result':'Ergebnis','alert.name':'Bitte Namen eingeben!'},
-      fr:{'page.title':'Dé - NTS','guide.title':'COMMENT JOUER','guide.step1.label':'Étape 1 :','guide.step1.text':'Entrez votre nom avant de commencer.','guide.step2.label':'Étape 2 :','guide.step2.text':'Choisissez le nombre de dés à lancer (1 ou 2).','guide.step3.label':'Étape 3 :','guide.step3.text':'Appuyez sur "LANCER" pour faire tourner les dés.','guide.step4.label':'Étape 4 :','guide.step4.text':'Le résultat s\'affiche en 3D et est enregistré dans l\'historique.','guide.btn':'J\'AI COMPRIS, JOUER MAINTENANT','input.placeholder':'Entrez votre nom...','select.one':'1 Dé','select.two':'2 Dés','btn.roll':'LANCER','btn.back':'Retour','history.title':'HISTORIQUE DES LANCERS','table.player':'Joueur','table.result':'Résultat','alert.name':'Veuillez entrer votre nom !'},
-      it:{'page.title':'Dadi - NTS','guide.title':'COME GIOCARE','guide.step1.label':'Passo 1:','guide.step1.text':'Inserisci il tuo nome prima di iniziare.','guide.step2.label':'Passo 2:','guide.step2.text':'Scegli quanti dadi lanciare (1 o 2).','guide.step3.label':'Passo 3:','guide.step3.text':'Premi "LANCIA ORA" per girare i dadi.','guide.step4.label':'Passo 4:','guide.step4.text':'Il risultato appare in 3D e viene salvato nella tabella.','guide.btn':'CAPITO, GIOCA ORA','input.placeholder':'Inserisci il tuo nome...','select.one':'1 Dado','select.two':'2 Dadi','btn.roll':'LANCIA ORA','btn.back':'Indietro','history.title':'CRONOLOGIA LANCI','table.player':'Giocatore','table.result':'Risultato','alert.name':'Per favore inserisci il tuo nome!'},
-      es:{'page.title':'Dado - NTS','guide.title':'CÓMO JUGAR','guide.step1.label':'Paso 1:','guide.step1.text':'Ingresa tu nombre antes de comenzar.','guide.step2.label':'Paso 2:','guide.step2.text':'Elige cuántos dados lanzar (1 o 2).','guide.step3.label':'Paso 3:','guide.step3.text':'Pulsa "LANZAR" para girar los dados.','guide.step4.label':'Paso 4:','guide.step4.text':'El resultado se muestra en 3D y se guarda en el historial.','guide.btn':'ENTENDIDO, JUGAR AHORA','input.placeholder':'Ingresa tu nombre...','select.one':'1 Dado','select.two':'2 Dados','btn.roll':'LANZAR','btn.back':'Volver','history.title':'HISTORIAL DE LANZAMIENTOS','table.player':'Jugador','table.result':'Resultado','alert.name':'¡Por favor ingresa tu nombre!'},
-      'es-MX':{'page.title':'Dado - NTS','guide.title':'CÓMO JUGAR','guide.step1.label':'Paso 1:','guide.step1.text':'Ingresa tu nombre antes de empezar.','guide.step2.label':'Paso 2:','guide.step2.text':'Elige cuántos dados lanzar (1 o 2).','guide.step3.label':'Paso 3:','guide.step3.text':'Oprime "LANZAR" para girar los dados.','guide.step4.label':'Paso 4:','guide.step4.text':'El resultado se muestra en 3D y se guarda en el historial.','guide.btn':'ENTENDIDO, ¡A JUGAR!','input.placeholder':'Ingresa tu nombre...','select.one':'1 Dado','select.two':'2 Dados','btn.roll':'LANZAR','btn.back':'Regresar','history.title':'HISTORIAL DE LANZAMIENTOS','table.player':'Jugador','table.result':'Resultado','alert.name':'¡Por favor ingresa tu nombre!'},
-      pt:{'page.title':'Dado - NTS','guide.title':'COMO JOGAR','guide.step1.label':'Passo 1:','guide.step1.text':'Insira o seu nome antes de começar.','guide.step2.label':'Passo 2:','guide.step2.text':'Escolha quantos dados lançar (1 ou 2).','guide.step3.label':'Passo 3:','guide.step3.text':'Pressione "LANÇAR" para girar os dados.','guide.step4.label':'Passo 4:','guide.step4.text':'O resultado é mostrado em 3D e guardado no histórico.','guide.btn':'ENTENDIDO, JOGAR AGORA','input.placeholder':'Insira o seu nome...','select.one':'1 Dado','select.two':'2 Dados','btn.roll':'LANÇAR','btn.back':'Voltar','history.title':'HISTÓRICO DE LANÇAMENTOS','table.player':'Jogador','table.result':'Resultado','alert.name':'Por favor insira o seu nome!'},
-      nl:{'page.title':'Dobbelstenen - NTS','guide.title':'HOE TE SPELEN','guide.step1.label':'Stap 1:','guide.step1.text':'Voer je naam in voordat je begint.','guide.step2.label':'Stap 2:','guide.step2.text':'Kies het aantal dobbelstenen (1 of 2).','guide.step3.label':'Stap 3:','guide.step3.text':'Druk op "GOOI NU" om de dobbelstenen te gooien.','guide.step4.label':'Stap 4:','guide.step4.text':'Het resultaat wordt in 3D getoond en opgeslagen.','guide.btn':'BEGREPEN, NU SPELEN','input.placeholder':'Voer je naam in...','select.one':'1 Dobbelsteen','select.two':'2 Dobbelstenen','btn.roll':'GOOI NU','btn.back':'Terug','history.title':'GOOI GESCHIEDENIS','table.player':'Speler','table.result':'Resultaat','alert.name':'Voer je naam in!'},
-      ru:{'page.title':'Кубики - NTS','guide.title':'КАК ИГРАТЬ','guide.step1.label':'Шаг 1:','guide.step1.text':'Введите своё имя перед началом.','guide.step2.label':'Шаг 2:','guide.step2.text':'Выберите количество кубиков (1 или 2).','guide.step3.label':'Шаг 3:','guide.step3.text':'Нажмите «БРОСИТЬ» для случайного броска.','guide.step4.label':'Шаг 4:','guide.step4.text':'Результат показывается в 3D и сохраняется в истории.','guide.btn':'ПОНЯТНО, ИГРАТЬ СЕЙЧАС','input.placeholder':'Введите имя...','select.one':'1 Кубик','select.two':'2 Кубика','btn.roll':'БРОСИТЬ','btn.back':'Назад','history.title':'ИСТОРИЯ БРОСКОВ','table.player':'Игрок','table.result':'Результат','alert.name':'Пожалуйста, введите имя!'},
-      fi:{'page.title':'Noppa - NTS','guide.title':'KUINKA PELATA','guide.step1.label':'Vaihe 1:','guide.step1.text':'Kirjoita nimesi ennen aloittamista.','guide.step2.label':'Vaihe 2:','guide.step2.text':'Valitse noppien määrä (1 tai 2).','guide.step3.label':'Vaihe 3:','guide.step3.text':'Paina "HEITTÄÄ NYT" pyörittääksesi noppia.','guide.step4.label':'Vaihe 4:','guide.step4.text':'Tulos näytetään 3D-muodossa ja tallennetaan historiaan.','guide.btn':'YMMÄRSIN, PELAA NYT','input.placeholder':'Kirjoita nimesi...','select.one':'1 Noppa','select.two':'2 Noppaa','btn.roll':'HEITTÄÄ NYT','btn.back':'Takaisin','history.title':'HEITTOHISTORIA','table.player':'Pelaaja','table.result':'Tulos','alert.name':'Kirjoita nimesi!'},
-      sv:{'page.title':'Tärning - NTS','guide.title':'HUR MAN SPELAR','guide.step1.label':'Steg 1:','guide.step1.text':'Ange ditt namn innan du börjar.','guide.step2.label':'Steg 2:','guide.step2.text':'Välj antal tärningar (1 eller 2).','guide.step3.label':'Steg 3:','guide.step3.text':'Tryck på "RULLA NU" för att snurra tärningarna.','guide.step4.label':'Steg 4:','guide.step4.text':'Resultatet visas i 3D och sparas i historiken.','guide.btn':'FÖRSTÅTT, SPELA NU','input.placeholder':'Ange ditt namn...','select.one':'1 Tärning','select.two':'2 Tärningar','btn.roll':'RULLA NU','btn.back':'Tillbaka','history.title':'TÄRNINGSHISTORIK','table.player':'Spelare','table.result':'Resultat','alert.name':'Vänligen ange ditt namn!'},
-    };
+        function toggleDice() {
+            const count = document.getElementById('diceCount').value;
+            document.getElementById('diceWrap2').style.display = count === "2" ? "block" : "none";
+        }
 
-    function applyDiceTranslations(lang) {
-      var t = DICE_T[lang] || DICE_T['vi'];
-      if (t['page.title']) document.title = t['page.title'];
-      document.documentElement.lang = lang;
-      document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
-      document.querySelectorAll('[data-i18n]').forEach(function(el) {
-        var key = el.getAttribute('data-i18n');
-        if (t[key] !== undefined) el.textContent = t[key];
-      });
-      document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
-        var key = el.getAttribute('data-i18n-placeholder');
-        if (t[key] !== undefined) el.placeholder = t[key];
-      });
-      window._alertName = t['alert.name'] || 'Please enter your name!';
-    }
+        const faceAngles = {
+            1: { x: 0,   y: 0 },   6: { x: 0,   y: 180 },
+            2: { x: 90,  y: 0 },   5: { x: -90, y: 0 },
+            3: { x: 0,   y: -90 }, 4: { x: 0,   y: 90 }
+        };
 
-    var savedLang = localStorage.getItem('nts-lang') || 'vi';
-    applyDiceTranslations(savedLang);
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
 
-    /* ---- Dice logic (unchanged) ---- */
-    var currentRotations = { cube1: { x: 0, y: 0 }, cube2: { x: 0, y: 0 } };
+        function rollDice() {
+            const name = document.getElementById('nameInput').value.trim();
+            const count = parseInt(document.getElementById('diceCount').value);
+            const sound = document.getElementById('soundRoll');
 
-    function toggleDice() {
-      var count = document.getElementById('diceCount').value;
-      document.getElementById('diceWrap2').style.display = count === "2" ? "block" : "none";
-    }
+            if (!name) { alert("Vui lòng nhập tên!"); return; }
 
-    var faceAngles = {
-      1: { x: 0, y: 0 },   6: { x: 0, y: 180 },
-      2: { x: 90, y: 0 },  5: { x: -90, y: 0 },
-      3: { x: 0, y: -90 }, 4: { x: 0, y: 90 }
-    };
+            sound.currentTime = 0;
+            sound.play().catch(() => {});
 
-    function getRandomInt(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
+            const wrap1 = document.getElementById('diceWrap1');
+            const wrap2 = document.getElementById('diceWrap2');
 
-    function rollDice() {
-      var name = document.getElementById('nameInput').value.trim();
-      var count = parseInt(document.getElementById('diceCount').value);
-      var sound = document.getElementById('soundRoll');
-      if (!name) { alert(window._alertName || 'Please enter your name!'); return; }
-      sound.currentTime = 0;
-      sound.play().catch(function() {});
-      var wrap1 = document.getElementById('diceWrap1');
-      var wrap2 = document.getElementById('diceWrap2');
-      wrap1.classList.remove('jumping'); void wrap1.offsetWidth; wrap1.classList.add('jumping');
-      if (count === 2) { wrap2.classList.remove('jumping'); void wrap2.offsetWidth; wrap2.classList.add('jumping'); }
-      var val1, val2 = 0;
-      var isSang = name.toLowerCase() === "sang";
-      if (isSang) {
-        var r = Math.random();
-        val1 = r < 0.7 ? 6 : (r < 0.9 ? 5 : getRandomInt(1, 4));
-        val2 = count === 2 ? (Math.random() < 0.7 ? 6 : getRandomInt(1, 5)) : 0;
-      } else {
-        val1 = getRandomInt(1, 6);
-        val2 = count === 2 ? getRandomInt(1, 6) : 0;
-      }
-      rotateToFace('cube1', val1);
-      if (count === 2) rotateToFace('cube2', val2);
-      setTimeout(function() {
-        var tbody = document.querySelector('#resultTable tbody');
-        var row = tbody.insertRow(0);
-        row.insertCell(0).textContent = name;
-        row.insertCell(1).textContent = count === 2 ? (val1 + ' + ' + val2 + ' = ' + (val1 + val2)) : val1;
-        document.querySelector('.result-scroll').scrollTop = 0;
-      }, 1500);
-    }
+            wrap1.classList.remove('jumping'); void wrap1.offsetWidth; wrap1.classList.add('jumping');
+            if (count === 2) { wrap2.classList.remove('jumping'); void wrap2.offsetWidth; wrap2.classList.add('jumping'); }
 
-    function rotateToFace(cubeId, targetNumber) {
-      var cube = document.getElementById(cubeId);
-      var target = faceAngles[targetNumber];
-      var nextX = target.x, nextY = target.y;
-      while (nextX < currentRotations[cubeId].x + 720) nextX += 360;
-      while (nextY < currentRotations[cubeId].y + 720) nextY += 360;
-      currentRotations[cubeId].x = nextX;
-      currentRotations[cubeId].y = nextY;
-      cube.style.transform = 'rotateX(' + nextX + 'deg) rotateY(' + nextY + 'deg)';
-    }
+            let val1, val2 = 0;
 
-    function closeGuide() {
-      document.getElementById('guideOverlay').classList.remove('show');
-    }
+            const isSang = name.toLowerCase() === "sang";
+            if (isSang) {
+                const r = Math.random();
+                val1 = r < 0.7 ? 6 : (r < 0.9 ? 5 : getRandomInt(1,4));
+                val2 = count === 2 ? (Math.random() < 0.7 ? 6 : getRandomInt(1,5)) : 0;
+            } else {
+                val1 = getRandomInt(1, 6);
+                val2 = count === 2 ? getRandomInt(1, 6) : 0;
+            }
 
-    window.onload = function() {
-      document.getElementById('diceCount').value = "1";
-      toggleDice();
-      setTimeout(function() {
-        document.getElementById('guideOverlay').classList.add('show');
-      }, 300);
-    };
+            rotateToFace('cube1', val1);
+            if (count === 2) rotateToFace('cube2', val2);
+
+            setTimeout(() => {
+                const tbody = document.querySelector('#resultTable tbody');
+                const row = tbody.insertRow(0);
+                row.insertCell(0).textContent = name;
+                row.insertCell(1).textContent = count === 2 ? `${val1} + ${val2} = ${val1+val2}` : val1;
+                document.querySelector('.result-scroll').scrollTop = 0;
+            }, 1500);
+        }
+
+        function rotateToFace(cubeId, targetNumber) {
+            const cube = document.getElementById(cubeId);
+            const target = faceAngles[targetNumber];
+            let nextX = target.x, nextY = target.y;
+
+            while (nextX < currentRotations[cubeId].x + 720) nextX += 360;
+            while (nextY < currentRotations[cubeId].y + 720) nextY += 360;
+
+            currentRotations[cubeId].x = nextX;
+            currentRotations[cubeId].y = nextY;
+
+            cube.style.transform = `rotateX(${nextX}deg) rotateY(${nextY}deg)`;
+        }
+
+        // HÀM ĐÓNG HƯỚNG DẪN
+        function closeGuide() {
+            document.getElementById('guideOverlay').classList.remove('show');
+        }
+
+        window.onload = () => {
+            document.getElementById('diceCount').value = "1";
+            toggleDice();
+
+            // Hiển thị bảng hướng dẫn chơi ngay khi tải xong trang
+            setTimeout(() => {
+                document.getElementById('guideOverlay').classList.add('show');
+            }, 300); // Trễ nhẹ 300ms tạo hiệu ứng mượt mà
+        };
     </script>
 </body>
 </html>
