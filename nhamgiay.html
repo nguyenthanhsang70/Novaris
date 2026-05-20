@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stopwatch Challenge -NtS</title>
+    <title>Nhẩm Giây - NtS</title>
     <link rel="icon" type="image/png" href="logos3.png">
     <style>
         * {
@@ -77,7 +77,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.75);
-            display: none;
+            display: none; /* Điều khiển hiển thị bằng JS */
             justify-content: center;
             align-items: center;
             z-index: 1000;
@@ -171,22 +171,33 @@
         .title {
             font-size: 2.5rem;
             font-weight: 800;
-            margin-bottom: 24px;
+            margin-bottom: 12px;
             background: linear-gradient(45deg, #ffd32a, #ff7f50);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
-        .level-info {
-            display: flex;
-            justify-content: space-between;
+        .status-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 16px;
+            border-radius: 20px;
             font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffd32a;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+        .target-hint {
+            font-size: 1.3rem;
+            color: #ffffff;
+            font-weight: 600;
             margin-bottom: 24px;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.15);
+            padding: 10px;
             border-radius: 12px;
-            font-weight: 500;
         }
         .timer-display {
             font-size: 3.5rem;
@@ -244,6 +255,10 @@
         .reset-btn {
             background: linear-gradient(45deg, #a4b0be, #747d8c);
         }
+        .next-btn {
+            background: linear-gradient(45deg, #ff9f43, #ff5252);
+            animation: pulse 1.2s infinite;
+        }
         .result {
             margin: 24px 0;
             padding: 12px;
@@ -254,6 +269,7 @@
             align-items: center;
             justify-content: center;
             font-weight: 500;
+            line-height: 1.4;
         }
         .result.perfect {
             background: linear-gradient(45deg, #2ed573, #1e90ff);
@@ -269,20 +285,6 @@
             50% { transform: scale(1.06); }
             100% { transform: scale(1); }
         }
-        .progress {
-            margin: 24px 0;
-        }
-        .progress-bar {
-            background: rgba(255, 255, 255, 0.15);
-            height: 12px;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(45deg, #2ed573, #1e90ff);
-            transition: width 0.4s ease;
-        }
         .confetti {
             position: fixed;
             top: -10px;
@@ -296,6 +298,19 @@
                 transform: translateY(100vh) rotate(720deg);
             }
         }
+        .reset-progress-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.8rem;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: color 0.3s;
+        }
+        .reset-progress-btn:hover {
+            color: #ff4757;
+        }
     </style>
 </head>
 <body>
@@ -305,23 +320,23 @@
             <div class="info-icon" onclick="showInstructions()" title="Hướng dẫn chơi">i</div>
         </div>
         <h1 class="title">Nhẩm Giây</h1>
-        <div class="level-info">
-            <div>Level: <span id="level">1</span>/20</div>
-            <div>Mục tiêu: <span id="target">10.00</span>s</div>
-        </div>
-        <div class="progress">
-            <div class="progress-bar">
-                <div class="progress-fill" id="progress" style="width: 5%"></div>
-            </div>
-        </div>
+        
+        <div class="status-badge" id="levelDisplay">LEVEL 1</div>
+        <div id="targetHint" class="target-hint">🎯 Mục tiêu: 10 giây</div>
+
         <div class="timer-display" id="timer">00:00</div>
         <div class="result" id="result"></div>
         <div class="controls">
             <button class="control-btn start-btn" id="startBtn" onclick="startGame()">Bắt đầu</button>
             <button class="control-btn stop-btn" id="stopBtn" onclick="stopTimer()" disabled>Dừng!</button>
-            <button class="control-btn reset-btn" id="resetBtn" onclick="resetGame()">Chơi lại</button>
+            <button class="control-btn next-btn" id="nextBtn" onclick="nextLevel()" style="display: none;">Tiếp theo →</button>
+            <button class="control-btn reset-btn" id="resetBtn" onclick="resetGame()">Thử lại</button>
         </div>
+
+        <button class="reset-progress-btn" onclick="resetAllProgress()">Xóa lịch sử chơi (Về Lvl 1)</button>
     </div>
+
+    <!-- Hộp thoại hướng dẫn (Modal) -->
     <div class="modal-overlay" id="modalOverlay" onclick="hideInstructions()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
@@ -330,63 +345,61 @@
             </div>
             <div class="instructions">
                 <div class="instruction-item">
-                    <div class="instruction-title">🎯 Mục tiêu</div>
-                    <div>Hoàn thành 20 level bằng cách đoán chính xác thời gian mục tiêu (sai số ≤ 0.3 giây)</div>
+                    <div class="instruction-title">🎯 Tiến trình thử thách</div>
+                    <div>Bạn cần **vượt qua từng cấp một**, bắt đầu từ Level 1. Khi chiến thắng, nút "Tiếp theo" sẽ mở ra đưa bạn lên Level mới cao hơn.</div>
                 </div>
                 <div class="instruction-item">
-                    <div class="instruction-title">🎮 Cách chơi</div>
+                    <div class="instruction-title">📐 Cách tính thời gian thắng/thua</div>
                     <div>
-                        1. Nhấn "Bắt đầu" để bắt đầu đếm ngược 3-2-1<br>
-                        2. Đồng hồ sẽ chạy từ 00:00 đến 00:03, sau đó hiển thị "❓" - lúc này hãy đếm thời gian trong đầu<br>
-                        3. Khi bạn nghĩ đã đủ thời gian mục tiêu, nhấn "Dừng!"<br>
-                        4. Nếu sai số ≤ 0.3s → THẮNG và chuyển level tiếp theo<br>
-                        5. Nếu sai số > 0.3s → THUA và phải chơi lại level hiện tại
+                        • <strong>Level 1</strong>: Mục tiêu là 10 giây.<br>
+                        • Bạn cần bấm dừng chính xác trong khoảng từ <strong>10.00s đến 10.99s</strong>.<br>
+                        • Nếu bấm sang giây thứ 11 (ví dụ: 11.00s) hoặc chưa tới 10s sẽ tính là <strong>THẤT BẠI</strong>.
                     </div>
                 </div>
                 <div class="instruction-item">
-                    <div class="instruction-title">📈 Level & Thời gian</div>
+                    <div class="instruction-title">🎮 Các bước chơi</div>
                     <div>
-                        • Level 1: 10.00s<br>
-                        • Level 2: 20.00s<br>
-                        • Level 3: 30.00s<br>
-                        • ... (tăng 10s mỗi level)<br>
-                        • Level 20: 200.00s
+                        1. Nhấn "Bắt đầu" để chạy đếm ngược 3-2-1.<br>
+                        2. Đồng hồ chạy công khai 3 giây đầu, sau đó ẩn đi bằng dấu "❓".<br>
+                        3. Bắt đầu tự nhẩm thời gian theo mục tiêu của Level.<br>
+                        4. Khi cảm thấy vừa đủ, nhấn nhanh nút "Dừng!".
                     </div>
                 </div>
                 <div class="instruction-item keyboard-shortcuts">
-                    <div class="instruction-title">⌨️ Phím tắt</div>
+                    <div class="instruction-title">⌨️ Phím tắt nhanh</div>
                     <div>
-                        • <strong>Space</strong>: Bắt đầu game hoặc Dừng timer<br>
-                        • <strong>R</strong>: Reset game về level 1
-                    </div>
-                </div>
-                <div class="instruction-item">
-                    <div class="instruction-title">💡 Mẹo chơi</div>
-                    <div>
-                        • Tập trung và đếm đều đặn trong đầu<br>
-                        • Có thể đếm "1 - 10 " để chính xác hơn<br>
-                        • Luyện tập với những level dễ trước khi thử thách bản thân
+                        • <strong>Space (Dấu cách)</strong>: Bắt đầu game hoặc Dừng timer<br>
+                        • <strong>Enter</strong>: Chuyển sang Level tiếp theo (khi thắng)<br>
+                        • <strong>R</strong>: Chơi lại lượt hiện tại
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
     <script>
-        let currentLevel = 1;
-        let targetTime = 10.0; // Mục tiêu là 10 giây
+        let currentLevel = parseInt(localStorage.getItem('nts_stopwatch_level')) || 1;
+        let targetTime = currentLevel + 9; 
+
         let gameTimer = null;
         let countdownTimer = null;
         let startTime = 0;
         let gameState = 'ready';
+
         const timerDisplay = document.getElementById('timer');
         const startBtn = document.getElementById('startBtn');
         const stopBtn = document.getElementById('stopBtn');
         const resetBtn = document.getElementById('resetBtn');
+        const nextBtn = document.getElementById('nextBtn');
         const resultDiv = document.getElementById('result');
-        const levelSpan = document.getElementById('level');
-        const targetSpan = document.getElementById('target');
-        const progressBar = document.getElementById('progress');
+        const levelDisplay = document.getElementById('levelDisplay');
+        const targetHint = document.getElementById('targetHint');
         const modalOverlay = document.getElementById('modalOverlay');
+
+        function updateUIState() {
+            levelDisplay.textContent = `LEVEL ${currentLevel}`;
+            targetHint.textContent = `🎯 Mục tiêu: ${targetTime} giây`;
+        }
 
         function showInstructions() {
             modalOverlay.style.display = 'flex';
@@ -406,22 +419,20 @@
             return num.toString().padStart(2, '0');
         }
 
-        function updateDisplay() {
-            levelSpan.textContent = currentLevel;
-            targetSpan.textContent = targetTime.toFixed(2);
-            progressBar.style.width = (currentLevel / 20 * 100) + '%';
-        }
-
         function startGame() {
             if (gameState !== 'ready') return;
             gameState = 'countdown';
             startBtn.disabled = true;
             stopBtn.disabled = true;
+            nextBtn.style.display = 'none'; 
+            resetBtn.disabled = true;
             resultDiv.textContent = '';
             resultDiv.className = 'result';
+            
             let countdown = 3;
             timerDisplay.textContent = countdown;
             timerDisplay.className = 'timer-display countdown';
+            
             countdownTimer = setInterval(() => {
                 countdown--;
                 if (countdown > 0) {
@@ -438,6 +449,7 @@
             startTime = Date.now();
             stopBtn.disabled = false;
             timerDisplay.className = 'timer-display running';
+            
             gameTimer = setInterval(() => {
                 const elapsed = (Date.now() - startTime) / 1000;
                 if (elapsed < 3.0) {
@@ -446,88 +458,93 @@
                     timerDisplay.textContent = '❓';
                     timerDisplay.style.fontSize = '6rem';
                 }
-            }, 10); // Cập nhật mỗi 10ms để hiển thị mili giây mượt mà
+            }, 10); 
         }
 
         function stopTimer() {
             if (gameState !== 'running') return;
             gameState = 'stopped';
             clearInterval(gameTimer);
+            
             const finalTime = (Date.now() - startTime) / 1000;
-            const difference = Math.abs(finalTime - targetTime);
             timerDisplay.className = 'timer-display stopped';
             timerDisplay.textContent = formatTime(finalTime);
             timerDisplay.style.fontSize = '3.5rem';
             stopBtn.disabled = true;
-            showResult(finalTime, difference);
+            resetBtn.disabled = false;
+            
+            showResult(finalTime);
         }
 
-        function showResult(finalTime, difference) {
+        function showResult(finalTime) {
             let message = '';
             let className = 'result';
-            if (difference <= 0.3) {
-                message = `🎉 THẮNG! Thời gian: ${formatTime(finalTime)} - Chênh lệch: ${difference.toFixed(3)}s`;
+            
+            const minWinTime = targetTime;
+            const maxWinTime = targetTime + 0.999;
+
+            if (finalTime >= minWinTime && finalTime <= maxWinTime) {
+                message = `🎉 XUẤT SẮC VƯỢT LEVEL ${currentLevel}!<br>Thời gian bấm: ${formatTime(finalTime)}`;
                 className += ' perfect';
-                nextLevel();
                 createConfetti();
-            } else {
-                message = `😅 THUA! Thời gian: ${formatTime(finalTime)} - Chênh lệch: ${difference.toFixed(3)}s`;
-                className += ' miss';
-            }
-            resultDiv.textContent = message;
-            resultDiv.className = className;
-            setTimeout(() => {
-                if (currentLevel <= 20) {
-                    resetForNextRound();
+                
+                if (currentLevel < 51) {
+                    gameState = 'win_waiting';
+                    nextBtn.textContent = `Tiếp theo (Level ${currentLevel + 1}) →`;
+                    nextBtn.style.display = 'inline-block';
+                } else {
+                    message = `🏆 CHÚC MỪNG BẠN ĐÃ PHÁ ĐẢO TOÀN BỘ GAME (LEVEL 51 - 60s)!`;
                 }
-            }, 3000);
+            } else {
+                message = `😅 THẤT BẠI RỒI!<br>Kết quả: ${formatTime(finalTime)} (Yêu cầu: ${targetTime}.00s đến ${targetTime}.99s)`;
+                className += ' miss';
+                gameState = 'ready'; 
+                startBtn.disabled = false;
+            }
+            
+            resultDiv.innerHTML = message;
+            resultDiv.className = className;
         }
 
         function nextLevel() {
-            if (currentLevel < 20) {
-                currentLevel++;
-                targetTime += 10; // Tăng 10 giây mỗi level (10s, 20s, 30s, ...)
-                updateDisplay();
-            } else {
-                showGameComplete();
-            }
-        }
-
-        function showGameComplete() {
-            timerDisplay.textContent = '🏆 HOÀN THÀNH!';
-            resultDiv.textContent = 'Chúc mừng! Bạn đã hoàn thành tất cả 20 level!';
-            resultDiv.className = 'result perfect';
-            createConfetti();
-            setTimeout(() => {
-                if (confirm('Chơi lại từ đầu?')) {
-                    resetGame();
-                }
-            }, 3000);
+            if (gameState !== 'win_waiting') return;
+            currentLevel++;
+            targetTime = currentLevel + 9;
+            
+            localStorage.setItem('nts_stopwatch_level', currentLevel);
+            
+            nextBtn.style.display = 'none';
+            updateUIState();
+            resetForNextRound();
         }
 
         function resetForNextRound() {
             gameState = 'ready';
             startBtn.disabled = false;
             stopBtn.disabled = true;
-            timerDisplay.textContent = '00:00';
-            timerDisplay.className = 'timer-display';
-            timerDisplay.style.fontSize = '3.5rem';
-        }
-
-        function resetGame() {
-            clearInterval(gameTimer);
-            clearInterval(countdownTimer);
-            currentLevel = 1;
-            targetTime = 10.0;
-            gameState = 'ready';
-            startBtn.disabled = false;
-            stopBtn.disabled = true;
+            resetBtn.disabled = false;
             timerDisplay.textContent = '00:00';
             timerDisplay.className = 'timer-display';
             timerDisplay.style.fontSize = '3.5rem';
             resultDiv.textContent = '';
             resultDiv.className = 'result';
-            updateDisplay();
+        }
+
+        function resetGame() {
+            clearInterval(gameTimer);
+            clearInterval(countdownTimer);
+            nextBtn.style.display = 'none';
+            resetForNextRound();
+        }
+
+        function resetAllProgress() {
+            if(confirm("Bạn có chắc chắn muốn xóa lịch sử chơi và quay trở về chơi lại từ Level 1 không?")) {
+                localStorage.removeItem('nts_stopwatch_level');
+                currentLevel = 1;
+                targetTime = 10;
+                resetGame();
+                updateUIState();
+            }
         }
 
         function createConfetti() {
@@ -547,9 +564,27 @@
             }
         }
 
-        updateDisplay();
+        // ==========================================
+        // KHỞI CHẠY CHÍNH KHI TẢI TRANG
+        // ==========================================
+        updateUIState();
+        
+        // Kích hoạt hiển thị hướng dẫn tự động khi vừa vào trang
+        showInstructions(); 
 
         document.addEventListener('keydown', (e) => {
+            // Ngăn không cho Space hoạt động khi bảng modal hướng dẫn đang mở
+            if (modalOverlay.style.display === 'flex') {
+                if (e.code === 'Space' || e.code === 'Enter') {
+                    e.preventDefault();
+                    hideInstructions(); // Nhấn Phím Space/Enter cũng tự đóng bảng HD
+                }
+                if (e.code === 'Escape') {
+                    hideInstructions();
+                }
+                return;
+            }
+
             if (e.code === 'Space') {
                 e.preventDefault();
                 if (gameState === 'ready') {
@@ -557,10 +592,12 @@
                 } else if (gameState === 'running') {
                     stopTimer();
                 }
+            } else if (e.code === 'Enter') {
+                if (gameState === 'win_waiting') {
+                    nextLevel();
+                }
             } else if (e.code === 'KeyR') {
                 resetGame();
-            } else if (e.code === 'Escape') {
-                hideInstructions();
             }
         });
     </script>
