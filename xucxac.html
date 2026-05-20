@@ -75,6 +75,7 @@
             box-shadow: 0 0 0 var(--primary-dark);
         }
 
+        /* DÃY NÚT CHÍNH: LẮC NGAY + QUAY LẠI CÙNG HÀNG */
         .button-row {
             display: flex;
             justify-content: center;
@@ -108,9 +109,15 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.4);
         }
 
-        .back-btn-inline i { transition: transform 0.3s; }
-        .back-btn-inline:hover i { transform: translateX(-5px); }
+        .back-btn-inline i {
+            transition: transform 0.3s;
+        }
 
+        .back-btn-inline:hover i {
+            transform: translateX(-5px);
+        }
+
+        /* Ẩn nút back cũ (nếu còn) */
         .back-btn { display: none !important; }
 
         /* Xúc xắc 3D */
@@ -264,6 +271,7 @@
             font-size: 1.1em;
         }
 
+        /* Responsive */
         @media (max-width: 600px) {
             :root { --dice-size: 78px; }
             .dice-platform { gap: 50px; }
@@ -281,22 +289,22 @@
 <body>
 
     <div class="container">
-        <h2 data-i18n="page.title">XÚC XẮC</h2>
-
+        <h2>XÚC XẮC <span style="color:#e74c3c"></span></h2>
+       
         <div class="controls">
             <div class="input-row">
-                <input type="text" id="nameInput" data-i18n-placeholder="input.placeholder" placeholder="Nhập tên của bạn...">
+                <input type="text" id="nameInput" placeholder="Nhập tên của bạn...">
                 <select id="diceCount" onchange="toggleDice()">
-                    <option value="1" selected data-i18n="select.one">1 Viên</option>
-                    <option value="2" data-i18n="select.two">2 Viên</option>
+                    <option value="1" selected>1 Viên</option>
+                    <option value="2">2 Viên</option>
                 </select>
             </div>
 
+            <!-- NÚT LẮC NGAY + QUAY LẠI CÙNG HÀNG -->
             <div class="button-row">
-                <button onclick="rollDice()" data-i18n="btn.roll">LẮC NGAY</button>
+                <button onclick="rollDice()">LẮC NGAY</button>
                 <a href="game.html" class="back-btn-inline">
-                    <i class="fas fa-arrow-left"></i>
-                    <span data-i18n="btn.back">Quay lại</span>
+                    <i class="fas fa-arrow-left"></i> Quay lại
                 </a>
             </div>
         </div>
@@ -327,15 +335,13 @@
             </div>
         </div>
 
+        <!-- Bảng lịch sử -->
         <div class="result-container">
-            <div class="result-header" data-i18n="history.title">LỊCH SỬ LẮC XÚC XẮC</div>
+            <div class="result-header">LỊCH SỬ LẮC XÚC XẮC</div>
             <div class="result-scroll">
                 <table class="result-table" id="resultTable">
                     <thead>
-                        <tr>
-                            <th data-i18n="table.player">Người chơi</th>
-                            <th data-i18n="table.result">Kết quả</th>
-                        </tr>
+                        <tr><th>Người chơi</th><th>Kết quả</th></tr>
                     </thead>
                     <tbody></tbody>
                 </table>
@@ -346,517 +352,81 @@
     <audio id="soundRoll" src="xucxaclan.mp3" preload="auto"></audio>
 
     <script>
-    /* ================================================================
-       TRANSLATIONS — đồng bộ key nts-lang với trang chủ
-       ================================================================ */
-    const DICE_TRANSLATIONS = {
-      vi: {
-        'page.title':       'XÚC XẮC',
-        'input.placeholder':'Nhập tên của bạn...',
-        'select.one':       '1 Viên',
-        'select.two':       '2 Viên',
-        'btn.roll':         'LẮC NGAY',
-        'btn.back':         'Quay lại',
-        'history.title':    'LỊCH SỬ LẮC XÚC XẮC',
-        'table.player':     'Người chơi',
-        'table.result':     'Kết quả',
-        'alert.name':       'Vui lòng nhập tên!',
-        'doc.title':        'Xúc Xắc - NTS',
-      },
-      en: {
-        'page.title':       'DICE ROLL',
-        'input.placeholder':'Enter your name...',
-        'select.one':       '1 Die',
-        'select.two':       '2 Dice',
-        'btn.roll':         'ROLL NOW',
-        'btn.back':         'Go Back',
-        'history.title':    'ROLL HISTORY',
-        'table.player':     'Player',
-        'table.result':     'Result',
-        'alert.name':       'Please enter your name!',
-        'doc.title':        'Dice Roll - NTS',
-      },
-      'en-US': {
-        'page.title':       'DICE ROLL',
-        'input.placeholder':'Enter your name...',
-        'select.one':       '1 Die',
-        'select.two':       '2 Dice',
-        'btn.roll':         'ROLL NOW',
-        'btn.back':         'Go Back',
-        'history.title':    'ROLL HISTORY',
-        'table.player':     'Player',
-        'table.result':     'Result',
-        'alert.name':       'Please enter your name!',
-        'doc.title':        'Dice Roll - NTS',
-      },
-      'en-NZ': {
-        'page.title':       'DICE ROLL',
-        'input.placeholder':'Enter your name...',
-        'select.one':       '1 Die',
-        'select.two':       '2 Dice',
-        'btn.roll':         'ROLL NOW',
-        'btn.back':         'Go Back',
-        'history.title':    'ROLL HISTORY',
-        'table.player':     'Player',
-        'table.result':     'Result',
-        'alert.name':       'Please enter your name!',
-        'doc.title':        'Dice Roll - NTS',
-      },
-      ja: {
-        'page.title':       'サイコロ',
-        'input.placeholder':'名前を入力してください...',
-        'select.one':       'サイコロ1個',
-        'select.two':       'サイコロ2個',
-        'btn.roll':         '今すぐ振る',
-        'btn.back':         '戻る',
-        'history.title':    'サイコロ履歴',
-        'table.player':     'プレイヤー',
-        'table.result':     '結果',
-        'alert.name':       '名前を入力してください！',
-        'doc.title':        'サイコロ - NTS',
-      },
-      ko: {
-        'page.title':       '주사위',
-        'input.placeholder':'이름을 입력하세요...',
-        'select.one':       '주사위 1개',
-        'select.two':       '주사위 2개',
-        'btn.roll':         '지금 굴리기',
-        'btn.back':         '뒤로',
-        'history.title':    '주사위 기록',
-        'table.player':     '플레이어',
-        'table.result':     '결과',
-        'alert.name':       '이름을 입력해주세요!',
-        'doc.title':        '주사위 - NTS',
-      },
-      kp: {
-        'page.title':       '주사위',
-        'input.placeholder':'이름을 입력하십시오...',
-        'select.one':       '주사위 1개',
-        'select.two':       '주사위 2개',
-        'btn.roll':         '지금 굴리기',
-        'btn.back':         '돌아가기',
-        'history.title':    '주사위 기록',
-        'table.player':     '선수',
-        'table.result':     '결과',
-        'alert.name':       '이름을 입력하십시오!',
-        'doc.title':        '주사위 - NTS',
-      },
-      zh: {
-        'page.title':       '掷骰子',
-        'input.placeholder':'请输入您的名字...',
-        'select.one':       '1颗骰子',
-        'select.two':       '2颗骰子',
-        'btn.roll':         '立即投掷',
-        'btn.back':         '返回',
-        'history.title':    '投掷记录',
-        'table.player':     '玩家',
-        'table.result':     '结果',
-        'alert.name':       '请输入您的名字！',
-        'doc.title':        '掷骰子 - NTS',
-      },
-      'zh-TW': {
-        'page.title':       '擲骰子',
-        'input.placeholder':'請輸入您的名字...',
-        'select.one':       '1顆骰子',
-        'select.two':       '2顆骰子',
-        'btn.roll':         '立即投擲',
-        'btn.back':         '返回',
-        'history.title':    '投擲記錄',
-        'table.player':     '玩家',
-        'table.result':     '結果',
-        'alert.name':       '請輸入您的名字！',
-        'doc.title':        '擲骰子 - NTS',
-      },
-      'zh-HK': {
-        'page.title':       '擲骰子',
-        'input.placeholder':'請輸入您嘅名字...',
-        'select.one':       '1粒骰子',
-        'select.two':       '2粒骰子',
-        'btn.roll':         '立即投擲',
-        'btn.back':         '返回',
-        'history.title':    '投擲記錄',
-        'table.player':     '玩家',
-        'table.result':     '結果',
-        'alert.name':       '請輸入您嘅名字！',
-        'doc.title':        '擲骰子 - NTS',
-      },
-      'zh-MO': {
-        'page.title':       '擲骰子',
-        'input.placeholder':'請輸入您嘅名字...',
-        'select.one':       '1粒骰子',
-        'select.two':       '2粒骰子',
-        'btn.roll':         '立即投擲',
-        'btn.back':         '返回',
-        'history.title':    '投擲記錄',
-        'table.player':     '玩家',
-        'table.result':     '結果',
-        'alert.name':       '請輸入您嘅名字！',
-        'doc.title':        '擲骰子 - NTS',
-      },
-      th: {
-        'page.title':       'ทอยลูกเต๋า',
-        'input.placeholder':'ป้อนชื่อของคุณ...',
-        'select.one':       '1 ลูก',
-        'select.two':       '2 ลูก',
-        'btn.roll':         'ทอยเลย',
-        'btn.back':         'ย้อนกลับ',
-        'history.title':    'ประวัติการทอย',
-        'table.player':     'ผู้เล่น',
-        'table.result':     'ผลลัพธ์',
-        'alert.name':       'กรุณาป้อนชื่อ!',
-        'doc.title':        'ทอยลูกเต๋า - NTS',
-      },
-      km: {
-        'page.title':       'ឡូតូ',
-        'input.placeholder':'បញ្ចូលឈ្មោះរបស់អ្នក...',
-        'select.one':       '1 គ្រាប់',
-        'select.two':       '2 គ្រាប់',
-        'btn.roll':         'ទម្លាក់ឥឡូវ',
-        'btn.back':         'ត្រឡប់',
-        'history.title':    'ប្រវត្តិការទម្លាក់',
-        'table.player':     'អ្នកលេង',
-        'table.result':     'លទ្ធផល',
-        'alert.name':       'សូមបញ្ចូលឈ្មោះ!',
-        'doc.title':        'ឡូតូ - NTS',
-      },
-      lo: {
-        'page.title':       'ທອດລູກເຕົ໋າ',
-        'input.placeholder':'ປ້ອນຊື່ຂອງທ່ານ...',
-        'select.one':       '1 ລູກ',
-        'select.two':       '2 ລູກ',
-        'btn.roll':         'ທອດດຽວນີ້',
-        'btn.back':         'ກັບຄືນ',
-        'history.title':    'ປະຫວັດການທອດ',
-        'table.player':     'ຜູ້ຫລິ້ນ',
-        'table.result':     'ຜົນ',
-        'alert.name':       'ກະລຸນາປ້ອນຊື່!',
-        'doc.title':        'ທອດລູກເຕົ໋າ - NTS',
-      },
-      id: {
-        'page.title':       'DADU',
-        'input.placeholder':'Masukkan namamu...',
-        'select.one':       '1 Dadu',
-        'select.two':       '2 Dadu',
-        'btn.roll':         'LEMPAR SEKARANG',
-        'btn.back':         'Kembali',
-        'history.title':    'RIWAYAT LEMPARAN',
-        'table.player':     'Pemain',
-        'table.result':     'Hasil',
-        'alert.name':       'Masukkan namamu dulu!',
-        'doc.title':        'Dadu - NTS',
-      },
-      ms: {
-        'page.title':       'DADU',
-        'input.placeholder':'Masukkan nama anda...',
-        'select.one':       '1 Dadu',
-        'select.two':       '2 Dadu',
-        'btn.roll':         'GULING SEKARANG',
-        'btn.back':         'Kembali',
-        'history.title':    'SEJARAH LEMPARAN',
-        'table.player':     'Pemain',
-        'table.result':     'Keputusan',
-        'alert.name':       'Sila masukkan nama anda!',
-        'doc.title':        'Dadu - NTS',
-      },
-      hi: {
-        'page.title':       'पासा',
-        'input.placeholder':'अपना नाम दर्ज करें...',
-        'select.one':       '1 पासा',
-        'select.two':       '2 पासे',
-        'btn.roll':         'अभी फेंकें',
-        'btn.back':         'वापस',
-        'history.title':    'फेंकने का इतिहास',
-        'table.player':     'खिलाड़ी',
-        'table.result':     'परिणाम',
-        'alert.name':       'कृपया अपना नाम दर्ज करें!',
-        'doc.title':        'पासा - NTS',
-      },
-      ar: {
-        'page.title':       'النرد',
-        'input.placeholder':'أدخل اسمك...',
-        'select.one':       'نرد 1',
-        'select.two':       'نرد 2',
-        'btn.roll':         'ارمِ الآن',
-        'btn.back':         'رجوع',
-        'history.title':    'سجل الرمي',
-        'table.player':     'اللاعب',
-        'table.result':     'النتيجة',
-        'alert.name':       'من فضلك أدخل اسمك!',
-        'doc.title':        'النرد - NTS',
-      },
-      tr: {
-        'page.title':       'ZAR AT',
-        'input.placeholder':'Adınızı girin...',
-        'select.one':       '1 Zar',
-        'select.two':       '2 Zar',
-        'btn.roll':         'ŞİMDİ AT',
-        'btn.back':         'Geri Dön',
-        'history.title':    'ATMA GEÇMİŞİ',
-        'table.player':     'Oyuncu',
-        'table.result':     'Sonuç',
-        'alert.name':       'Lütfen adınızı girin!',
-        'doc.title':        'Zar At - NTS',
-      },
-      de: {
-        'page.title':       'WÜRFELN',
-        'input.placeholder':'Namen eingeben...',
-        'select.one':       '1 Würfel',
-        'select.two':       '2 Würfel',
-        'btn.roll':         'JETZT WÜRFELN',
-        'btn.back':         'Zurück',
-        'history.title':    'WÜRFELVERLAUF',
-        'table.player':     'Spieler',
-        'table.result':     'Ergebnis',
-        'alert.name':       'Bitte Namen eingeben!',
-        'doc.title':        'Würfeln - NTS',
-      },
-      'de-CH': {
-        'page.title':       'WÜRFELN',
-        'input.placeholder':'Namen eingeben...',
-        'select.one':       '1 Würfel',
-        'select.two':       '2 Würfel',
-        'btn.roll':         'JETZT WÜRFELN',
-        'btn.back':         'Zurück',
-        'history.title':    'WÜRFELVERLAUF',
-        'table.player':     'Spieler',
-        'table.result':     'Ergebnis',
-        'alert.name':       'Bitte Namen eingeben!',
-        'doc.title':        'Würfeln - NTS',
-      },
-      fr: {
-        'page.title':       'DÉ À JOUER',
-        'input.placeholder':'Entrez votre nom...',
-        'select.one':       '1 Dé',
-        'select.two':       '2 Dés',
-        'btn.roll':         'LANCER',
-        'btn.back':         'Retour',
-        'history.title':    'HISTORIQUE',
-        'table.player':     'Joueur',
-        'table.result':     'Résultat',
-        'alert.name':       'Veuillez entrer votre nom !',
-        'doc.title':        'Dé - NTS',
-      },
-      it: {
-        'page.title':       'DADO',
-        'input.placeholder':'Inserisci il tuo nome...',
-        'select.one':       '1 Dado',
-        'select.two':       '2 Dadi',
-        'btn.roll':         'LANCIA ORA',
-        'btn.back':         'Indietro',
-        'history.title':    'STORICO LANCI',
-        'table.player':     'Giocatore',
-        'table.result':     'Risultato',
-        'alert.name':       'Inserisci il tuo nome!',
-        'doc.title':        'Dado - NTS',
-      },
-      es: {
-        'page.title':       'DADO',
-        'input.placeholder':'Ingresa tu nombre...',
-        'select.one':       '1 Dado',
-        'select.two':       '2 Dados',
-        'btn.roll':         'LANZAR',
-        'btn.back':         'Volver',
-        'history.title':    'HISTORIAL',
-        'table.player':     'Jugador',
-        'table.result':     'Resultado',
-        'alert.name':       '¡Por favor ingresa tu nombre!',
-        'doc.title':        'Dado - NTS',
-      },
-      'es-MX': {
-        'page.title':       'DADO',
-        'input.placeholder':'Ingresa tu nombre...',
-        'select.one':       '1 Dado',
-        'select.two':       '2 Dados',
-        'btn.roll':         'TIRAR',
-        'btn.back':         'Regresar',
-        'history.title':    'HISTORIAL',
-        'table.player':     'Jugador',
-        'table.result':     'Resultado',
-        'alert.name':       '¡Por favor ingresa tu nombre!',
-        'doc.title':        'Dado - NTS',
-      },
-      pt: {
-        'page.title':       'DADO',
-        'input.placeholder':'Insira seu nome...',
-        'select.one':       '1 Dado',
-        'select.two':       '2 Dados',
-        'btn.roll':         'LANÇAR',
-        'btn.back':         'Voltar',
-        'history.title':    'HISTÓRICO',
-        'table.player':     'Jogador',
-        'table.result':     'Resultado',
-        'alert.name':       'Por favor insira seu nome!',
-        'doc.title':        'Dado - NTS',
-      },
-      nl: {
-        'page.title':       'DOBBELEN',
-        'input.placeholder':'Voer je naam in...',
-        'select.one':       '1 Dobbelsteen',
-        'select.two':       '2 Dobbelstenen',
-        'btn.roll':         'NU GOOIEN',
-        'btn.back':         'Terug',
-        'history.title':    'GOOIGESCHIEDENIS',
-        'table.player':     'Speler',
-        'table.result':     'Resultaat',
-        'alert.name':       'Voer je naam in!',
-        'doc.title':        'Dobbelen - NTS',
-      },
-      ru: {
-        'page.title':       'КОСТИ',
-        'input.placeholder':'Введите ваше имя...',
-        'select.one':       '1 Кость',
-        'select.two':       '2 Кости',
-        'btn.roll':         'БРОСИТЬ',
-        'btn.back':         'Назад',
-        'history.title':    'ИСТОРИЯ БРОСКОВ',
-        'table.player':     'Игрок',
-        'table.result':     'Результат',
-        'alert.name':       'Пожалуйста, введите имя!',
-        'doc.title':        'Кости - NTS',
-      },
-      fi: {
-        'page.title':       'NOPPA',
-        'input.placeholder':'Syötä nimesi...',
-        'select.one':       '1 Noppa',
-        'select.two':       '2 Noppaa',
-        'btn.roll':         'HEITTÄÄ NYT',
-        'btn.back':         'Takaisin',
-        'history.title':    'HEITTOHISTORIA',
-        'table.player':     'Pelaaja',
-        'table.result':     'Tulos',
-        'alert.name':       'Syötä nimesi!',
-        'doc.title':        'Noppa - NTS',
-      },
-      sv: {
-        'page.title':       'TÄRNING',
-        'input.placeholder':'Ange ditt namn...',
-        'select.one':       '1 Tärning',
-        'select.two':       '2 Tärningar',
-        'btn.roll':         'KASTA NU',
-        'btn.back':         'Tillbaka',
-        'history.title':    'KASTHISTORIK',
-        'table.player':     'Spelare',
-        'table.result':     'Resultat',
-        'alert.name':       'Ange ditt namn!',
-        'doc.title':        'Tärning - NTS',
-      },
-    };
+        let currentRotations = { cube1: { x: 0, y: 0 }, cube2: { x: 0, y: 0 } };
 
-    /* ================================================================
-       APPLY TRANSLATIONS
-       ================================================================ */
-    (function applyI18n() {
-      var lang = localStorage.getItem('nts-lang') || 'vi';
-      var t = DICE_TRANSLATIONS[lang] || DICE_TRANSLATIONS['vi'];
-
-      /* RTL support */
-      document.documentElement.lang = lang;
-      document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
-
-      /* document title */
-      document.title = t['doc.title'];
-
-      /* Elements with data-i18n text */
-      document.querySelectorAll('[data-i18n]').forEach(function(el) {
-        var key = el.getAttribute('data-i18n');
-        if (t[key] !== undefined) el.textContent = t[key];
-      });
-
-      /* Placeholder attributes */
-      document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
-        var key = el.getAttribute('data-i18n-placeholder');
-        if (t[key] !== undefined) el.placeholder = t[key];
-      });
-
-      /* Select options — rebuild option text */
-      var sel = document.getElementById('diceCount');
-      if (sel) {
-        sel.options[0].textContent = t['select.one'];
-        sel.options[1].textContent = t['select.two'];
-      }
-
-      /* Expose alert text to rollDice */
-      window._nts_alert_name = t['alert.name'];
-    })();
-
-    /* ================================================================
-       DICE LOGIC
-       ================================================================ */
-    let currentRotations = { cube1: { x: 0, y: 0 }, cube2: { x: 0, y: 0 } };
-
-    function toggleDice() {
-        const count = document.getElementById('diceCount').value;
-        document.getElementById('diceWrap2').style.display = count === "2" ? "block" : "none";
-    }
-
-    const faceAngles = {
-        1: { x: 0,   y: 0 },   6: { x: 0,   y: 180 },
-        2: { x: 90,  y: 0 },   5: { x: -90, y: 0 },
-        3: { x: 0,   y: -90 }, 4: { x: 0,   y: 90 }
-    };
-
-    function getRandomInt(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    function rollDice() {
-        const name = document.getElementById('nameInput').value.trim();
-        const count = parseInt(document.getElementById('diceCount').value);
-        const sound = document.getElementById('soundRoll');
-
-        if (!name) { alert(window._nts_alert_name || 'Vui lòng nhập tên!'); return; }
-
-        sound.currentTime = 0;
-        sound.play().catch(() => {});
-
-        const wrap1 = document.getElementById('diceWrap1');
-        const wrap2 = document.getElementById('diceWrap2');
-
-        wrap1.classList.remove('jumping'); void wrap1.offsetWidth; wrap1.classList.add('jumping');
-        if (count === 2) { wrap2.classList.remove('jumping'); void wrap2.offsetWidth; wrap2.classList.add('jumping'); }
-
-        let val1, val2 = 0;
-
-        const isSang = name.toLowerCase() === "sang";
-        if (isSang) {
-            const r = Math.random();
-            val1 = r < 0.7 ? 6 : (r < 0.9 ? 5 : getRandomInt(1,4));
-            val2 = count === 2 ? (Math.random() < 0.7 ? 6 : getRandomInt(1,5)) : 0;
-        } else {
-            val1 = getRandomInt(1, 6);
-            val2 = count === 2 ? getRandomInt(1, 6) : 0;
+        function toggleDice() {
+            const count = document.getElementById('diceCount').value;
+            document.getElementById('diceWrap2').style.display = count === "2" ? "block" : "none";
         }
 
-        rotateToFace('cube1', val1);
-        if (count === 2) rotateToFace('cube2', val2);
+        const faceAngles = {
+            1: { x: 0,   y: 0 },   6: { x: 0,   y: 180 },
+            2: { x: 90,  y: 0 },   5: { x: -90, y: 0 },
+            3: { x: 0,   y: -90 }, 4: { x: 0,   y: 90 }
+        };
 
-        setTimeout(() => {
-            const tbody = document.querySelector('#resultTable tbody');
-            const row = tbody.insertRow(0);
-            row.insertCell(0).textContent = name;
-            row.insertCell(1).textContent = count === 2 ? `${val1} + ${val2} = ${val1+val2}` : val1;
-            document.querySelector('.result-scroll').scrollTop = 0;
-        }, 1500);
-    }
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
 
-    function rotateToFace(cubeId, targetNumber) {
-        const cube = document.getElementById(cubeId);
-        const target = faceAngles[targetNumber];
-        let nextX = target.x, nextY = target.y;
+        function rollDice() {
+            const name = document.getElementById('nameInput').value.trim();
+            const count = parseInt(document.getElementById('diceCount').value);
+            const sound = document.getElementById('soundRoll');
 
-        while (nextX < currentRotations[cubeId].x + 720) nextX += 360;
-        while (nextY < currentRotations[cubeId].y + 720) nextY += 360;
+            if (!name) { alert("Vui lòng nhập tên!"); return; }
 
-        currentRotations[cubeId].x = nextX;
-        currentRotations[cubeId].y = nextY;
+            sound.currentTime = 0;
+            sound.play().catch(() => {});
 
-        cube.style.transform = `rotateX(${nextX}deg) rotateY(${nextY}deg)`;
-    }
+            const wrap1 = document.getElementById('diceWrap1');
+            const wrap2 = document.getElementById('diceWrap2');
 
-    window.onload = () => {
-        document.getElementById('diceCount').value = "1";
-        toggleDice();
-    };
+            wrap1.classList.remove('jumping'); void wrap1.offsetWidth; wrap1.classList.add('jumping');
+            if (count === 2) { wrap2.classList.remove('jumping'); void wrap2.offsetWidth; wrap2.classList.add('jumping'); }
+
+            let val1, val2 = 0;
+
+            const isSang = name.toLowerCase() === "sang";
+            if (isSang) {
+                const r = Math.random();
+                val1 = r < 0.7 ? 6 : (r < 0.9 ? 5 : getRandomInt(1,4));
+                val2 = count === 2 ? (Math.random() < 0.7 ? 6 : getRandomInt(1,5)) : 0;
+            } else {
+                val1 = getRandomInt(1, 6);
+                val2 = count === 2 ? getRandomInt(1, 6) : 0;
+            }
+
+            rotateToFace('cube1', val1);
+            if (count === 2) rotateToFace('cube2', val2);
+
+            setTimeout(() => {
+                const tbody = document.querySelector('#resultTable tbody');
+                const row = tbody.insertRow(0);
+                row.insertCell(0).textContent = name;
+                row.insertCell(1).textContent = count === 2 ? `${val1} + ${val2} = ${val1+val2}` : val1;
+                document.querySelector('.result-scroll').scrollTop = 0;
+            }, 1500);
+        }
+
+        function rotateToFace(cubeId, targetNumber) {
+            const cube = document.getElementById(cubeId);
+            const target = faceAngles[targetNumber];
+            let nextX = target.x, nextY = target.y;
+
+            while (nextX < currentRotations[cubeId].x + 720) nextX += 360;
+            while (nextY < currentRotations[cubeId].y + 720) nextY += 360;
+
+            currentRotations[cubeId].x = nextX;
+            currentRotations[cubeId].y = nextY;
+
+            cube.style.transform = `rotateX(${nextX}deg) rotateY(${nextY}deg)`;
+        }
+
+        window.onload = () => {
+            document.getElementById('diceCount').value = "1";
+            toggleDice();
+        };
     </script>
 </body>
 </html>
