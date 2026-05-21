@@ -18,7 +18,6 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            /* ĐÃ XÓA: Đoạn chặn bôi đen user-select cũ ở đây để người dùng thoải mái coppy */
         }
 
         html, body {
@@ -27,7 +26,7 @@
 
         body {
             font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #1e4d2b, #2e7d32);
+            background: linear-gradient(135deg, #1e4d2b, #2e7d32); /* Giữ nguyên màu nền xanh casino */
             color: #ffffff;
             min-height: 100vh;
             display: flex;
@@ -44,7 +43,7 @@
             padding: 40px 20px;
         }
 
-        /* Tùy chỉnh màu sắc khi người dùng bôi đen cho đẹp mắt hơn */
+        /* Tùy chỉnh màu sắc khi người dùng bôi đen */
         ::selection {
             background: #f1c40f;
             color: #1e4d2b;
@@ -56,13 +55,13 @@
         .game-container {
             width: 100%;
             max-width: 650px;
-            background: rgba(10, 35, 18, 0.65);
+            background: rgba(10, 35, 18, 0.75); /* Tăng độ đậm nền container để nổi bật các nút mới */
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             padding: 40px;
             border-radius: 24px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
             text-align: center;
             animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -120,7 +119,7 @@
         }
 
         /* ==========================================================================
-           3. Buttons
+           3. Buttons (Phối màu lại để hợp với nền xanh sẫm)
            ========================================================================== */
         .button-container {
             display: flex;
@@ -137,26 +136,39 @@
             font-size: 18px;
             font-weight: 600;
             cursor: pointer;
-            background: linear-gradient(135deg, #2980b9, #3498db);
             color: white;
             text-decoration: none;
             border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
             letter-spacing: 0.5px;
         }
 
-        .button-container a:nth-child(1) { background: linear-gradient(135deg, #8e44ad, #9b59b6); box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3); }
-        .button-container a:nth-child(2) { background: linear-gradient(135deg, #d35400, #e67e22); box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3); }
-        .button-container a:nth-child(3) { background: linear-gradient(135deg, #27ae60, #2ecc71); box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3); }
+        /* Nút 1: Rút Bài - Màu Vàng Gold (May mắn) */
+        .button-container a:nth-child(1) { 
+            background: linear-gradient(135deg, #d4af37, #aa7c11); 
+            box-shadow: 0 4px 15px rgba(170, 124, 17, 0.4); 
+            color: #ffffff;
+        }
+        
+        /* Nút 2: Xì Dách - Màu Đỏ Nhung / Đỏ Đô (Kịch tính, màu lá bài) */
+        .button-container a:nth-child(2) { 
+            background: linear-gradient(135deg, #c0392b, #962d22); 
+            box-shadow: 0 4px 15px rgba(192, 57, 43, 0.4); 
+        }
+        
+        /* Nút 3: Bài Cào - Màu Xanh Ngọc Bích / Mint Sáng (Hài hòa với Casino) */
+        .button-container a:nth-child(3) { 
+            background: linear-gradient(135deg, #1abc9c, #16a085); 
+            box-shadow: 0 4px 15px rgba(26, 188, 156, 0.4); 
+        }
 
         .game-button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
-            filter: brightness(1.1);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.25);
+            filter: brightness(1.15);
         }
 
         .game-button:active {
@@ -192,6 +204,7 @@
             opacity: 0.4;
         }
 
+        /* Nút Quay Lại: Đổi sang màu xám bạc nhẹ nhàng sang trọng */
         .back-button {
             display: inline-flex;
             align-items: center;
@@ -199,9 +212,9 @@
             padding: 12px 24px;
             font-size: 15px;
             font-weight: 600;
-            background: rgba(231, 76, 60, 0.15);
-            border: 1px solid rgba(231, 76, 60, 0.4);
-            color: #ff7675;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e2e8f0;
             text-decoration: none;
             border-radius: 10px;
             transition: all 0.3s ease;
@@ -212,9 +225,9 @@
         }
 
         .back-button:hover {
-            background: #e74c3c;
-            color: white;
-            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+            background: #ffffff;
+            color: #1e4d2b;
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
         }
 
         /* ==========================================================================
@@ -295,9 +308,10 @@
             margin-bottom: 5px;
         }
         
-        .game-rule-item:nth-of-type(1) strong { color: #bb6cd9; }
-        .game-rule-item:nth-of-type(2) strong { color: #e67e22; }
-        .game-rule-item:nth-of-type(3) strong { color: #2ecc71; }
+        /* Đồng bộ màu tiêu đề tiêu chuẩn trong hướng dẫn với màu nút ngoài */
+        .game-rule-item:nth-of-type(1) strong { color: #d4af37; }
+        .game-rule-item:nth-of-type(2) strong { color: #ff7675; }
+        .game-rule-item:nth-of-type(3) strong { color: #1abc9c; }
 
         .game-rule-item p {
             color: #cbd5e1;
@@ -313,7 +327,7 @@
             padding: 14px;
             font-size: 16px;
             font-weight: 700;
-            background: #2ecc71;
+            background: #1abc9c;
             color: white;
             border: none;
             border-radius: 12px;
@@ -324,8 +338,8 @@
         }
 
         .close-modal-btn:hover {
-            background: #27ae60;
-            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+            background: #16a085;
+            box-shadow: 0 5px 15px rgba(26, 188, 156, 0.4);
         }
 
         /* ==========================================================================
@@ -356,7 +370,7 @@
             width: 55px;
             height: 55px;
             border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top: 4px solid #2ecc71;
+            border-top: 4px solid #1abc9c;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
@@ -401,9 +415,9 @@
 
         .social-icons a:hover {
             color: #ffffff;
-            background-color: #3498db;
+            background-color: #aa7c11;
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+            box-shadow: 0 5px 15px rgba(170, 124, 17, 0.4);
         }
 
         .footer-container p {
@@ -412,14 +426,14 @@
         }
 
         .footer-container a {
-            color: #3498db;
+            color: #1abc9c;
             text-decoration: none;
             font-weight: 600;
             transition: color 0.3s ease;
         }
 
         .footer-container a:hover {
-            color: #5dade2;
+            color: #16a085;
         }
 
         /* ==========================================================================
@@ -473,7 +487,6 @@
 
     <main>
         <div class="game-container">
-            <!-- Khu vực Tiêu đề tích hợp nút i thông tin -->
             <div class="title-wrapper">
                 <h1>Đánh Bài</h1>
                 <button class="info-trigger-btn" onclick="openModal()" title="Xem hướng dẫn chơi">
@@ -536,82 +549,59 @@
     </footer>
 
     <script>
-        // Tự động mở bảng hướng dẫn khi trang web tải xong
         window.addEventListener('DOMContentLoaded', () => {
             openModal();
         });
 
-        // Hàm mở bảng hướng dẫn chơi
         function openModal() {
             const modal = document.getElementById('instructionModal');
             modal.classList.add('active');
         }
 
-        // Hàm đóng bảng hướng dẫn chơi
         function closeModal() {
             const modal = document.getElementById('instructionModal');
             modal.classList.remove('active');
         }
 
-        // Hiệu ứng Loading khi bấm chuyển trò chơi
         function showLoading(event) {
-            event.preventDefault(); // Ngăn chặn chuyển hướng ngay lập tức
-            
+            event.preventDefault(); 
             const button = event.currentTarget;
             const href = button.getAttribute('href');
 
-            // Hiển thị hiệu ứng loading
             const loadingOverlay = document.getElementById('loadingOverlay');
             loadingOverlay.classList.add('active');
 
-            // Khóa tất cả các nút bấm để tránh người dùng nhấn liên tục
             document.querySelectorAll('.game-button').forEach(btn => btn.classList.add('disabled'));
 
-            // Giả lập thời gian chờ 1.5 giây trước khi chuyển trang mới
             setTimeout(() => {
                 window.location.href = href;
             }, 1500);
         }
 
-        /* ==========================================================================
-           Bảo vệ mã nguồn cơ bản (Anti-DevTools nhưng cho phép Bôi đen/Copy)
-           ========================================================================== */
-        
-        // 1. Chặn click chuột phải (ngăn Inspect Element / Xem mã nguồn bằng menu chuột phải)
+        /* Bảo vệ mã nguồn cơ bản (Cho phép bôi đen & Copy) */
         document.addEventListener('contextmenu', (event) => {
             event.preventDefault();
         });
 
-        // 2. Chặn các tổ hợp phím mở Developer Tools và Xem nguồn trang độc hại
         document.addEventListener('keydown', (event) => {
-            // Chặn F12
             if (event.key === 'F12') {
                 event.preventDefault();
                 return false;
             }
-            
-            // Chặn Ctrl+Shift+I (Inspect), Ctrl+Shift+J (Console), Ctrl+Shift+C (Element)
             if (event.ctrlKey && event.shiftKey && (event.key === 'I' || event.key === 'J' || event.key === 'C' || event.key === 'i' || event.key === 'j' || event.key === 'c')) {
                 event.preventDefault();
                 return false;
             }
-            
-            // Chặn Ctrl+U (Xem mã nguồn - View Source)
             if (event.ctrlKey && (event.key === 'U' || event.key === 'u')) {
                 event.preventDefault();
                 return false;
             }
-
-            // Chặn Ctrl+S (Lưu trang web)
             if (event.ctrlKey && (event.key === 'S' || event.key === 's')) {
                 event.preventDefault();
                 return false;
             }
-            
-            // LƯU Ý: Phím Ctrl+C và Ctrl+A đã được thả tự do, không bị chặn tại đây nữa!
         });
 
-        // 3. Vòng lặp debugger liên tục bẻ gãy giao diện nếu DevTools cố tình mở lén lút
         setInterval(function() {
             function check() {
                 (function(a) {
