@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Đánh Bài - NTS Premium</title>
+    <title>Sòng Bạc Thượng Lưu - NTS Casino</title>
     <link rel="icon" type="image/png" href="logos3.png">
     
     <!-- Fonts & Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
         /* ==========================================================================
@@ -29,8 +29,8 @@
         }
 
         body {
-            font-family: 'Quicksand', 'Segoe UI', Arial, sans-serif;
-            background: radial-gradient(circle at center, #1b4d3e 0%, #0a231c 70%, #051410 100%);
+            font-family: 'Montserrat', sans-serif;
+            background: radial-gradient(circle at center, #0d3a26 0%, #061f14 60%, #020b07 100%);
             color: #ffffff;
             min-height: 100vh;
             display: flex;
@@ -39,19 +39,17 @@
             position: relative;
         }
 
-        /* Tạo hiệu ứng hạt bụi vàng lấp lánh phía sau nền */
+        /* Lớp vân nhung mờ cao cấp của bàn Casino */
         body::before {
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             background-image: 
-                radial-gradient(rgba(241, 196, 15, 0.15) 1px, transparent 1px),
-                radial-gradient(rgba(255, 255, 255, 0.1) 2px, transparent 2px);
-            background-size: 80px 80px, 120px 120px;
-            background-position: 0 0, 40px 40px;
-            animation: backgroundMove 30s linear infinite;
+                radial-gradient(rgba(212, 175, 55, 0.08) 1px, transparent 1px),
+                radial-gradient(rgba(0, 0, 0, 0.4) 2px, transparent 2px);
+            background-size: 40px 40px, 60px 60px;
             z-index: 0;
-            opacity: 0.6;
+            opacity: 0.7;
         }
 
         main {
@@ -64,206 +62,202 @@
         }
 
         /* ==========================================================================
-           2. Layout & Containers (Glassmorphism Cao Cấp)
+           2. Khung Chứa Casino Giới Hạn Hạng VIP
            ========================================================================== */
         .game-container {
-            background: rgba(10, 35, 28, 0.65);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 40px;
-            border-radius: 24px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 
-                        inset 0 0 20px rgba(46, 204, 113, 0.1);
-            max-width: 1000px;
+            background: linear-gradient(135deg, rgba(14, 43, 31, 0.85) 0%, rgba(5, 20, 14, 0.95) 100%);
+            border: 2px solid #d4af37; /* Viền vàng thật */
+            padding: 45px;
+            border-radius: 4px; /* Góc vuông nhẹ sang trọng kiểu cổ điển */
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.80), 
+                        inset 0 0 30px rgba(212, 175, 55, 0.1);
+            max-width: 1050px;
             width: 100%;
             position: relative;
-            animation: cardEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: casinoEntrance 0.7s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
 
-        /* Thanh điều hướng phụ phía trên để bố cục cân bằng */
+        /* Khung định vị nút phía trên */
         .top-navigation {
             display: flex;
             justify-content: space-between;
             align-items: center;
             width: 100%;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         /* ==========================================================================
-           3. Typography & Titles
+           3. Nghệ Thuật Chữ (Typography & Gold Text)
            ========================================================================== */
         .title-wrapper {
             text-align: center;
-            margin-bottom: 35px;
+            margin-bottom: 45px;
+            position: relative;
         }
 
         h1 {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 3.2em;
+            font-family: 'Cinzel', serif;
+            font-size: 3.5em;
             font-weight: 800;
-            letter-spacing: 2px;
-            background: linear-gradient(135deg, #ffffff 30%, #a3e2c9 100%);
+            letter-spacing: 6px;
+            /* Hiệu ứng đổ màu vàng kim đổ bóng hoàng gia */
+            background: linear-gradient(to bottom, #ffe89e 0%, #d4af37 40%, #aa7c11 75%, #fae19c 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.6));
             text-transform: uppercase;
         }
 
+        /* Đường gạch ngang trang trí phong cách hoàng gia */
+        .title-wrapper::after {
+            content: '';
+            display: block;
+            width: 120px;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #d4af37, transparent);
+            margin: 10px auto 0;
+        }
+
         /* ==========================================================================
-           4. Buttons & Interactive Cards
+           4. Hệ Thống Điều Hướng & Thẻ Bài
            ========================================================================== */
-        /* Nút quay lại tinh tế hơn */
         .back-button {
             display: inline-flex;
             align-items: center;
-            padding: 10px 20px;
-            font-size: 15px;
-            font-weight: 700;
-            background: rgba(231, 76, 60, 0.15);
-            color: #ff7675;
-            border: 1px solid rgba(231, 76, 60, 0.3);
+            padding: 9px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: transparent;
+            color: #cccccc;
+            border: 1px solid #555555;
             text-decoration: none;
-            border-radius: 12px;
             transition: all 0.3s ease;
         }
 
         .back-button i { margin-right: 8px; transition: transform 0.3s; }
         .back-button:hover {
-            background: #e74c3c;
-            color: white;
-            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+            border-color: #d4af37;
+            color: #d4af37;
+            background: rgba(212, 175, 55, 0.05);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
         }
         .back-button:hover i { transform: translateX(-4px); }
 
-        /* Nút thông tin ở góc */
         .info-trigger-btn {
-            background: rgba(241, 196, 15, 0.1);
-            border: 1px solid rgba(241, 196, 15, 0.3);
-            color: #f1c40f;
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
+            background: transparent;
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            width: 38px;
+            height: 38px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             font-size: 1.1em;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s ease;
         }
 
         .info-trigger-btn:hover {
-            background: #f1c40f;
-            color: #0a231c;
-            transform: scale(1.1) rotate(15deg);
-            box-shadow: 0 0 20px rgba(241, 196, 15, 0.4);
+            background: #d4af37;
+            color: #061f14;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
         }
 
-        /* Container chứa danh sách trò chơi dạng lưới chuyên nghiệp */
+        /* Bố cục chia lưới sòng bạc chuẩn */
         .button-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
+            gap: 30px;
             width: 100%;
         }
 
-        /* Thẻ Game được thiết kế lại toàn bộ */
+        /* Thẻ sòng bài (Casino Club Cards) */
         .game-button {
-            background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            padding: 35px 20px;
+            background: rgba(5, 20, 14, 0.8);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 40px 25px;
             text-decoration: none;
             color: white;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            gap: 18px;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
             position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
         }
 
-        /* Tạo dải bóng sáng quét qua thẻ khi hover */
-        .game-button::after {
+        /* Góc định hình viền vàng mỏng sang trọng */
+        .game-button::before {
             content: '';
             position: absolute;
-            top: -50%; left: -60%; width: 30%; height: 200%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.13), transparent);
-            transform: rotate(30deg);
-            transition: none;
+            top: 5px; left: 5px; right: 5px; bottom: 5px;
+            border: 1px solid rgba(212, 175, 55, 0.05);
+            transition: all 0.4s ease;
+            pointer-events: none;
         }
 
-        .game-button:hover::after {
-            left: 130%;
-            transition: all 0.6s ease-in-out;
-        }
-
-        /* Thiết lập màu sắc neon đặc trưng cho từng loại Card Game */
-        .game-button:nth-child(1) { --theme-color: #3498db; --theme-glow: rgba(52, 152, 219, 0.35); }
-        .game-button:nth-child(2) { --theme-color: #e67e22; --theme-glow: rgba(230, 126, 34, 0.35); }
-        .game-button:nth-child(3) { --theme-color: #2ecc71; --theme-glow: rgba(46, 204, 113, 0.35); }
-
-        /* Các icon trò chơi */
         .game-card-icon {
-            font-size: 2.8em;
-            color: var(--theme-color);
-            filter: drop-shadow(0 2px 8px var(--theme-glow));
+            font-size: 3em;
+            color: #d4af37;
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
             transition: transform 0.3s ease;
         }
 
         .game-title-text {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1.4em;
-            font-weight: 700;
-            letter-spacing: 0.5px;
+            font-family: 'Cinzel', serif;
+            font-size: 1.5em;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: #f6e58d;
         }
 
         .game-desc-text {
-            font-size: 0.85em;
-            color: #b2bec3;
-            line-height: 1.4;
-            transition: color 0.3s;
+            font-size: 0.88em;
+            color: #a4b0be;
+            line-height: 1.5;
+            text-align: center;
         }
 
-        /* Hiệu ứng tương tác Hover cực mạnh */
+        /* Hover hiệu ứng sòng bài cao cấp phát sáng nhẹ */
         .game-button:hover {
-            transform: translateY(-8px);
-            border-color: var(--theme-color);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5), 0 0 20px var(--theme-glow);
-            background: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+            transform: translateY(-5px);
+            border-color: #d4af37;
+            background: rgba(14, 43, 31, 0.95);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 15px rgba(212, 175, 55, 0.25);
+        }
+
+        .game-button:hover::before {
+            border-color: rgba(212, 175, 55, 0.3);
         }
 
         .game-button:hover .game-card-icon {
-            transform: scale(1.15) rotate(-5deg);
-        }
-
-        .game-button:hover .game-desc-text {
-            color: #ffffff;
+            transform: scale(1.1) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: #ffe89e;
         }
 
         .game-button.disabled {
             pointer-events: none;
-            opacity: 0.3;
+            opacity: 0.2;
         }
 
         /* ==========================================================================
-           5. Instructions Modal (Sắc nét & Hiện đại)
+           5. Instructions Modal (Quy tắc sòng bạc)
            ========================================================================== */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: backdrop-filter;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            background: rgba(3, 15, 12, 0.85);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
             display: flex;
             align-items: center;
             justify-content: center;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.4s ease;
             z-index: 2000;
             padding: 20px;
         }
@@ -274,66 +268,61 @@
         }
 
         .modal-card {
-            background: #0d2d24;
-            border: 1px solid rgba(46, 204, 113, 0.3);
-            border-radius: 24px;
+            background: #061f14;
+            border: 2px solid #d4af37;
+            border-radius: 0;
             max-width: 550px;
             width: 100%;
             padding: 35px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
             text-align: left;
-            transform: scale(0.9) translateY(20px);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: scale(0.95);
+            transition: all 0.4s ease;
         }
 
         .modal-overlay.active .modal-card {
-            transform: scale(1) translateY(0);
+            transform: scale(1);
         }
 
         .modal-header {
             display: flex;
             align-items: center;
             gap: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            padding-bottom: 18px;
-            margin-bottom: 22px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
         }
 
-        .modal-header i { font-size: 1.8em; color: #2ecc71; }
-        .modal-header h2 { font-family: 'Montserrat', sans-serif; font-size: 1.6em; font-weight: 700; }
+        .modal-header i { font-size: 1.6em; color: #d4af37; }
+        .modal-header h2 { font-family: 'Cinzel', serif; font-size: 1.6em; color: #ffe89e; letter-spacing: 1px; }
 
         .game-rule-item { margin-bottom: 20px; }
-        .game-rule-item strong { display: block; font-size: 1.1em; margin-bottom: 5px; }
-        .game-rule-item:nth-child(1) strong { color: #3498db; }
-        .game-rule-item:nth-child(2) strong { color: #e67e22; }
-        .game-rule-item:nth-child(3) strong { color: #2ecc71; }
-
+        .game-rule-item strong { display: block; font-size: 1.1em; margin-bottom: 5px; color: #d4af37; font-family: 'Cinzel', serif;}
         .game-rule-item p {
-            color: #cbd5e1;
+            color: #dcdde1;
             font-size: 0.95em;
             padding-left: 12px;
-            border-left: 2px solid rgba(255, 255, 255, 0.1);
+            border-left: 1px solid #d4af37;
         }
 
         .close-modal-btn {
             display: block;
             width: 100%;
             padding: 14px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
-            background: #2ecc71;
-            color: white;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: #d4af37;
+            color: #061f14;
             border: none;
-            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
         }
 
         .close-modal-btn:hover {
-            background: #27ae60;
-            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.5);
-            transform: translateY(-2px);
+            background: #ffe89e;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
         }
 
         /* ==========================================================================
@@ -342,8 +331,7 @@
         .loading-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 15, 12, 0.9);
-            backdrop-filter: blur(5px);
+            background: #020b07;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -359,13 +347,12 @@
         }
 
         .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(46, 204, 113, 0.1);
-            border-top: 4px solid #2ecc71;
+            width: 55px;
+            height: 55px;
+            border: 3px solid rgba(212, 175, 55, 0.1);
+            border-top: 3px solid #d4af37;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-            filter: drop-shadow(0 0 10px #2ecc71);
         }
 
         /* ==========================================================================
@@ -373,10 +360,9 @@
            ========================================================================== */
         footer {
             width: 100%;
-            background: rgba(4, 14, 11, 0.8);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(255,255,255,0.05);
-            color: #a0aec0;
+            background: #020b07;
+            border-top: 1px solid rgba(212, 175, 55, 0.15);
+            color: #7f8c8d;
             padding: 25px 0;
             text-align: center;
             z-index: 1;
@@ -390,42 +376,36 @@
 
         .social-icons { margin-bottom: 12px; }
         .social-icons a {
-            color: #a0aec0;
-            font-size: 1.4em;
-            margin: 0 12px;
+            color: #7f8c8d;
+            font-size: 1.3em;
+            margin: 0 10px;
             text-decoration: none;
             transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            background-color: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255,255,255,0.05);
+            width: 36px;
+            height: 36px;
+            background-color: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .social-icons a:hover {
-            color: #ffffff;
-            background-color: rgba(46, 204, 113, 0.2);
-            border-color: #2ecc71;
-            transform: translateY(-3px);
+            color: #d4af37;
+            border-color: #d4af37;
+            background-color: rgba(212, 175, 55, 0.05);
         }
 
-        .footer-container p { font-size: 0.9em; opacity: 0.85; }
-        .footer-container a { color: #2ecc71; text-decoration: none; font-weight: 600; transition: color 0.3s; }
-        .footer-container a:hover { color: #27ae60; text-decoration: underline; }
+        .footer-container p { font-size: 0.85em; letter-spacing: 0.5px; }
+        .footer-container a { color: #d4af37; text-decoration: none; font-weight: 500; transition: color 0.3s; }
+        .footer-container a:hover { color: #ffe89e; text-decoration: underline; }
 
         /* ==========================================================================
            8. Keyframe Animations
            ========================================================================== */
-        @keyframes cardEntrance {
-            from { opacity: 0; transform: translateY(40px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        @keyframes backgroundMove {
-            from { background-position: 0 0, 40px 40px; }
-            to { background-position: 1000px 1000px, 1040px 1040px; }
+        @keyframes casinoEntrance {
+            from { opacity: 0; transform: scale(0.98) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -435,25 +415,20 @@
         /* ==========================================================================
            9. Responsive Media Queries
            ========================================================================== */
-        @media (max-width: 850px) {
+        @media (max-width: 900px) {
             .button-container {
                 grid-template-columns: 1fr;
-                gap: 16px;
+                gap: 20px;
             }
             .game-button {
                 flex-direction: row;
                 text-align: left;
-                padding: 20px;
+                padding: 25px 20px;
                 gap: 20px;
             }
-            .game-card-text-wrapper {
-                display: flex;
-                flex-direction: column;
-                gap: 4px;
-            }
-            .game-card-icon { font-size: 2.2em; width: 50px; text-align: center; }
-            h1 { font-size: 2.4em; }
-            .game-container { padding: 24px; }
+            .game-desc-text { text-align: left; }
+            h1 { font-size: 2.5em; letter-spacing: 3px; }
+            .game-container { padding: 25px; }
         }
     </style>
 </head>
@@ -461,71 +436,65 @@
 
     <main>
         <div class="game-container">
-            <!-- Tách biệt thanh điều hướng trên -->
+            <!-- Thanh tác vụ phụ trên -->
             <div class="top-navigation">
                 <a href="game.html" class="back-button">
-                    <i class="fas fa-arrow-left"></i> Quay lại
+                    <i class="fas fa-chevron-left"></i> Rời Phòng
                 </a>
-                <button class="info-trigger-btn" onclick="openModal()" title="Xem hướng dẫn chơi">
-                    <i class="fas fa-question"></i>
+                <button class="info-trigger-btn" onclick="openModal()" title="Luật sòng bạc">
+                    <i class="fas fa-crown"></i>
                 </button>
             </div>
 
-            <!-- Khu vực Tiêu đề chính -->
+            <!-- Tên Sòng Bạc -->
             <div class="title-wrapper">
-                <h1>Đánh Bài</h1>
+                <h1>NTS Casino</h1>
             </div>
             
-            <!-- Danh sách game dạng Grid Thẻ chuyên nghiệp -->
+            <!-- Danh sách sảnh game bài VIP -->
             <div class="button-container">
                 <a href="rutbai.html" class="game-button" onclick="showLoading(event)">
-                    <div class="game-card-icon"><i class="fas fa-clone"></i></div>
-                    <div class="game-card-text-wrapper">
-                        <div class="game-title-text">Rút Bài</div>
-                        <div class="game-desc-text">Thử thách độ may rủi với các lá bài ngẫu nhiên từ hệ thống.</div>
-                    </div>
+                    <div class="game-card-icon"><i class="fas fa-diamond"></i></div>
+                    <div class="game-title-text">Sảnh Rút Bài</div>
+                    <div class="game-desc-text">Thử thách vận may tối thượng từ các lá bài phân định ngẫu nhiên.</div>
                 </a>
                 
                 <a href="xidach.html" class="game-button" onclick="showLoading(event)">
-                    <div class="game-card-icon"><i class="fas fa-suit-spade"></i></div>
-                    <div class="game-card-text-wrapper">
-                        <div class="game-title-text">Xì Dách</div>
-                        <div class="game-desc-text">Đấu trí cân não để đạt điểm số tối đa cận mốc 21 điểm.</div>
-                    </div>
+                    <div class="game-card-icon"><i class="fas fa-spade"></i></div>
+                    <div class="game-title-text">Sảnh Xì Dách</div>
+                    <div class="game-desc-text">Đấu trí chiến thuật đỉnh cao, chinh phục điểm số vàng mốc 21.</div>
                 </a>
                 
                 <a href="baicao.html" class="game-button" onclick="showLoading(event)">
-                    <div class="game-card-icon"><i class="fas fa-hand-holding-hand"></i></div>
-                    <div class="game-card-text-wrapper">
-                        <div class="game-title-text">Bài Cào</div>
-                        <div class="game-desc-text">Đếm nút tính điểm ba lá, so trình cao thấp tìm người chạm 9.</div>
-                    </div>
+                    <div class="game-card-icon"><i class="fas fa-club"></i></div>
+                    <div class="game-title-text">Sảnh Bài Cào</div>
+                    <div class="game-desc-text">Đếm nút phân định thắng thua chớp nhoáng với điểm 9 huyền thoại.</div>
                 </a>
             </div>
         </div>
 
-        <!-- Hướng dẫn chơi Modal -->
+        <!-- Quy tắc Casino Modal -->
         <div class="modal-overlay" id="instructionModal">
             <div class="modal-card">
                 <div class="modal-header">
-                    <i class="fas fa-book-open"></i>
-                    <h2>Hướng Dẫn Chọn Game</h2>
+                    <i class="fas fa-scroll"></i>
+                    <h2>Quy Tắc Sảnh Trò Chơi</h2>
                 </div>
                 <div class="modal-body">
                     <div class="game-rule-item">
-                        <strong>1. Rút Bài (May rủi)</strong>
-                        <p>Hệ thống tự động phát bài ngẫu nhiên. Trò chơi thuần tính may mắn dựa trên các lá bài bạn rút được.</p>
+                        <strong>1. Sảnh Rút Bài (May Rủi)</strong>
+                        <p>Hệ thống chia bài tự động hoàn toàn minh bạch. Thắng thua phụ thuộc vào vận khí lúc rút bài của bạn.</p>
                     </div>
                     <div class="game-rule-item">
-                        <strong>2. Xì Dách (Chiến thuật)</strong>
-                        <p>Cố gắng rút bài sao cho tổng điểm các lá bài gần bằng hoặc bằng 21 điểm nhất có thể. Đừng để bị quá 21 điểm (Quắc)!</p>
+                        <strong>2. Sảnh Xì Dách (Chiến Thuật)</strong>
+                        <p>Tính toán rút thêm bài khôn ngoan để đạt tổng điểm sát mốc 21 nhất. Quá 21 điểm (Quắc) sẽ thua cuộc ngay.</p>
                     </div>
                     <div class="game-rule-item">
-                        <strong>3. Bài Cào (Đếm nút)</strong>
-                        <p>Mỗi người chơi được chia 3 lá bài. Cộng điểm các lá bài lại để tính hàng đơn vị, ai có số điểm gần bằng 9 nhất sẽ thắng.</p>
+                        <strong>3. Sảnh Bài Cào (Tính Nút)</strong>
+                        <p>Mỗi người chơi nhận tối đa 3 lá bài. Cộng điểm lấy số hàng đơn vị để so tài cao thấp, điểm cao nhất là 9.</p>
                     </div>
                 </div>
-                <button class="close-modal-btn" onclick="closeModal()">Đã Hiểu & Chơi Ngay</button>
+                <button class="close-modal-btn" onclick="closeModal()">Vào Bàn Ngay</button>
             </div>
         </div>
 
@@ -542,66 +511,44 @@
                 <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
                 <a href="https://www.tiktok.com/@thanh.sang70" target="_blank"><i class="fab fa-tiktok"></i></a>
             </div>
-            <p>© 2025 NTS. Design by <a href="profile.html">Nguyễn Thanh Sang (阮清尚)</a>.</p>
+            <p>© 2026 NTS Casino. Executive VIP Member Club. Design by <a href="profile.html">Nguyễn Thanh Sang</a>.</p>
         </div>
     </footer>
 
     <script>
-        // Tự động mở bảng hướng dẫn khi trang web tải xong
         window.addEventListener('DOMContentLoaded', () => {
             openModal();
         });
 
-        // Hàm mở bảng hướng dẫn chơi
         function openModal() {
-            const modal = document.getElementById('instructionModal');
-            modal.classList.add('active');
+            document.getElementById('instructionModal').classList.add('active');
         }
 
-        // Hàm đóng bảng hướng dẫn chơi
         function closeModal() {
-            const modal = document.getElementById('instructionModal');
-            modal.classList.remove('active');
+            document.getElementById('instructionModal').classList.remove('active');
         }
 
-        // Hiệu ứng Loading khi bấm chuyển trò chơi
         function showLoading(event) {
             event.preventDefault(); 
-            
-            const button = event.currentTarget;
-            const href = button.getAttribute('href');
+            const href = event.currentTarget.getAttribute('href');
 
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            loadingOverlay.classList.add('active');
-
+            document.getElementById('loadingOverlay').classList.add('active');
             document.querySelectorAll('.game-button').forEach(btn => btn.classList.add('disabled'));
 
             setTimeout(() => {
                 window.location.href = href;
-            }, 1500);
+            }, 1200); // Tăng tốc thời gian load một chút cho mượt mà
         }
 
         /* ==========================================================================
-           Bảo vệ mã nguồn cơ bản (Anti-DevTools / Anti-Copy)
+           Bảo vệ mã nguồn Casino nâng cao
            ========================================================================== */
-        document.addEventListener('contextmenu', (event) => {
-            event.preventDefault();
-        });
+        document.addEventListener('contextmenu', event => event.preventDefault());
 
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'F12') {
-                event.preventDefault();
-                return false;
-            }
-            if (event.ctrlKey && event.shiftKey && (event.key === 'I' || event.key === 'J' || event.key === 'C' || event.key === 'i' || event.key === 'j' || event.key === 'c')) {
-                event.preventDefault();
-                return false;
-            }
-            if (event.ctrlKey && (event.key === 'U' || event.key === 'u')) {
-                event.preventDefault();
-                return false;
-            }
-            if (event.ctrlKey && (event.key === 'S' || event.key === 's')) {
+            if (event.key === 'F12' || 
+                (event.ctrlKey && event.shiftKey && ['I','J','C'].includes(event.key.toUpperCase())) ||
+                (event.ctrlKey && ['U','S'].includes(event.key.toUpperCase()))) {
                 event.preventDefault();
                 return false;
             }
@@ -611,9 +558,7 @@
             function check() {
                 (function(a) {
                     return (function(a) {
-                        return (typeof a === 'string' && (function() {
-                            return true;
-                        })['constructor']('debugger')['call']('action'));
+                        return (typeof a === 'string' && (function() { return true; })['constructor']('debugger')['call']('action'));
                     })(a);
                 })('');
             }
