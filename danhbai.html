@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Đánh Bài - NTS</title>
+    <title>Sòng Bài Ma Quái - NTS</title>
     <link rel="icon" type="image/png" href="logos3.png">
     
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font chữ phong cách kinh dị, gai góc -->
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
@@ -33,14 +34,26 @@
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            /* Giữ nguyên màu nền chủ đạo của bạn, nâng cấp hiệu ứng mượt hơn */
-            background: radial-gradient(circle at center, #2e7d32 0%, #1a4425 100%);
+            /* Giữ nguyên màu nền xanh lá của bạn nhưng chuyển thành không gian u tối, huyền bí */
+            background: radial-gradient(circle at center, #14351d 0%, #081a0e 100%);
             color: #ffffff;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden;
+            overflow: hidden;
             position: relative;
+        }
+
+        /* Hiệu ứng sương mù ma mị chạy ngầm phía sau */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/asfalt-dark.png'), 
+                        linear-gradient(to bottom, rgba(0,0,0,0) 60%, rgba(0,0,0,0.7));
+            opacity: 0.6;
+            z-index: 0;
+            pointer-events: none;
         }
 
         main {
@@ -49,177 +62,190 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+            z-index: 1;
         }
 
         /* ==========================================================================
-           2. Layout & Containers (Làm mới khung kính mờ - Glassmorphism)
+           2. Khung Chứa Game (Hộp Ma Quái - Cực đẹp và bí ẩn)
            ========================================================================== */
         .game-container {
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 40px 50px;
-            border-radius: 24px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 
-                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            max-width: 600px;
+            background: rgba(10, 30, 15, 0.45);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            /* Viền chuyển màu ma mị giữa xanh sẫm và đỏ máu rực rỡ */
+            border: 2px solid rgba(231, 76, 60, 0.2);
+            padding: 50px 40px;
+            border-radius: 30px;
+            /* Đổ bóng quầng sáng đỏ âm u kinh dị */
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.8), 
+                        inset 0 0 30px rgba(231, 76, 60, 0.05),
+                        0 0 40px rgba(46, 204, 113, 0.05);
+            max-width: 500px;
             width: 100%;
             text-align: center;
-            animation: containerFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            position: relative;
+            animation: containerSpawn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        /* Khu vực Tiêu đề tích hợp nút i thông tin */
+        /* Khu vực Tiêu đề */
         .title-wrapper {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 16px;
-            margin-bottom: 35px;
+            gap: 18px;
+            margin-bottom: 40px;
         }
 
         h1 {
-            font-size: 2.8em;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+            font-family: 'Creepster', cursive; /* Font chữ kinh dị */
+            font-size: 4em;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, #ff7675 0%, #d63031 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+            /* Hiệu ứng chữ phát sáng lập lòe */
+            filter: drop-shadow(0 0 10px rgba(214, 48, 49, 0.6));
+            animation: textFlicker 3s linear infinite;
         }
 
-        /* Nút icon i hướng dẫn tinh tế hơn */
+        /* Nút icon i hướng dẫn tâm linh */
         .info-trigger-btn {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #ffca28;
-            width: 38px;
-            height: 38px;
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #ff7675;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.05em;
+            font-size: 1.1em;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s ease;
+            box-shadow: 0 0 10px rgba(231, 76, 60, 0.2);
         }
 
         .info-trigger-btn:hover {
-            background: #ffca28;
-            color: #1a4425;
-            transform: scale(1.1) rotate(10deg);
-            box-shadow: 0 0 20px rgba(255, 202, 40, 0.4);
-            border-color: #ffca28;
-        }
-
-        .info-trigger-btn:active {
-            transform: scale(0.95);
+            background: #d63031;
+            color: #ffffff;
+            transform: scale(1.15) rotate(360deg);
+            box-shadow: 0 0 25px #d63031;
+            border-color: #d63031;
         }
 
         .button-container {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 20px;
             width: 100%;
         }
 
         /* ==========================================================================
-           3. Buttons (Nâng cấp giao diện nút bo tròn mềm mại, đổ bóng luxury)
+           3. Nút Chọn Bài (Hiệu ứng rùng rợn, thích thú khi chạm vào)
            ========================================================================== */
-        /* Game Navigation Buttons */
         .game-button {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 18px 28px;
-            font-size: 18px;
+            padding: 20px 30px;
+            font-size: 1.15em;
             font-weight: 600;
+            letter-spacing: 1px;
             cursor: pointer;
-            background: linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #ffffff;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.85);
             text-decoration: none;
-            border-radius: 16px;
+            border-radius: 18px;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Tạo một vệt sáng đỏ rực rỡ chạy ẩn sau nút */
+        .game-button::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(214, 48, 49, 0.2), transparent);
+            transition: all 0.6s ease;
         }
 
         .game-button::after {
-            content: '\f0da';
+            content: '\f249'; /* Biểu tượng các quân bài ẩn */
             font-family: 'Font Awesome 5 Free';
             font-weight: 900;
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.4);
-            transition: all 0.3s ease;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.2);
+            transition: all 0.4s ease;
         }
 
+        /* Khi người chơi di chuột vào nút - Hiệu ứng Kích Thích nguy hiểm */
         .game-button:hover {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            border-color: #4ea5e0;
-            transform: translateY(-3px);
-            box-shadow: 0 12px 24px rgba(52, 152, 219, 0.3);
+            color: #ffffff;
+            background: linear-gradient(135deg, rgba(214, 48, 49, 0.15) 0%, rgba(0, 0, 0, 0.4) 100%);
+            border-color: #d63031;
+            transform: scale(1.03) translateY(-2px);
+            /* Phát sáng viền đỏ rực cực đẹp */
+            box-shadow: 0 10px 30px rgba(214, 48, 49, 0.25), 
+                        inset 0 0 15px rgba(214, 48, 49, 0.2);
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        }
+
+        .game-button:hover::before {
+            left: 100%;
         }
 
         .game-button:hover::after {
-            color: #ffffff;
-            transform: translateX(4px);
+            color: #ff7675;
+            transform: scale(1.3) rotate(15deg);
+            filter: drop-shadow(0 0 5px #d63031);
         }
 
-        .game-button:active {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 12px rgba(52, 152, 219, 0.2);
-        }
-
-        /* Back Button - Đưa xuống dưới cùng thu nhỏ lại hài hòa */
+        /* Nút quay lại âm thầm dưới đáy */
         .back-button {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            padding: 10px 20px;
-            font-size: 14px;
-            font-weight: 500;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: rgba(255, 255, 255, 0.7);
+            padding: 10px 24px;
+            font-size: 0.85em;
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.4);
             text-decoration: none;
             border-radius: 30px;
             transition: all 0.3s ease;
-            margin-top: 30px;
+            margin-top: 35px;
         }
 
         .back-button:hover {
-            background: rgba(231, 76, 60, 0.15);
-            border-color: rgba(231, 76, 60, 0.4);
-            color: #ff7675;
-            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         .game-button.disabled {
             pointer-events: none;
-            opacity: 0.4;
+            opacity: 0.2;
         }
 
         /* ==========================================================================
-           4. Instructions Modal (Giao diện bảng phẳng, bo góc sang trọng)
+           4. Khung Hướng Dẫn Ma Mị (Modal)
            ========================================================================== */
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(10, 25, 15, 0.85);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(4, 12, 6, 0.9);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             display: flex;
             align-items: center;
             justify-content: center;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 2000;
             padding: 20px;
         }
@@ -230,53 +256,53 @@
         }
 
         .modal-card {
-            background: #14351d;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #0b1e11;
+            border: 2px solid #d63031;
             border-radius: 24px;
-            max-width: 500px;
+            max-width: 480px;
             width: 100%;
-            padding: 35px;
-            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6);
-            transform: scale(0.9) translateY(20px);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 40px 35px;
+            box-shadow: 0 0 60px rgba(214, 48, 49, 0.3);
+            transform: scale(0.8) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .modal-overlay.active .modal-card {
-            transform: scale(1) translateY(0);
+            transform: scale(1);
         }
 
         .modal-header {
             display: flex;
             align-items: center;
             gap: 14px;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(231, 76, 60, 0.2);
+            padding-bottom: 15px;
         }
 
         .modal-header i {
-            font-size: 1.6em;
-            color: #ffca28;
+            font-size: 1.8em;
+            color: #d63031;
+            animation: pulse 2s infinite;
         }
 
         .modal-header h2 {
-            font-size: 1.5em;
-            font-weight: 700;
+            font-family: 'Creepster', cursive;
+            font-size: 2.2em;
             color: #ffffff;
-        }
-
-        .modal-body {
-            margin-bottom: 30px;
+            letter-spacing: 1px;
         }
 
         .game-rule-item {
             margin-bottom: 20px;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 16px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 18px;
             border-radius: 14px;
-            border-left: 4px solid #3498db;
+            border-left: 4px solid #d63031;
         }
 
         .game-rule-item strong {
-            color: #ffffff;
+            color: #ff7675;
             display: block;
             font-size: 16px;
             font-weight: 600;
@@ -286,7 +312,7 @@
         .game-rule-item p {
             color: rgba(255, 255, 255, 0.7);
             font-size: 14px;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         .close-modal-btn {
@@ -294,38 +320,37 @@
             width: 100%;
             padding: 16px;
             font-size: 16px;
-            font-weight: 600;
-            background: #2ecc71;
+            font-weight: 700;
+            background: #d63031;
             color: white;
             border: none;
             border-radius: 14px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.2);
+            box-shadow: 0 0 15px rgba(214, 48, 49, 0.4);
+            letter-spacing: 1px;
         }
 
         .close-modal-btn:hover {
-            background: #27ae60;
+            background: #ff7675;
+            box-shadow: 0 0 25px #ff7675;
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3);
         }
 
         /* ==========================================================================
-           5. Loading Overlay
+           5. Màn Hình Loading Hiến Tế (Cực kỳ kịch tính)
            ========================================================================== */
         .loading-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #14351d;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #06120a;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
             z-index: 3000;
         }
 
@@ -334,87 +359,88 @@
             visibility: visible;
         }
 
+        /* Vòng xoay rùng rợn */
         .loading-spinner {
-            width: 45px;
-            height: 45px;
-            border: 3px solid rgba(255, 255, 255, 0.1);
-            border-top: 3px solid #3498db;
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(214, 48, 49, 0.1);
+            border-top: 3px solid #d63031;
+            border-bottom: 3px solid #d63031;
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            animation: spin 0.6s linear infinite;
+            filter: drop-shadow(0 0 10px #d63031);
         }
 
         /* ==========================================================================
-           6. Footer
+           6. Footer bảo mật
            ========================================================================== */
         footer {
             width: 100%;
-            padding: 25px 0;
+            padding: 20px 0;
             text-align: center;
-            background: rgba(0, 0, 0, 0.15);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.4);
+            border-top: 1px solid rgba(214, 48, 49, 0.1);
+            z-index: 1;
         }
 
         .footer-container {
-            max-width: 600px;
+            max-width: 500px;
             margin: 0 auto;
             padding: 0 20px;
         }
 
         .social-icons {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: center;
-            gap: 12px;
+            gap: 15px;
         }
 
         .social-icons a {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 1.2em;
-            text-decoration: none;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 1.1em;
             transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 38px;
-            height: 38px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background-color: rgba(0, 0, 0, 0.3);
         }
 
         .social-icons a:hover {
-            color: #ffffff;
-            background-color: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
+            color: #ff7675;
+            background-color: rgba(214, 48, 49, 0.15);
+            border: 1px solid rgba(214, 48, 49, 0.3);
+            transform: translateY(-3px);
         }
 
         .footer-container p {
-            font-size: 13px;
-            opacity: 0.5;
-            letter-spacing: 0.3px;
+            font-size: 12px;
+            opacity: 0.3;
         }
 
         .footer-container a {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.6);
             text-decoration: none;
-            font-weight: 500;
-        }
-
-        .footer-container a:hover {
-            text-decoration: underline;
         }
 
         /* ==========================================================================
-           7. Keyframe Animations
+           7. Hiệu Ứng Hoạt Họa (Animations)
            ========================================================================== */
-        @keyframes containerFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
+        @keyframes containerSpawn {
+            from { opacity: 0; transform: scale(0.9) translateY(40px); filter: blur(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+        }
+
+        @keyframes textFlicker {
+            0%, 18%, 22%, 25%, 53%, 57%, 100% {
+                filter: drop-shadow(0 0 10px rgba(214, 48, 49, 0.6));
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
+            20%, 24%, 55% {
+                filter: none;
+                opacity: 0.7;
             }
         }
 
@@ -423,23 +449,17 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* ==========================================================================
-           8. Responsive Media Queries
-           ========================================================================== */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.6; }
+        }
+
+        /* Responsive */
         @media (max-width: 480px) {
-            .game-container {
-                padding: 30px 24px;
-            }
-            h1 {
-                font-size: 2.2em;
-            }
-            .game-button {
-                padding: 16px 20px;
-                font-size: 16px;
-            }
-            .modal-card {
-                padding: 25px 20px;
-            }
+            .game-container { padding: 40px 20px; }
+            h1 { font-size: 3em; }
+            .game-button { padding: 18px 22px; font-size: 1em; }
         }
     </style>
 </head>
@@ -447,11 +467,11 @@
 
     <main>
         <div class="game-container">
-            <!-- Khu vực Tiêu đề tích hợp nút i thông tin -->
+            <!-- Khu vực Tiêu đề Thần Bí -->
             <div class="title-wrapper">
                 <h1>Đánh Bài</h1>
-                <button class="info-trigger-btn" onclick="openModal()" title="Xem hướng dẫn chơi">
-                    <i class="fas fa-info"></i>
+                <button class="info-trigger-btn" onclick="openModal()" title="Xem khế ước luật chơi">
+                    <i class="fas fa-eye"></i>
                 </button>
             </div>
             
@@ -462,38 +482,39 @@
             </div>
 
             <a href="game.html" class="back-button">
-                <i class="fas fa-arrow-left"></i> Quay lại
+                <i class="fas fa-ghost"></i> Trở Về
             </a>
         </div>
 
-        <!-- Hướng dẫn chơi Modal -->
+        <!-- Khung Hướng Dẫn Ma Mị -->
         <div class="modal-overlay" id="instructionModal">
             <div class="modal-card">
                 <div class="modal-header">
-                    <i class="fas fa-book-open"></i>
-                    <h2>Hướng Dẫn Chọn Game</h2>
+                    <i class="fas fa-skull-crossbones"></i>
+                    <h2>Luật Chơi Sinh Tử</h2>
                 </div>
                 <div class="modal-body">
                     <div class="game-rule-item">
-                        <strong>1. Rút Bài (May rủi)</strong>
-                        <p>Hệ thống tự động phát bài ngẫu nhiên. Trò chơi thuần tính may mắn dựa trên các lá bài bạn rút được.</p>
+                        <strong>1. Rút Bài (Định Mệnh)</strong>
+                        <p>Lá bài tự động rút từ bóng tối. Hoàn toàn dựa vào vận may rủi để quyết định số phận của bạn.</p>
                     </div>
                     <div class="game-rule-item">
-                        <strong>2. Xì Dách (Chiến thuật)</strong>
-                        <p>Cố gắng rút bài sao cho tổng điểm các lá bài gần bằng hoặc bằng 21 điểm nhất có thể. Đừng để bị quá 21 điểm (Quắc)!</p>
+                        <strong>2. Xì Dách (Linh Hồn 21)</strong>
+                        <p>Rút bài để đạt điểm cận mốc 21 nhất. Nếu vượt quá, linh hồn quân bài sẽ bị "Quắc" (Thiêu rụi)!</p>
                     </div>
                     <div class="game-rule-item">
-                        <strong>3. Bài Cào (Đếm nút)</strong>
-                        <p>Mỗi người chơi được chia 3 lá bài. Cộng điểm các lá bài lại để tính hàng đơn vị, ai có số điểm gần bằng 9 nhất sẽ thắng.</p>
+                        <strong>3. Bài Cào (Vòng Quay Tối Thượng)</strong>
+                        <p>Sở hữu 3 lá bài thần bí. Tính điểm hàng đơn vị, kẻ nào tiến gần đến con số 9 tối thượng sẽ nuốt chửng tất cả.</p>
                     </div>
                 </div>
-                <button class="close-modal-btn" onclick="closeModal()">Đã Hiểu & Chơi Ngay</button>
+                <button class="close-modal-btn" onclick="closeModal()">CHẤP NHẬN THỬ THÁCH</button>
             </div>
         </div>
 
-        <!-- Loading Overlay -->
+        <!-- Màn Hình Tải Trang Khi Chuyển Cảnh -->
         <div class="loading-overlay" id="loadingOverlay">
             <div class="loading-spinner"></div>
+            <p style="color: #ff7675; margin-top: 20px; font-family: 'Creepster', sans-serif; font-size: 1.5em; letter-spacing: 2px; animation: pulse 1s infinite;">ĐANG TRIỆU HỒI BÀI...</p>
         </div>
     </main>
 
@@ -504,82 +525,53 @@
                 <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
                 <a href="https://www.tiktok.com/@thanh.sang70" target="_blank"><i class="fab fa-tiktok"></i></a>
             </div>
-            <p>© 2025 NTS. Design by <a href="profile.html">Nguyễn Thanh Sang (阮清尚)</a>.</p>
+            <p>© 2025 NTS. Thao túng bởi <a href="profile.html">Nguyễn Thanh Sang</a>.</p>
         </div>
     </footer>
 
     <script>
-        // Tự động mở bảng hướng dẫn khi trang web tải xong
+        // Mở bảng hướng dẫn khi bắt đầu vào game
         window.addEventListener('DOMContentLoaded', () => {
             openModal();
         });
 
-        // Hàm mở bảng hướng dẫn chơi
         function openModal() {
-            const modal = document.getElementById('instructionModal');
-            modal.classList.add('active');
+            document.getElementById('instructionModal').classList.add('active');
         }
 
-        // Hàm đóng bảng hướng dẫn chơi
         function closeModal() {
-            const modal = document.getElementById('instructionModal');
-            modal.classList.remove('active');
+            document.getElementById('instructionModal').classList.remove('active');
         }
 
-        // Hiệu ứng Loading khi bấm chuyển trò chơi
+        // Hiệu ứng chuyển trang hồi hộp
         function showLoading(event) {
             event.preventDefault(); 
-            
-            const button = event.currentTarget;
-            const href = button.getAttribute('href');
+            const href = event.currentTarget.getAttribute('href');
 
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            loadingOverlay.classList.add('active');
-
+            document.getElementById('loadingOverlay').classList.add('active');
             document.querySelectorAll('.game-button').forEach(btn => btn.classList.add('disabled'));
 
             setTimeout(() => {
                 window.location.href = href;
-            }, 1500);
+            }, 1800); // Tăng lên 1.8 giây một chút để tăng sự hồi hộp cho người chơi
         }
 
         /* ==========================================================================
-           Bảo vệ mã nguồn cơ bản (Anti-DevTools / Anti-Copy)
+           Hệ Thống Bảo Vệ Sòng Bài (Chống Copy / Chống F12)
            ========================================================================== */
-        document.addEventListener('contextmenu', (event) => {
-            event.preventDefault();
-        });
+        document.addEventListener('contextmenu', e => e.preventDefault());
 
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'F12') {
-                event.preventDefault();
-                return false;
-            }
-            if (event.ctrlKey && event.shiftKey && (event.key === 'I' || event.key === 'J' || event.key === 'C' || event.key === 'i' || event.key === 'j' || event.key === 'c')) {
-                event.preventDefault();
-                return false;
-            }
-            if (event.ctrlKey && (event.key === 'U' || event.key === 'u')) {
-                event.preventDefault();
-                return false;
-            }
-            if (event.ctrlKey && (event.key === 'S' || event.key === 's')) {
+            if (event.key === 'F12' || 
+                (event.ctrlKey && event.shiftKey && ['I','J','C'].includes(event.key.toUpperCase())) ||
+                (event.ctrlKey && ['U','S'].includes(event.key.toUpperCase()))) {
                 event.preventDefault();
                 return false;
             }
         });
 
         setInterval(function() {
-            function check() {
-                (function(a) {
-                    return (function(a) {
-                        return (typeof a === 'string' && (function() {
-                            return true;
-                        })['constructor']('debugger')['call']('action'));
-                    })(a);
-                })('');
-            }
-            try { check(); } catch (e) {}
+            try { (function(){return true;}['constructor']('debugger')('action')); } catch (e) {}
         }, 200);
     </script>
 </body>
