@@ -26,7 +26,7 @@
 
         body {
             font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #1e4d2b, #2e7d32); /* Giữ nguyên màu nền xanh casino */
+            background: linear-gradient(135deg, #1e4d2b, #2e7d32);
             color: #ffffff;
             min-height: 100vh;
             display: flex;
@@ -55,7 +55,7 @@
         .game-container {
             width: 100%;
             max-width: 650px;
-            background: rgba(10, 35, 18, 0.75); /* Tăng độ đậm nền container để nổi bật các nút mới */
+            background: rgba(10, 35, 18, 0.75);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             padding: 40px;
@@ -70,7 +70,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px;
+            gap: 25px; /* ĐÃ TĂNG: Từ 15px lên 25px để nút i cách xa tiêu đề hơn */
             margin-bottom: 10px;
         }
 
@@ -119,7 +119,7 @@
         }
 
         /* ==========================================================================
-           3. Buttons (Phối màu lại để hợp với nền xanh sẫm)
+           3. Buttons
            ========================================================================== */
         .button-container {
             display: flex;
@@ -146,20 +146,17 @@
             letter-spacing: 0.5px;
         }
 
-        /* Nút 1: Rút Bài - Màu Vàng Gold (May mắn) */
         .button-container a:nth-child(1) { 
             background: linear-gradient(135deg, #d4af37, #aa7c11); 
             box-shadow: 0 4px 15px rgba(170, 124, 17, 0.4); 
             color: #ffffff;
         }
         
-        /* Nút 2: Xì Dách - Màu Đỏ Nhung / Đỏ Đô (Kịch tính, màu lá bài) */
         .button-container a:nth-child(2) { 
             background: linear-gradient(135deg, #c0392b, #962d22); 
             box-shadow: 0 4px 15px rgba(192, 57, 43, 0.4); 
         }
         
-        /* Nút 3: Bài Cào - Màu Xanh Ngọc Bích / Mint Sáng (Hài hòa với Casino) */
         .button-container a:nth-child(3) { 
             background: linear-gradient(135deg, #1abc9c, #16a085); 
             box-shadow: 0 4px 15px rgba(26, 188, 156, 0.4); 
@@ -204,7 +201,6 @@
             opacity: 0.4;
         }
 
-        /* Nút Quay Lại: Đổi sang màu xám bạc nhẹ nhàng sang trọng */
         .back-button {
             display: inline-flex;
             align-items: center;
@@ -308,7 +304,6 @@
             margin-bottom: 5px;
         }
         
-        /* Đồng bộ màu tiêu đề tiêu chuẩn trong hướng dẫn với màu nút ngoài */
         .game-rule-item:nth-of-type(1) strong { color: #d4af37; }
         .game-rule-item:nth-of-type(2) strong { color: #ff7675; }
         .game-rule-item:nth-of-type(3) strong { color: #1abc9c; }
@@ -479,6 +474,9 @@
                 padding: 16px 20px;
                 font-size: 16px;
                 border-radius: 12px;
+            }
+            .title-wrapper {
+                gap: 15px; /* Giảm nhẹ khoảng cách trên điện thoại để không bị tràn dòng */
             }
         }
     </style>
