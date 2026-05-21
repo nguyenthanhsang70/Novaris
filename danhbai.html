@@ -18,10 +18,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
+            /* ĐÃ XÓA: Đoạn chặn bôi đen user-select cũ ở đây để người dùng thoải mái coppy */
         }
 
         html, body {
@@ -47,8 +44,14 @@
             padding: 40px 20px;
         }
 
+        /* Tùy chỉnh màu sắc khi người dùng bôi đen cho đẹp mắt hơn */
+        ::selection {
+            background: #f1c40f;
+            color: #1e4d2b;
+        }
+
         /* ==========================================================================
-           2. Layout & Containers (Cải tiến bo góc, đổ bóng có chiều sâu)
+           2. Layout & Containers
            ========================================================================== */
         .game-container {
             width: 100%;
@@ -64,7 +67,6 @@
             animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Khung chứa tiêu đề và icon i */
         .title-wrapper {
             display: flex;
             align-items: center;
@@ -91,7 +93,6 @@
             letter-spacing: 1px;
         }
 
-        /* Nút icon i hướng dẫn */
         .info-trigger-btn {
             background: rgba(241, 196, 15, 0.15);
             border: 1.5px solid rgba(241, 196, 15, 0.4);
@@ -119,7 +120,7 @@
         }
 
         /* ==========================================================================
-           3. Buttons (Chuyển sang bốc cục hàng dọc gọn gàng, nút to trực quan)
+           3. Buttons
            ========================================================================== */
         .button-container {
             display: flex;
@@ -128,7 +129,6 @@
             margin-bottom: 25px;
         }
 
-        /* Game Navigation Buttons */
         .game-button {
             display: inline-flex;
             align-items: center;
@@ -149,10 +149,9 @@
             letter-spacing: 0.5px;
         }
 
-        /* Màu riêng cho từng loại game để tăng nhận diện */
-        .button-container a:nth-child(1) { background: linear-gradient(135deg, #8e44ad, #9b59b6); box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3); } /* Rút bài */
-        .button-container a:nth-child(2) { background: linear-gradient(135deg, #d35400, #e67e22); box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3); }  /* Xì dách */
-        .button-container a:nth-child(3) { background: linear-gradient(135deg, #27ae60, #2ecc71); box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3); }  /* Bài cào */
+        .button-container a:nth-child(1) { background: linear-gradient(135deg, #8e44ad, #9b59b6); box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3); }
+        .button-container a:nth-child(2) { background: linear-gradient(135deg, #d35400, #e67e22); box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3); }
+        .button-container a:nth-child(3) { background: linear-gradient(135deg, #27ae60, #2ecc71); box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3); }
 
         .game-button:hover {
             transform: translateY(-3px);
@@ -164,7 +163,6 @@
             transform: translateY(1px);
         }
 
-        /* Ripple effect on hover */
         .game-button::before {
             content: '';
             position: absolute;
@@ -194,7 +192,6 @@
             opacity: 0.4;
         }
 
-        /* Back Button */
         .back-button {
             display: inline-flex;
             align-items: center;
@@ -221,7 +218,7 @@
         }
 
         /* ==========================================================================
-           4. Instructions Modal (Giao diện kính mờ Glassmorphism)
+           4. Instructions Modal
            ========================================================================== */
         .modal-overlay {
             position: fixed;
@@ -298,7 +295,6 @@
             margin-bottom: 5px;
         }
         
-        /* Đồng bộ màu chữ luật chơi giống màu nút bên ngoài */
         .game-rule-item:nth-of-type(1) strong { color: #bb6cd9; }
         .game-rule-item:nth-of-type(2) strong { color: #e67e22; }
         .game-rule-item:nth-of-type(3) strong { color: #2ecc71; }
@@ -578,15 +574,15 @@
         }
 
         /* ==========================================================================
-           Bảo vệ mã nguồn cơ bản (Anti-DevTools / Anti-Copy)
+           Bảo vệ mã nguồn cơ bản (Anti-DevTools nhưng cho phép Bôi đen/Copy)
            ========================================================================== */
         
-        // 1. Chặn click chuột phải
+        // 1. Chặn click chuột phải (ngăn Inspect Element / Xem mã nguồn bằng menu chuột phải)
         document.addEventListener('contextmenu', (event) => {
             event.preventDefault();
         });
 
-        // 2. Chặn các tổ hợp phím mở Developer Tools và Xem nguồn trang
+        // 2. Chặn các tổ hợp phím mở Developer Tools và Xem nguồn trang độc hại
         document.addEventListener('keydown', (event) => {
             // Chặn F12
             if (event.key === 'F12') {
@@ -611,9 +607,11 @@
                 event.preventDefault();
                 return false;
             }
+            
+            // LƯU Ý: Phím Ctrl+C và Ctrl+A đã được thả tự do, không bị chặn tại đây nữa!
         });
 
-        // 3. Liên tục kích hoạt dòng lệnh debugger nếu phát hiện DevTools đang mở
+        // 3. Vòng lặp debugger liên tục bẻ gãy giao diện nếu DevTools cố tình mở lén lút
         setInterval(function() {
             function check() {
                 (function(a) {
