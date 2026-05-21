@@ -48,12 +48,48 @@
             align-items: center;
         }
 
+        /* Khung chứa tiêu đề và icon i */
+        .title-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            animation: fadeIn 1s ease-in;
+        }
+
         h1 {
             font-size: 3em;
-            margin-bottom: 40px;
             text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
             color: #f5f5f5;
-            animation: fadeIn 1s ease-in;
+        }
+
+        /* Nút icon i hướng dẫn */
+        .info-trigger-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            color: #f1c40f;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .info-trigger-btn:hover {
+            background: #f1c40f;
+            color: #1e4d2b;
+            transform: scale(1.15) rotate(15deg);
+            box-shadow: 0 6px 15px rgba(241, 196, 15, 0.4);
+        }
+
+        .info-trigger-btn:active {
+            transform: scale(0.95);
         }
 
         /* ==========================================================================
@@ -401,8 +437,17 @@
            8. Responsive Media Queries
            ========================================================================== */
         @media (max-width: 600px) {
+            .title-wrapper {
+                gap: 10px;
+                margin-bottom: 30px;
+            }
             h1 {
                 font-size: 2em;
+            }
+            .info-trigger-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 0.9em;
             }
             .game-container {
                 padding: 20px;
@@ -441,7 +486,13 @@
 
     <main>
         <div class="game-container">
-            <h1>Đánh Bài</h1>
+            <!-- Khu vực Tiêu đề tích hợp nút i thông tin -->
+            <div class="title-wrapper">
+                <h1>Đánh Bài</h1>
+                <button class="info-trigger-btn" onclick="openModal()" title="Xem hướng dẫn chơi">
+                    <i class="fas fa-info"></i>
+                </button>
+            </div>
             
             <a href="game.html" class="back-button">
                 <i class="fas fa-arrow-left"></i> Quay lại
@@ -499,9 +550,14 @@
     <script>
         // Tự động mở bảng hướng dẫn khi trang web tải xong
         window.addEventListener('DOMContentLoaded', () => {
+            openModal();
+        });
+
+        // Hàm mở bảng hướng dẫn chơi
+        function openModal() {
             const modal = document.getElementById('instructionModal');
             modal.classList.add('active');
-        });
+        }
 
         // Hàm đóng bảng hướng dẫn chơi
         function closeModal() {
@@ -565,7 +621,7 @@
             }
         });
 
-        // 3. Liên tục kích hoạt dòng lệnh debugger nếu phát hiện DevTools đang mở (Kỹ thuật nâng cao)
+        // 3. Liên tục kích hoạt dòng lệnh debugger nếu phát hiện DevTools đang mở
         setInterval(function() {
             function check() {
                 (function(a) {
