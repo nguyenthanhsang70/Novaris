@@ -46,7 +46,7 @@
             position: relative;
         }
         
-        /* Nút quay lại bên góc trái */
+        /* SỬA LỖI: Thêm z-index để nút không bị đè vách ẩn */
         .back-button {
             position: absolute;
             top: 12px; left: 12px;
@@ -59,10 +59,11 @@
             align-items: center;
             justify-content: center;
             transition: background-color 0.3s ease, transform 0.2s ease;
+            z-index: 10;
         }
         .back-button:hover { background-color: #fdd835; transform: scale(1.05); }
 
-        /* Nút thông tin đối xứng bên góc phải */
+        /* SỬA LỖI: Thêm z-index để nút không bị đè vách ẩn */
         .info-button {
             position: absolute;
             top: 12px; right: 12px;
@@ -75,6 +76,7 @@
             align-items: center;
             justify-content: center;
             transition: background-color 0.3s ease, transform 0.2s ease;
+            z-index: 10;
         }
         .info-button:hover { background-color: #fdd835; transform: scale(1.05); }
 
