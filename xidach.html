@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xì Dách Game - NTS</title>
     <link rel="icon" type="png" href="logos3.png">
-    <!-- Thêm Font Awesome để hỗ trợ biểu tượng -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
@@ -22,7 +21,19 @@
             font-size: 24px;
             margin-bottom: 10px;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 25px; 
         }
+        .info-icon {
+            font-size: 18px;
+            color: #ffeb3b;
+            cursor: pointer;
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+        .info-icon:hover { transform: scale(1.2); color: #fdd835; }
+        
         .game-container {
             margin: 10px auto;
             padding: 10px;
@@ -34,35 +45,22 @@
         }
         .back-button {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            padding: 8px 16px;
-            font-size: 14px;
-            background-color: #ffeb3b;
-            color: black;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
+            top: 10px; left: 10px;
+            padding: 8px 16px; font-size: 14px;
+            background-color: #ffeb3b; color: black;
+            border: none; border-radius: 6px;
+            cursor: pointer; text-decoration: none;
+            display: flex; align-items: center;
             transition: background-color 0.3s ease;
         }
-        .back-button:hover {
-            background-color: #fdd835;
-        }
-        .back-button i {
-            margin-right: 5px;
-        }
+        .back-button:hover { background-color: #fdd835; }
+        .back-button i { margin-right: 5px; }
+
         .player-section {
             margin: 10px 0;
             padding: 10px;
             background-color: rgba(255, 255, 255, 0.1);
             border-radius: 8px;
-            transition: transform 0.3s ease;
-        }
-        .player-section:hover {
-            transform: scale(1.02);
         }
         .combined-players {
             display: flex;
@@ -77,11 +75,20 @@
             background-color: rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             margin: 5px;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
         }
-        .player-box:hover {
-            transform: scale(1.02);
+        
+        .player-box.thinking {
+            border-color: #ffeb3b;
+            box-shadow: 0 0 12px #ffeb3b;
+            animation: pulse 0.8s infinite alternate;
         }
+        @keyframes pulse {
+            from { transform: scale(1.01); box-shadow: 0 0 4px #ffeb3b; }
+            to { transform: scale(1.03); box-shadow: 0 0 15px #ffeb3b; }
+        }
+
         .deck-section {
             margin: 10px 0;
             padding: 10px;
@@ -90,11 +97,8 @@
             text-align: center;
             font-size: 18px;
             font-weight: bold;
-            transition: transform 0.3s ease;
         }
-        .deck-section:hover {
-            transform: scale(1.02);
-        }
+        
         .card {
             display: inline-block;
             margin: 3px;
@@ -109,27 +113,38 @@
             font-weight: bold;
             position: relative;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-            transition: transform 0.2s ease;
+            transition: transform 0.4s ease;
+            vertical-align: top;
         }
-        .card:hover {
-            transform: scale(1.1);
+        .card.red { color: red; }
+        .card .top-left, .card .bottom-right { position: absolute; font-size: 12px; }
+        .card .top-left { top: 4px; left: 4px; }
+        .card .bottom-right { bottom: 4px; right: 4px; transform: rotate(180deg); }
+        
+        .card.hidden-card {
+            background: repeating-linear-gradient(45deg, #b0bec5, #b0bec5 5px, #90a4ae 5px, #90a4ae 10px);
+            border: 1px solid #78909c;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.3);
+            transform: rotateY(180deg);
         }
-        .card.red {
-            color: red;
+        .card.hidden-card * { display: none !important; }
+
+        .card.dealing {
+            animation: dealCard 0.4s ease-out forwards;
         }
-        .card .top-left, .card .bottom-right {
-            position: absolute;
+        @keyframes dealCard {
+            from { transform: translateY(-40px) scale(0.6); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        .status-text {
             font-size: 12px;
+            color: #ffeb3b;
+            min-height: 18px;
+            margin-top: 5px;
+            font-style: italic;
         }
-        .card .top-left {
-            top: 4px;
-            left: 4px;
-        }
-        .card .bottom-right {
-            bottom: 4px;
-            right: 4px;
-            transform: rotate(180deg);
-        }
+
         button {
             padding: 8px 16px;
             font-size: 14px;
@@ -141,18 +156,27 @@
             margin: 3px;
             transition: background-color 0.3s ease;
         }
-        button:hover {
-            background-color: #fdd835;
+        button:hover { background-color: #fdd835; }
+        button:disabled {
+            background-color: #cccccc;
+            color: #666666;
+            cursor: not-allowed;
         }
+        
         .result {
-            margin-top: 10px;
+            margin-top: 15px;
             font-size: 18px;
             font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+            color: #ffeb3b;
+            min-height: 24px;
+            line-height: 1.6;
         }
-        .hidden-card {
-            background-color: gray;
-            color: gray;
+        .bust-highlight {
+            color: #ff5252;
+            display: block;
+            font-size: 20px;
+            margin-bottom: 5px;
         }
         #restart-button {
             display: none;
@@ -166,130 +190,130 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-        #restart-button:hover {
-            background-color: #43a047;
-        }
-        footer {
+        #restart-button:hover { background-color: #43a047; }
+
+        .modal-overlay {
             position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 10px 0;
-            text-align: center;
-            border-radius: 8px 8px 0 0;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000; opacity: 0; visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
-        .footer-container {
-            max-width: 800px;
-            margin: 0 auto;
+        .modal-overlay.show { opacity: 1; visibility: visible; }
+        .modal-content {
+            background-color: #1b5e20; border: 2px solid #ffeb3b; border-radius: 12px;
+            padding: 20px; max-width: 550px; width: 90%; text-align: left;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); color: white; max-height: 85vh; overflow-y: auto;
         }
-        .social-icons {
-            margin-bottom: 5px;
-        }
-        .social-icons a {
-            color: white;
-            font-size: 20px;
-            margin: 0 10px;
-            text-decoration: none;
-        }
-        .social-icons a:hover {
-            color: #ffeb3b;
-        }
-        .footer-container p {
-            font-size: 12px;
-            margin: 0;
-        }
-        .footer-container a {
-            color: #ffeb3b;
-            text-decoration: none;
-        }
-        .footer-container a:hover {
-            text-decoration: underline;
-        }
+        .modal-content h2 { margin-top: 0; color: #ffeb3b; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px; }
+        .modal-content h3 { color: #ffeb3b; margin-top: 15px; margin-bottom: 5px; font-size: 16px; border-left: 3px solid #ffeb3b; padding-left: 8px; }
+        .modal-content ul { padding-left: 20px; line-height: 1.6; margin-top: 5px; }
+        .modal-content li { margin-bottom: 5px; }
+        .close-modal-btn { display: block; margin: 20px auto 0 auto; background-color: #ffeb3b; color: black; font-weight: bold; padding: 10px 25px; border-radius: 6px; border: none; cursor: pointer; }
+        
         @media (max-width: 600px) {
-            h1 {
-                font-size: 1.8em;
-            }
-            .card {
-                width: 70px;
-                height: 100px;
-                font-size: 20px;
-            }
-            .controls button, .back-button {
-                padding: 10px 20px;
-                font-size: 16px;
-            }
-            .message {
-                font-size: 16px;
-                padding: 10px;
-            }
-            .social-icons a {
-                font-size: 1.5em;
-                margin: 0 10px;
-                width: 35px;
-                height: 35px;
-            }
-            .footer-container p {
-                font-size: 0.9em;
-            }
+            .card { width: 42px; height: 60px; font-size: 11px; }
         }
     </style>
 </head>
 <body>
+
+    <div id="guide-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2><i class="fas fa-book-open"></i> LUẬT CHƠI XÌ DÁCH</h2>
+            
+            <h3>1. Cách tính điểm các lá bài</h3>
+            <ul>
+                <li><strong>Lá 2 đến 10:</strong> Điểm số bằng chính giá trị ghi trên lá bài.</li>
+                <li><strong>Các lá J, Q, K:</strong> Tính là 10 điểm.</li>
+                <li><strong>Lá Át (A):</strong> Tính linh hoạt là 1 điểm, 10 điểm hoặc 11 điểm tùy tình huống có lợi nhất.</li>
+            </ul>
+
+            <h3>2. Trường hợp đặc biệt (2 lá đầu tiên)</h3>
+            <p style="margin: 5px 0 5px 20px; font-size: 14px; color: #e0e0e0;">Nếu sở hữu tổ hợp sau khi phát 2 lá đầu, bạn sẽ thắng luôn (trừ khi Nhà Cái có bài mạnh hơn hoặc bằng):</p>
+            <ul>
+                <li><strong>Xì bàng (Xì bàn):</strong> Có 2 lá Át (A - A).</li>
+                <li><strong>Xì dách:</strong> Có 1 lá Át kết hợp với 1 lá bài 10, J, Q hoặc K.</li>
+            </ul>
+
+            <h3>3. Quá trình rút bài (Bốc bài)</h3>
+            <p style="margin: 5px 0 5px 20px; font-size: 14px; color: #e0e0e0;">Người chơi được rút thêm tối đa 3 lá bài (tổng cộng không quá 5 lá trên tay) để tối ưu các ngưỡng điểm:</p>
+            <ul>
+                <li><strong>Bài non (Chưa đủ tuổi):</strong> Tổng điểm dưới 16 điểm. Bắt buộc phải đạt từ 16 điểm trở lên mới được phép dừng.</li>
+                <li><strong>Bài đủ tuổi:</strong> Tổng điểm từ 16 đến 21 điểm.</li>
+                <li><strong>Quắc (Bù):</strong> Tổng điểm vượt quá 21 điểm (Xử thua ngay lập tức).</li>
+                <li><strong>Ngũ Linh:</strong> Rút đủ 5 lá bài mà tổng điểm vẫn nhỏ hơn hoặc bằng 21 điểm. Đây là thế bài rất mạnh.</li>
+            </ul>
+
+            <h3>4. Thứ tự so điểm từ mạnh đến yếu</h3>
+            <p style="text-align: center; font-weight: bold; color: #ffeb3b; margin: 10px 0; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px;">
+                Xì bàng &rarr; Xì dách &rarr; Ngũ linh &rarr; Điểm thường (21 xuống 16)
+            </p>
+
+            <button class="close-modal-btn" onclick="toggleModal(false)">Bắt Đầu Khởi Tranh</button>
+        </div>
+    </div>
+
     <div class="game-container">
-        <a href="danhbai.html" class="back-button">
-            <i class="fas fa-arrow-left"></i> 
-        </a>
-        <h1>Xì Dách Game</h1>
-        <!-- Combined Dealer and AI Section for Dealer, AI 3, and AI 4 -->
+        <a href="danhbai.html" class="back-button"><i class="fas fa-arrow-left"></i></a>
+        
+        <h1>Xì Dách Game <i class="fas fa-info-circle info-icon" onclick="toggleModal(true)"></i></h1>
+
+        <!-- Khu vực Máy & Nhà Cái -->
         <div class="player-section">
             <h2>Nhà Cái & Các Máy</h2>
             <div class="combined-players">
-                <div class="player-box">
+                <div class="player-box" id="box-dealer">
                     <h3>Nhà Cái</h3>
                     <div id="dealer-cards"></div>
                     <div id="dealer-score"></div>
+                    <div class="status-text" id="status-dealer"></div>
                 </div>
-                <div class="player-box">
+                <div class="player-box" id="box-ai3">
                     <h3>Máy 3</h3>
                     <div id="ai3-cards"></div>
                     <div id="ai3-score"></div>
+                    <div class="status-text" id="status-ai3"></div>
                 </div>
-                <div class="player-box">
+                <div class="player-box" id="box-ai4">
                     <h3>Máy 4</h3>
                     <div id="ai4-cards"></div>
                     <div id="ai4-score"></div>
+                    <div class="status-text" id="status-ai4"></div>
                 </div>
             </div>
         </div>
 
-        <!-- Deck Section -->
         <div class="deck-section">
             <h2>Bộ Bài</h2>
             <p>⧗ Bộ bài còn lại (52 lá)</p>
         </div>
 
-        <!-- Combined Player Section for Player and AIs 1-2 -->
+        <!-- Khu vực Người Chơi & Máy 1, 2 -->
         <div class="player-section">
             <h2>Các Người Chơi</h2>
             <div class="combined-players">
-                <div class="player-box">
+                <div class="player-box" id="box-player">
                     <h3>Người Chơi</h3>
                     <div id="player-cards"></div>
                     <div id="player-score"></div>
-                    <div id="player-advice" style="font-size: 14px; color: #ffeb3b; margin-top: 5px;"></div>
-                    <button onclick="drawCard('player')">Rút Bài</button>
-                    <button onclick="standPlayer()">Dừng</button>
+                    <div style="margin-top: 15px;">
+                        <button onclick="drawCard('player', true)" id="btn-draw" disabled>Rút Bài</button>
+                        <button onclick="standPlayer()" id="btn-stand" disabled>Dừng</button>
+                    </div>
                 </div>
-                <div class="player-box">
+                <div class="player-box" id="box-ai1">
                     <h3>Máy 1</h3>
                     <div id="ai1-cards"></div>
                     <div id="ai1-score"></div>
+                    <div class="status-text" id="status-ai1"></div>
                 </div>
-                <div class="player-box">
+                <div class="player-box" id="box-ai2">
                     <h3>Máy 2</h3>
                     <div id="ai2-cards"></div>
                     <div id="ai2-score"></div>
+                    <div class="status-text" id="status-ai2"></div>
                 </div>
             </div>
         </div>
@@ -297,30 +321,41 @@
         <div class="result" id="result"></div>
         <button onclick="resetGame()" id="restart-button">Chơi Lại</button>
     </div>
+
     <script>
         const suits = ['♠', '♥', '♣', '♦'];
         const suitColors = { '♠': 'black', '♣': 'black', '♥': 'red', '♦': 'red' };
         const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 
-        let playerCards = [], playerScore = 0, isPlayerStanding = false;
-        let ai1Cards = [], ai1Score = 0, ai2Cards = [], ai2Score = 0;
-        let dealerCards = [], dealerScore = 0, ai3Cards = [], ai3Score = 0, ai4Cards = [], ai4Score = 0;
+        let playerCards = [], playerScore = 0;
+        let ai1Cards = [], ai1Score = 0;
+        let ai2Cards = [], ai2Score = 0;
+        let ai3Cards = [], ai3Score = 0;
+        let ai4Cards = [], ai4Score = 0;
+        let dealerCards = [], dealerScore = 0;
         let deck = [];
         let isGameOver = false;
+        
+        let revealedAllBots = false;
 
-        // Khởi tạo bộ bài (52 lá)
-        function initializeDeck() {
-            deck = [];
-            values.forEach(value => {
-                suits.forEach(suit => {
-                    deck.push({ value: value, suit: suit });
-                });
-            });
-            shuffleDeck();
+        const HAND_TYPES = {
+            XIBANG: { tier: 5, name: "Xì Bàng" },
+            XIDACH: { tier: 4, name: "Xì Dách" },
+            NGULINH: { tier: 3, name: "Ngũ Linh" },
+            NORMAL: { tier: 2, name: "Bài Điểm" },
+            NON: { tier: 1, name: "Bài Non" },
+            QUAC: { tier: 0, name: "Quắc" }
+        };
+
+        function toggleModal(show) {
+            const modal = document.getElementById('guide-modal');
+            if (show) modal.classList.add('show');
+            else modal.classList.remove('show');
         }
 
-        // Xáo trộn bộ bài
-        function shuffleDeck() {
+        function initializeDeck() {
+            deck = [];
+            values.forEach(value => { suits.forEach(suit => { deck.push({ value: value, suit: suit }); }); });
             for (let i = deck.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [deck[i], deck[j]] = [deck[j], deck[i]];
@@ -328,183 +363,195 @@
         }
 
         function calculateScore(cards) {
-            let score = 0;
-            let aces = 0;
-
+            let score = 0; let aces = 0;
             cards.forEach(card => {
-                if (card.value === 'A') {
-                    aces += 1;
-                    score += 11;
-                } else if (['J', 'Q', 'K'].includes(card.value)) {
-                    score += 10;
-                } else {
-                    score += parseInt(card.value);
-                }
+                if (card.value === 'A') { aces += 1; score += 11; }
+                else if (['J', 'Q', 'K'].includes(card.value)) { score += 10; }
+                else { score += parseInt(card.value); }
             });
-
-            while (score > 21 && aces > 0) {
-                score -= 10;
-                aces -= 1;
-            }
-
+            while (score > 21 && aces > 0) { score -= 10; aces -= 1; }
             return score;
         }
 
-        // Kiểm tra bài mềm (Soft Hand)
-        function isSoftHand(cards) {
-            let score = 0;
-            let aces = 0;
-            cards.forEach(card => {
-                if (card.value === 'A') {
-                    aces += 1;
-                    score += 11;
-                } else if (['J', 'Q', 'K'].includes(card.value)) {
-                    score += 10;
-                } else {
-                    score += parseInt(card.value);
+        function evaluateHand(cards) {
+            const score = calculateScore(cards);
+            
+            if (cards.length === 2) {
+                if (cards[0].value === 'A' && cards[1].value === 'A') {
+                    return { type: HAND_TYPES.XIBANG, score: 22 }; 
                 }
-            });
-            return aces > 0 && score <= 21;
-        }
-
-        // Gợi ý cho người chơi
-        function getPlayerAdvice() {
-            const dealerUpCard = dealerCards[0].value; // Lá bài đầu tiên của Dealer
-            const dealerValue = ['J', 'Q', 'K'].includes(dealerUpCard) ? 10 : 
-                                dealerUpCard === 'A' ? 11 : parseInt(dealerUpCard);
-            const adviceDiv = document.getElementById('player-advice');
-
-            if (!adviceDiv) return;
-
-            if (playerScore < 17) {
-                adviceDiv.textContent = "Tổng điểm dưới 17: Nên rút thêm bài để tăng cơ hội.";
-            } else if (isSoftHand(playerCards)) {
-                adviceDiv.textContent = "Bài mềm: Có thể rút thêm mà không lo quắc.";
-            } else if (dealerValue >= 7 && playerScore >= 12 && playerScore <= 16) {
-                adviceDiv.textContent = "Dealer mạnh (7+): Nên rút thêm theo chiến lược cơ bản.";
-            } else if (playerScore >= 17 && playerScore < 21) {
-                adviceDiv.textContent = "Điểm ổn: Dừng hoặc rút tùy cảm giác may rủi.";
-            } else {
-                adviceDiv.textContent = "Điểm cao: Nên dừng để an toàn.";
+                if ((cards[0].value === 'A' && ['10','J','Q','K'].includes(cards[1].value)) ||
+                    (cards[1].value === 'A' && ['10','J','Q','K'].includes(cards[0].value))) {
+                    return { type: HAND_TYPES.XIDACH, score: 21 };
+                }
             }
+            
+            if (score > 21) return { type: HAND_TYPES.QUAC, score: score };
+
+            if (cards.length === 5 && score <= 21) {
+                return { type: HAND_TYPES.NGULINH, score: score };
+            }
+
+            if (score < 16) return { type: HAND_TYPES.NON, score: score };
+
+            return { type: HAND_TYPES.NORMAL, score: score };
         }
 
-        function drawCard(playerType) {
-            if (isGameOver || deck.length === 0) return;
-
+        function drawCard(playerType, isNewCard = false) {
+            if (deck.length === 0) return;
             const card = deck.pop();
+            card.isNew = isNewCard; 
 
-            if (playerType === 'player') {
-                playerCards.push(card);
-                playerScore = calculateScore(playerCards);
-                renderCards('player');
-                checkPlayerStatus();
-            } else if (playerType === 'dealer') {
-                dealerCards.push(card);
-                dealerScore = calculateScore(dealerCards);
-                renderCards('dealer');
-            } else if (playerType === 'ai1') {
-                ai1Cards.push(card);
-                ai1Score = calculateScore(ai1Cards);
-                renderCards('ai1');
-            } else if (playerType === 'ai2') {
-                ai2Cards.push(card);
-                ai2Score = calculateScore(ai2Cards);
-                renderCards('ai2');
-            } else if (playerType === 'ai3') {
-                ai3Cards.push(card);
-                ai3Score = calculateScore(ai3Cards);
-                renderCards('ai3');
-            } else if (playerType === 'ai4') {
-                ai4Cards.push(card);
-                ai4Score = calculateScore(ai4Cards);
-                renderCards('ai4');
+            if (playerType === 'player') { 
+                playerCards.push(card); 
+                playerScore = calculateScore(playerCards); 
+                renderCards('player'); 
+                checkPlayerStatus(); 
             }
-
+            else if (playerType === 'dealer') { dealerCards.push(card); dealerScore = calculateScore(dealerCards); renderCards('dealer'); }
+            else if (playerType === 'ai1') { ai1Cards.push(card); ai1Score = calculateScore(ai1Cards); renderCards('ai1'); }
+            else if (playerType === 'ai2') { ai2Cards.push(card); ai2Score = calculateScore(ai2Cards); renderCards('ai2'); }
+            else if (playerType === 'ai3') { ai3Cards.push(card); ai3Score = calculateScore(ai3Cards); renderCards('ai3'); }
+            else if (playerType === 'ai4') { ai4Cards.push(card); ai4Score = calculateScore(ai4Cards); renderCards('ai4'); }
             updateDeckDisplay();
         }
 
-        function standPlayer() {
-            if (isGameOver) return;
-            isPlayerStanding = true;
-            playAI();
+        async function runBotsTurnBeforePlayer() {
+            const delay = (ms) => new Promise(res => setTimeout(res, ms));
+            const bots = ['ai1', 'ai2', 'ai3', 'ai4', 'dealer'];
+
+            for (let bot of bots) {
+                document.getElementById(`box-${bot}`).classList.add('thinking');
+                let statusDiv = document.getElementById(`status-${bot}`);
+                statusDiv.textContent = "Đang tính toán bài...";
+                await delay(900);
+
+                let currentCards = bot === 'ai1' ? ai1Cards : bot === 'ai2' ? ai2Cards : bot === 'ai3' ? ai3Cards : bot === 'ai4' ? ai4Cards : dealerCards;
+                let handEval = evaluateHand(currentCards);
+
+                while ((handEval.type.tier === HAND_TYPES.NON.tier || (handEval.score === 16 && Math.random() < 0.6) || (handEval.score < 18 && currentCards.length < 5)) && currentCards.length < 5 && handEval.type.tier !== HAND_TYPES.XIBANG.tier && handEval.type.tier !== HAND_TYPES.XIDACH.tier) {
+                    statusDiv.textContent = "Đang rút thêm bài... 🎴";
+                    await delay(600);
+                    
+                    drawCard(bot, true); 
+                    
+                    currentCards = bot === 'ai1' ? ai1Cards : bot === 'ai2' ? ai2Cards : bot === 'ai3' ? ai3Cards : bot === 'ai4' ? ai4Cards : dealerCards;
+                    handEval = evaluateHand(currentCards);
+                    await delay(500);
+                }
+
+                statusDiv.textContent = "Đã hoàn thành lượt.";
+                document.getElementById(`box-${bot}`).classList.remove('thinking');
+                await delay(400);
+            }
+
+            let playerHand = evaluateHand(playerCards);
+            if (playerHand.type.tier === HAND_TYPES.XIBANG.tier || playerHand.type.tier === HAND_TYPES.XIDACH.tier) {
+                endPlayerTurnAndReveal();
+                determineWinner();
+            } else {
+                document.getElementById('btn-draw').disabled = false;
+                document.getElementById('btn-stand').disabled = false;
+            }
         }
 
         function checkPlayerStatus() {
-            if (playerScore > 21) {
-                endGame("Bạn đã quắc! Bạn thua.");
-            } else if (playerScore === 21 && playerCards.length === 2) {
-                endGame("Xì dách! Bạn thắng!");
+            let playerHand = evaluateHand(playerCards);
+            
+            if (playerHand.type.tier === HAND_TYPES.QUAC.tier || playerCards.length === 5) {
+                endPlayerTurnAndReveal();
+                determineWinner();
             }
         }
 
-        function playAI() {
-            while (ai2Score < 15) drawCard('ai2');
-            if (ai2Score === 18 && Math.random() < 0.5) {
-                drawCard('ai2');
-            } else if (ai2Score < 18) {
-                drawCard('ai2');
-            }
-
-            while (ai1Score < 15) drawCard('ai1');
-            if (ai1Score === 18 && Math.random() < 0.5) {
-                drawCard('ai1');
-            } else if (ai1Score < 18) {
-                drawCard('ai1');
-            }
-
-            while (ai4Score < 15) drawCard('ai4');
-            if (ai4Score === 18 && Math.random() < 0.5) {
-                drawCard('ai4');
-            } else if (ai4Score < 18) {
-                drawCard('ai4');
-            }
-
-            while (ai3Score < 15) drawCard('ai3');
-            if (ai3Score === 18 && Math.random() < 0.5) {
-                drawCard('ai3');
-            } else if (ai3Score < 18) {
-                drawCard('ai3');
-            }
-
-            while (dealerScore < 15) drawCard('dealer');
-            if (dealerScore === 18 && Math.random() < 0.5) {
-                drawCard('dealer');
-            } else if (dealerScore < 18) {
-                drawCard('dealer');
-            }
-
+        function standPlayer() {
+            endPlayerTurnAndReveal();
             determineWinner();
         }
 
+        function endPlayerTurnAndReveal() {
+            document.getElementById('btn-draw').disabled = true;
+            document.getElementById('btn-stand').disabled = true;
+            revealedAllBots = true; 
+
+            const bots = ['ai1', 'ai2', 'ai3', 'ai4', 'dealer'];
+            bots.forEach(bot => {
+                renderCards(bot);
+                document.getElementById(`status-${bot}`).textContent = "Đã công bố điểm.";
+            });
+        }
+
         function determineWinner() {
-            const scores = [
-                { name: "Nhà Cái", score: dealerScore },
-                { name: "Người Chơi", score: playerScore },
-                { name: "Máy 1", score: ai1Score },
-                { name: "Máy 2", score: ai2Score },
-                { name: "Máy 3", score: ai3Score },
-                { name: "Máy 4", score: ai4Score }
-            ];
+            const playerHands = [
+                { name: "Nhà Cái", cards: dealerCards },
+                { name: "Người Chơi", cards: playerCards },
+                { name: "Máy 1", cards: ai1Cards },
+                { name: "Máy 2", cards: ai2Cards },
+                { name: "Máy 3", cards: ai3Cards },
+                { name: "Máy 4", cards: ai4Cards }
+            ].map(p => {
+                const evalResult = evaluateHand(p.cards);
+                return {
+                    name: p.name,
+                    type: evalResult.type,
+                    score: evalResult.score,
+                    cardCount: p.cards.length
+                };
+            });
 
-            const validScores = scores.filter(player => player.score <= 21);
-            validScores.sort((a, b) => b.score - a.score);
-
-            let winnerMessage = "";
-            if (validScores.length > 0) {
-                const winner = validScores[0];
-                winnerMessage = `${winner.name} thắng với ${winner.score} điểm!`;
-            } else {
-                winnerMessage = "Không có người chiến thắng!";
+            let prefixMessage = "";
+            const userHand = playerHands.find(p => p.name === "Người Chơi");
+            if (userHand.type.tier === HAND_TYPES.QUAC.tier) {
+                prefixMessage = `<span class='bust-highlight'>❌ Bạn đã bị quắc (${userHand.score} điểm)! Thất bại.</span>`;
+            } else if (userHand.type.tier === HAND_TYPES.NON.tier) {
+                prefixMessage = `<span class='bust-highlight'>❌ Bài của bạn bị Non (${userHand.score} điểm) mà không bốc tiếp! Bị xử thua lập tức.</span>`;
             }
 
-            endGame(winnerMessage);
+            const validHands = playerHands.filter(p => p.type.tier !== HAND_TYPES.QUAC.tier && p.type.tier !== HAND_TYPES.NON.tier);
+
+            if (validHands.length === 0) {
+                endGame(`${prefixMessage}Tất cả người chơi và máy đều bị bài Non hoặc Quắc! Không tìm thấy người chiến thắng hợp lệ.`);
+                return;
+            }
+
+            const maxTier = Math.max(...validHands.map(p => p.type.tier));
+            const highestTierHands = validHands.filter(p => p.type.tier === maxTier);
+
+            let winners = [];
+            let winningScore = 0;
+            let winningTypeName = highestTierHands[0].type.name;
+
+            if (maxTier === HAND_TYPES.NGULINH.tier) {
+                winningScore = Math.min(...highestTierHands.map(p => p.score));
+                winners = highestTierHands.filter(p => p.score === winningScore);
+            } else if (maxTier === HAND_TYPES.NORMAL.tier) {
+                winningScore = Math.max(...highestTierHands.map(p => p.score));
+                winners = highestTierHands.filter(p => p.score === winningScore);
+            } else {
+                winners = highestTierHands;
+                winningScore = highestTierHands[0].score;
+            }
+
+            const winnerNames = winners.map(w => w.name);
+            let winnerMessage = "";
+
+            let displayHandType = winningTypeName;
+            if (maxTier === HAND_TYPES.NORMAL.tier) {
+                displayHandType = `${winningScore} Điểm`;
+            }
+
+            if (winnerNames.length === 1) {
+                winnerMessage = `🏆 Kết quả: <strong>${winnerNames[0]}</strong> giành chiến thắng với <strong>${displayHandType}</strong>!`;
+            } else {
+                winnerMessage = `🏆 Kết quả: <strong>${winnerNames.join(", ")}</strong> cùng thắng với loại bài <strong>${displayHandType}</strong>!`;
+            }
+
+            endGame(prefixMessage + winnerMessage);
         }
 
         function renderCards(playerType) {
             const cardsDiv = document.getElementById(`${playerType}-cards`);
             const scoreDiv = document.getElementById(`${playerType}-score`);
-
             if (!cardsDiv || !scoreDiv) return;
 
             cardsDiv.innerHTML = '';
@@ -514,99 +561,96 @@
                           playerType === 'ai2' ? ai2Cards :
                           playerType === 'ai3' ? ai3Cards : ai4Cards;
 
-            const score = playerType === 'player' ? playerScore :
-                          playerType === 'dealer' ? dealerScore :
-                          playerType === 'ai1' ? ai1Score :
-                          playerType === 'ai2' ? ai2Score :
-                          playerType === 'ai3' ? ai3Score : ai4Score;
+            const handEval = evaluateHand(cards);
 
-            cards.forEach(card => {
+            cards.forEach((card, index) => {
                 const cardDiv = document.createElement('div');
-                cardDiv.className = 'card';
-                if (suitColors[card.suit] === 'red') {
-                    cardDiv.classList.add('red');
+                
+                if (playerType !== 'player' && !revealedAllBots && index > 0) {
+                    cardDiv.className = 'card hidden-card';
+                    if (card.isNew) cardDiv.classList.add('dealing'); 
+                } else {
+                    cardDiv.className = 'card';
+                    if (card.isNew) cardDiv.classList.add('dealing');
+                    if (suitColors[card.suit] === 'red') cardDiv.classList.add('red');
+                    
+                    const topLeft = document.createElement('div');
+                    topLeft.className = 'top-left';
+                    topLeft.textContent = `${card.value}${card.suit}`;
+
+                    const bottomRight = document.createElement('div');
+                    bottomRight.className = 'bottom-right';
+                    bottomRight.textContent = `${card.value}${card.suit}`;
+
+                    cardDiv.appendChild(topLeft);
+                    cardDiv.appendChild(bottomRight);
                 }
-
-                const topLeft = document.createElement('div');
-                topLeft.className = 'top-left';
-                topLeft.textContent = `${card.value}${card.suit}`;
-
-                const bottomRight = document.createElement('div');
-                bottomRight.className = 'bottom-right';
-                bottomRight.textContent = `${card.value}${card.suit}`;
-
-                cardDiv.appendChild(topLeft);
-                cardDiv.appendChild(bottomRight);
                 cardsDiv.appendChild(cardDiv);
             });
 
-            scoreDiv.textContent = `Điểm: ${score}`;
-
-            if (playerType === 'player' && !isGameOver) {
-                getPlayerAdvice();
+            if (playerType !== 'player' && !revealedAllBots) {
+                scoreDiv.textContent = `Điểm: ??`;
+            } else {
+                if (handEval.type.tier === HAND_TYPES.QUAC.tier) {
+                    scoreDiv.textContent = `Bài: Quắc (Điểm: ${handEval.score})`;
+                } else if (handEval.type.tier === HAND_TYPES.NORMAL.tier) {
+                    scoreDiv.textContent = `Điểm: ${handEval.score}`;
+                } else {
+                    scoreDiv.textContent = `Bài: ${handEval.type.name} (${handEval.score}đ)`;
+                }
             }
         }
 
         function endGame(message) {
             isGameOver = true;
-            document.getElementById('result').textContent = message;
+            document.getElementById('result').innerHTML = message;
             document.getElementById('restart-button').style.display = 'inline-block';
-            document.getElementById('player-advice').textContent = ''; // Xóa gợi ý khi trò chơi kết thúc
         }
 
         function resetGame() {
-            playerCards = []; playerScore = 0; isPlayerStanding = false;
-            ai1Cards = []; ai1Score = 0;
-            ai2Cards = []; ai2Score = 0;
-            dealerCards = []; dealerScore = 0;
-            ai3Cards = []; ai3Score = 0;
-            ai4Cards = []; ai4Score = 0;
-            deck = [];
-            isGameOver = false;
+            playerCards = []; playerScore = 0; isGameOver = false;
+            ai1Cards = []; ai1Score = 0; ai2Cards = []; ai2Score = 0;
+            ai3Cards = []; ai3Score = 0; ai4Cards = []; ai4Score = 0;
+            dealerCards = []; dealerScore = 0; deck = [];
+            revealedAllBots = false;
+
+            document.getElementById('btn-draw').disabled = true;
+            document.getElementById('btn-stand').disabled = true;
 
             initializeDeck();
 
-            document.getElementById('player-cards').innerHTML = '';
-            document.getElementById('player-score').textContent = '';
-            document.getElementById('player-advice').textContent = '';
-            document.getElementById('ai1-cards').innerHTML = '';
-            document.getElementById('ai1-score').textContent = '';
-            document.getElementById('ai2-cards').innerHTML = '';
-            document.getElementById('ai2-score').textContent = '';
-            document.getElementById('dealer-cards').innerHTML = '';
-            document.getElementById('dealer-score').textContent = '';
-            document.getElementById('ai3-cards').innerHTML = '';
-            document.getElementById('ai3-score').textContent = '';
-            document.getElementById('ai4-cards').innerHTML = '';
-            document.getElementById('ai4-score').textContent = '';
-            document.getElementById('result').textContent = '';
+            const sections = ['player', 'ai1', 'ai2', 'ai3', 'ai4', 'dealer'];
+            sections.forEach(sec => {
+                document.getElementById(`${sec}-cards`).innerHTML = '';
+                document.getElementById(`${sec}-score`).textContent = '';
+                let status = document.getElementById(`status-${sec}`);
+                if (status) status.textContent = '';
+                document.getElementById(`box-${sec}`).classList.remove('thinking');
+            });
+            
+            document.getElementById('result').innerHTML = '';
             document.getElementById('restart-button').style.display = 'none';
 
-            drawCard('player');
-            drawCard('player');
-            drawCard('ai2');
-            drawCard('ai2');
-            drawCard('ai1');
-            drawCard('ai1');
-            drawCard('ai4');
-            drawCard('ai4');
-            drawCard('ai3');
-            drawCard('ai3');
-            drawCard('dealer');
-            drawCard('dealer');
+            drawCard('dealer'); drawCard('dealer');
+            drawCard('player'); drawCard('player');
+            drawCard('ai2'); drawCard('ai2');
+            drawCard('ai1'); drawCard('ai1');
+            drawCard('ai4'); drawCard('ai4');
+            drawCard('ai3'); drawCard('ai3');
 
             updateDeckDisplay();
+            runBotsTurnBeforePlayer();
         }
 
         function updateDeckDisplay() {
             const deckDisplay = document.querySelector('.deck-section p');
-            if (deckDisplay) {
-                deckDisplay.textContent = `⧗ Bộ bài còn lại (${deck.length} lá)`;
-            }
+            if (deckDisplay) deckDisplay.textContent = `⧗ Bộ bài còn lại (${deck.length} lá)`;
         }
 
-        // Start the game
-        window.onload = resetGame;
+        window.onload = function() {
+            resetGame();
+            toggleModal(true); 
+        };
     </script>
 </body>
 </html>
