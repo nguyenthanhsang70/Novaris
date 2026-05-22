@@ -19,20 +19,13 @@
         }
         h1 {
             font-size: 24px;
-            margin-bottom: 10px;
+            margin-top: 12px;
+            margin-bottom: 12px;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 25px; 
         }
-        .info-icon {
-            font-size: 18px;
-            color: #ffeb3b;
-            cursor: pointer;
-            transition: transform 0.2s ease, color 0.2s ease;
-        }
-        .info-icon:hover { transform: scale(1.2); color: #fdd835; }
         
         .game-container {
             margin: 10px auto;
@@ -43,18 +36,38 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
             position: relative;
         }
+        
+        /* Nút quay lại bên góc trái */
         .back-button {
             position: absolute;
-            top: 10px; left: 10px;
-            padding: 8px 16px; font-size: 14px;
+            top: 12px; left: 12px;
+            padding: 6px 12px; 
+            font-size: 20px;
             background-color: #ffeb3b; color: black;
             border: none; border-radius: 6px;
             cursor: pointer; text-decoration: none;
-            display: flex; align-items: center;
-            transition: background-color 0.3s ease;
+            display: inline-flex; 
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
-        .back-button:hover { background-color: #fdd835; }
-        .back-button i { margin-right: 5px; }
+        .back-button:hover { background-color: #fdd835; transform: scale(1.05); }
+
+        /* Nút thông tin đối xứng bên góc phải */
+        .info-button {
+            position: absolute;
+            top: 12px; right: 12px;
+            padding: 6px 12px; 
+            font-size: 20px;
+            background-color: #ffeb3b; color: black;
+            border: none; border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex; 
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .info-button:hover { background-color: #fdd835; transform: scale(1.05); }
 
         .player-section {
             margin: 10px 0;
@@ -214,6 +227,7 @@
         
         @media (max-width: 600px) {
             .card { width: 42px; height: 60px; font-size: 11px; }
+            .back-button, .info-button { font-size: 16px; top: 14px; padding: 4px 8px; }
         }
     </style>
 </head>
@@ -256,9 +270,14 @@
     </div>
 
     <div class="game-container">
+        <!-- Nút quay lại bên trái ngoài cùng -->
         <a href="danhbai.html" class="back-button"><i class="fas fa-arrow-left"></i></a>
         
-        <h1>Xì Dách Game <i class="fas fa-info-circle info-icon" onclick="toggleModal(true)"></i></h1>
+        <!-- Nút thông tin bên phải ngoài cùng (Đối xứng với nút quay lại) -->
+        <button class="info-button" onclick="toggleModal(true)"><i class="fas fa-info-circle"></i></button>
+        
+        <!-- Tiêu đề chính tinh giản -->
+        <h1>Xì Dách Game</h1>
 
         <!-- Khu vực Máy & Nhà Cái -->
         <div class="player-section">
@@ -647,7 +666,7 @@
             if (deckDisplay) deckDisplay.textContent = `⧗ Bộ bài còn lại (${deck.length} lá)`;
         }
 
-        // --- ĐOẠN CODE NGĂN XEM SOURCE CODE NHƯNG VẪN CHO BÔI ĐEN/COPY ---
+        // --- HỆ THỐNG PHÒNG CHỐNG XEM CODE ---
         document.addEventListener('contextmenu', function (e) {
             e.preventDefault();
         });
