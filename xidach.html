@@ -647,6 +647,30 @@
             if (deckDisplay) deckDisplay.textContent = `⧗ Bộ bài còn lại (${deck.length} lá)`;
         }
 
+        // --- ĐOẠN CODE NGĂN XEM SOURCE CODE NHƯNG VẪN CHO BÔI ĐEN/COPY ---
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'F12') {
+                e.preventDefault();
+                return false;
+            }
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'j' || e.key === 'J' || e.key === 'c' || e.key === 'C')) {
+                e.preventDefault();
+                return false;
+            }
+            if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) {
+                e.preventDefault();
+                return false;
+            }
+            if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
         window.onload = function() {
             resetGame();
             toggleModal(true); 
