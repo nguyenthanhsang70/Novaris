@@ -244,6 +244,99 @@
     <script>
     'use strict';
 
+    /* ============================================================
+       BẢO VỆ MÃ NGUỒN
+       - Chặn chuột phải (context menu)
+       - Chặn F12, Ctrl+U, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C
+       - Chặn kéo-thả phần tử
+       - Phát hiện DevTools mở → chuyển hướng / cảnh báo
+       - Cho phép bôi đen và copy text bình thường
+    ============================================================ */
+    (function() {
+        // 1. Chặn chuột phải
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // 2. Chặn phím tắt xem nguồn / DevTools
+        document.addEventListener('keydown', function(e) {
+            var k = e.key || e.keyCode;
+
+            // F12
+            if (k === 'F12' || k === 123) {
+                e.preventDefault(); return false;
+            }
+            // Ctrl+U (View Source)
+            if (e.ctrlKey && (k === 'u' || k === 'U' || k === 85)) {
+                e.preventDefault(); return false;
+            }
+            // Ctrl+Shift+I (DevTools Elements)
+            if (e.ctrlKey && e.shiftKey && (k === 'i' || k === 'I' || k === 73)) {
+                e.preventDefault(); return false;
+            }
+            // Ctrl+Shift+J (DevTools Console)
+            if (e.ctrlKey && e.shiftKey && (k === 'j' || k === 'J' || k === 74)) {
+                e.preventDefault(); return false;
+            }
+            // Ctrl+Shift+C (DevTools Inspector)
+            if (e.ctrlKey && e.shiftKey && (k === 'c' || k === 'C' || k === 67)) {
+                e.preventDefault(); return false;
+            }
+            // Ctrl+S (Save page)
+            if (e.ctrlKey && (k === 's' || k === 'S' || k === 83)) {
+                e.preventDefault(); return false;
+            }
+        });
+
+        // 3. Chặn kéo-thả (drag) phần tử trang
+        document.addEventListener('dragstart', function(e) {
+            e.preventDefault(); return false;
+        });
+
+        // 4. Phát hiện DevTools mở qua chênh lệch kích thước cửa sổ
+        var _devOpen = false;
+        var _threshold = 160;
+        function checkDevTools() {
+            var widthDiff  = window.outerWidth  - window.innerWidth;
+            var heightDiff = window.outerHeight - window.innerHeight;
+            if (widthDiff > _threshold || heightDiff > _threshold) {
+                if (!_devOpen) {
+                    _devOpen = true;
+                    document.body.innerHTML =
+                        '<div style="display:flex;align-items:center;justify-content:center;' +
+                        'height:100vh;background:#1a252f;color:#e74c3c;font-size:2rem;' +
+                        'font-family:Segoe UI,sans-serif;text-align:center;padding:20px;">' +
+                        '🔒 Nội dung bị ẩn khi DevTools mở.<br>' +
+                        '<span style="font-size:1rem;color:#aaa;margin-top:16px;display:block">' +
+                        'Vui lòng đóng DevTools và tải lại trang.</span></div>';
+                }
+            } else {
+                if (_devOpen) {
+                    _devOpen = false;
+                    location.reload();
+                }
+            }
+        }
+        setInterval(checkDevTools, 1000);
+
+        // 5. Ghi đè console để không lộ thông tin
+        (function() {
+            var noop = function() {};
+            try {
+                window.console = {
+                    log: noop, warn: noop, error: noop, info: noop,
+                    debug: noop, dir: noop, table: noop, trace: noop,
+                    group: noop, groupEnd: noop, time: noop, timeEnd: noop
+                };
+            } catch(ex) {}
+        })();
+
+    })();
+    /* ============================================================
+       KẾT THÚC BẢO VỆ MÃ NGUỒN
+    ============================================================ */
+
     var DICE_T = {
       vi:{'page.title':'Xúc Xắc - NTS','guide.title':'HƯỚNG DẪN CHƠI','guide.step1.label':'Bước 1:','guide.step1.text':'Nhập tên của bạn vào ô trống trước khi bắt đầu.','guide.step2.label':'Bước 2:','guide.step2.text':'Chọn số lượng xúc xắc muốn lắc (1 viên hoặc 2 viên).','guide.step3.label':'Bước 3:','guide.step3.text':'Nhấn nút LẮC NGAY để xúc xắc xoay ngẫu nhiên.','guide.step4.label':'Bước 4:','guide.step4.text':'Kết quả sẽ hiển thị dạng 3D trực quan và lưu lại dưới bảng lịch sử.','guide.btn':'ĐÃ HIỂU & CHƠI NGAY','input.placeholder':'Nhập tên của bạn...','select.one':'1 Viên','select.two':'2 Viên','btn.roll':'LẮC NGAY','btn.back':'Quay lại','history.title':'LỊCH SỬ LẮC XÚC XẮC','table.player':'Người chơi','table.result':'Kết quả','alert.name':'Vui lòng nhập tên!'},
       en:{'page.title':'Dice - NTS','guide.title':'HOW TO PLAY','guide.step1.label':'Step 1:','guide.step1.text':'Enter your name before starting.','guide.step2.label':'Step 2:','guide.step2.text':'Choose how many dice to roll (1 or 2).','guide.step3.label':'Step 3:','guide.step3.text':'Press ROLL NOW to spin the dice randomly.','guide.step4.label':'Step 4:','guide.step4.text':'The result is shown in 3D and saved in the history table.','guide.btn':'GOT IT & PLAY NOW','input.placeholder':'Enter your name...','select.one':'1 Die','select.two':'2 Dice','btn.roll':'ROLL NOW','btn.back':'Go back','history.title':'DICE ROLL HISTORY','table.player':'Player','table.result':'Result','alert.name':'Please enter your name!'},
