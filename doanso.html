@@ -19,6 +19,11 @@
             justify-content: center;
             align-items: center;
             overflow-x: hidden;
+            /* Đảm bảo vẫn cho phép bôi đen trên toàn bộ trang */
+            user-select: text;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
         }
         .game-container {
             background: #ffffff;
@@ -309,7 +314,7 @@
             <button class="info-icon" onclick="showInstructions()" title="Hướng dẫn">i</button>
         </div>
         <p class="subtitle">Tôi đang nghĩ về một số từ 1 đến 100</p>
-       
+        
         <div class="game-info">
             <div class="info-item">
                 <div class="info-label">Lần thử</div>
@@ -375,7 +380,7 @@
             attempts = 0;
             gameOver = false;
             guesses = [];
-           
+            
             document.getElementById('guessInput').value = '';
             document.getElementById('attempts').textContent = '0';
             document.getElementById('feedback').textContent = 'Hãy đoán số đầu tiên!';
@@ -397,43 +402,43 @@
 
         function checkGuess() {
             if (gameOver) return;
-           
+            
             const guessInput = document.getElementById('guessInput');
             const guess = parseInt(guessInput.value);
             const feedback = document.getElementById('feedback');
-           
+            
             if (isNaN(guess) || guess < 1 || guess > 100) {
                 feedback.textContent = 'Vui lòng nhập một số từ 1 đến 100!';
                 feedback.className = 'feedback';
                 return;
             }
-           
+            
             if (guesses.includes(guess)) {
                 feedback.textContent = 'Bạn đã đoán số này rồi!';
                 feedback.className = 'feedback';
                 return;
             }
-           
+            
             attempts++;
             guesses.push(guess);
-           
+            
             document.getElementById('attempts').textContent = attempts;
             updatePreviousGuesses();
-           
+            
             if (guess === targetNumber) {
                 feedback.textContent = `🎉 Chúc mừng! Bạn đã đoán đúng trong ${attempts} lần thử!`;
                 feedback.className = 'feedback correct';
                 gameOver = true;
                 document.getElementById('guessInput').disabled = true;
                 document.getElementById('submitBtn').disabled = true;
-               
+                
                 if (bestScore === null || attempts < bestScore) {
                     bestScore = attempts;
                     document.getElementById('bestScore').textContent = bestScore;
                     if (!window.gameData) window.gameData = {};
                     window.gameData.bestScore = bestScore;
                 }
-               
+                
                 showGameOver();
             } else if (guess < targetNumber) {
                 feedback.textContent = '📈 Quá thấp! Hãy thử số cao hơn.';
@@ -442,7 +447,7 @@
                 feedback.textContent = '📉 Quá cao! Hãy thử số thấp hơn.';
                 feedback.className = 'feedback too-high';
             }
-           
+            
             guessInput.value = '';
             guessInput.focus();
         }
@@ -450,7 +455,7 @@
         function updatePreviousGuesses() {
             const previousGuesses = document.getElementById('previousGuesses');
             const guessList = document.getElementById('guessList');
-           
+            
             if (guesses.length > 0) {
                 previousGuesses.style.display = 'block';
                 guessList.innerHTML = guesses.map(guess =>
@@ -512,6 +517,44 @@
                 modal.style.display = 'none';
             }
         };
+
+        // ==========================================
+        // ĐOẠN CODE BẢO MẬT: CHẶN XEM MÃ NGUỒN - CHO PHÉP COPY/BÔI ĐEN
+        // ==========================================
+        
+        // 1. Chặn click chuột phải để ngăn người dùng chọn "Kiểm tra" (Inspect) hoặc "Xem nguồn trang"
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // 2. Chặn các phím tắt mở Developer Tools và Xem Source nâng cao
+        document.addEventListener('keydown', function(e) {
+            // Chặn F12
+            if (e.key === 'F12') {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Chặn Ctrl + Shift + I (Mở Inspect)
+            // Chặn Ctrl + Shift + J (Mở Console)
+            // Chặn Ctrl + Shift + C (Mở Bộ chọn phần tử)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
+                e.preventDefault();
+                return false;
+            }
+
+            // Chặn Ctrl + U (Xem mã nguồn trang - View Source)
+            if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+                e.preventDefault();
+                return false;
+            }
+
+            // Chặn Ctrl + S (Lưu trang về máy để xem code)
+            if (e.ctrlKey && (e.key === 'S' || e.key === 's')) {
+                e.preventDefault();
+                return false;
+            }
+        });
     </script>
 </body>
 </html>
