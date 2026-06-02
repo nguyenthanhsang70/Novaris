@@ -1,1562 +1,546 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NTS — Trang Chủ</title>
-  <link rel="icon" type="image/png" href="logos3.png" />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css" />
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title id="site-title" data-vi="Trang Chủ NTS" data-en="NTS Home">Trang Chủ NTS</title>
+    <link rel="icon" type="image/png" href="logos3.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght=300;400;600;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #00f2ff;
+            --secondary: #bd00ff;
+            --accent: #ff007a;
+            --dark: #030303;
+        }
 
-  <style>
-    :root {
-      --color-primary:   #00f2ff;
-      --color-secondary: #bd00ff;
-      --color-accent:    #ff007a;
-      --color-bg:        #030303;
-    }
-    *,*::before,*::after{box-sizing:border-box;}
-    html{scroll-behavior:smooth;}
-    body{font-family:'Outfit',sans-serif;background-color:var(--color-bg);color:#e0e0e0;overflow-x:hidden;margin:0;}
-    ::-webkit-scrollbar{width:6px;}
-    ::-webkit-scrollbar-thumb{background:linear-gradient(var(--color-secondary),var(--color-primary));border-radius:10px;}
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--dark);
+            color: #e0e0e0;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
 
-    .fi{display:inline-block;width:1.333em;height:1em;border-radius:2px;vertical-align:middle;flex-shrink:0;background-size:cover;background-position:center;}
+        /* --- PRELOADER --- */
+        #preloader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+        }
 
-    /* LANG SWITCHER */
-    .lang-switcher{position:fixed;top:1.5rem;right:1.5rem;z-index:200;}
-    .lang-switcher__toggle{display:flex;align-items:center;gap:.5rem;padding:.5rem 1rem .5rem .75rem;background:rgba(0,0,0,.5);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:9999px;color:#fff;font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:.1em;cursor:pointer;transition:border-color .3s,background .3s;white-space:nowrap;}
-    .lang-switcher__toggle:hover{border-color:var(--color-primary);background:rgba(0,242,255,.05);}
-    .lang-switcher__flag{display:flex;align-items:center;font-size:1.1rem;line-height:1;}
-    .lang-switcher__flag .fi{width:1.4em;height:1em;}
-    .lang-switcher__chevron{font-size:.6rem;opacity:.6;transition:transform .3s;}
-    .lang-switcher.is-open .lang-switcher__chevron{transform:rotate(180deg);}
-    .lang-switcher__dropdown{position:absolute;top:calc(100% + .5rem);right:0;min-width:200px;max-height:420px;overflow-y:auto;overflow-x:hidden;background:rgba(10,5,26,.97);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:1rem;opacity:0;transform:translateY(-8px) scale(.97);pointer-events:none;transition:opacity .25s ease,transform .25s ease;scrollbar-width:thin;scrollbar-color:var(--color-primary) transparent;}
-    .lang-switcher__dropdown::-webkit-scrollbar{width:4px;}
-    .lang-switcher__dropdown::-webkit-scrollbar-thumb{background:var(--color-primary);border-radius:4px;}
-    .lang-switcher.is-open .lang-switcher__dropdown{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
-    .lang-switcher__divider{height:1px;background:rgba(255,255,255,.07);margin:.25rem 1.25rem;}
-    .lang-switcher__option{display:flex;align-items:center;gap:.75rem;width:100%;padding:.65rem 1.25rem;background:none;border:none;color:#9ca3af;font-family:'Outfit',sans-serif;font-size:.8125rem;font-weight:600;letter-spacing:.05em;cursor:pointer;text-align:left;transition:background .2s,color .2s;}
-    .lang-switcher__option:hover{background:rgba(0,242,255,.07);color:#fff;}
-    .lang-switcher__option.is-active{color:var(--color-primary);}
-    .lang-switcher__option.is-active::after{content:'✓';margin-left:auto;font-size:.75rem;}
-    .lang-switcher__option .fi{width:1.4em;height:1em;border-radius:2px;flex-shrink:0;}
-    .lang-switcher__option-name{flex:1;}
+        .loader-wrapper {
+            position: relative;
+            width: 160px; height: 160px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        @media (min-width: 768px) {
+            .loader-wrapper { width: 200px; height: 200px; }
+        }
 
-    /* PRELOADER */
-    #preloader{position:fixed;inset:0;background:#000;z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform .8s cubic-bezier(.77,0,.175,1),opacity .8s cubic-bezier(.77,0,.175,1);}
-    #preloader.is-hidden{transform:translateY(-100%);opacity:0;pointer-events:none;}
-    .preloader__spinner{position:relative;width:200px;height:200px;display:flex;align-items:center;justify-content:center;}
-    .preloader__ring{position:absolute;border-radius:50%;border:2px solid transparent;}
-    .preloader__ring--outer{inset:0;border-top-color:var(--color-primary);border-bottom-color:var(--color-primary);animation:spin 2s linear infinite;}
-    .preloader__ring--inner{inset:12.5%;border-left-color:var(--color-secondary);border-right-color:var(--color-secondary);animation:spin 1.5s linear infinite reverse;}
-    .preloader__percent{font-size:2.5rem;font-weight:900;color:#fff;text-shadow:0 0 20px var(--color-primary);position:relative;z-index:1;}
-    .preloader__scan-line{position:absolute;inset:0 -10%;height:2px;background:var(--color-primary);box-shadow:0 0 15px var(--color-primary);opacity:.5;animation:scanline 2s ease-in-out infinite;}
-    .preloader__label{margin-top:2.5rem;text-align:center;}
-    .preloader__label-title{font-size:.625rem;letter-spacing:1em;color:#22d3ee;font-weight:900;text-transform:uppercase;animation:pulse 1.5s ease-in-out infinite;}
-    .preloader__label-status{font-size:.625rem;color:#6b7280;margin-top:.75rem;font-family:monospace;}
+        .loader-circle-outer {
+            position: absolute;
+            width: 100%; height: 100%;
+            border: 2px solid transparent;
+            border-top: 2px solid var(--primary);
+            border-bottom: 2px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 2s linear infinite;
+        }
 
-    /* BG AMBIENT */
-    .bg-ambient{position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 50% 50%,#0a051a 0%,var(--color-bg) 100%);overflow:hidden;}
-    .bg-ambient__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.35;animation:float 20s infinite alternate;}
-    .bg-ambient__orb--top-left{width:600px;height:600px;background:#3b0764;top:-10%;left:-10%;}
-    .bg-ambient__orb--bottom-right{width:700px;height:700px;background:#1e3a5f;bottom:-10%;right:-10%;animation-delay:-5s;}
+        .loader-circle-inner {
+            position: absolute;
+            width: 75%; height: 75%;
+            border: 2px solid transparent;
+            border-left: 2px solid var(--secondary);
+            border-right: 2px solid var(--secondary);
+            border-radius: 50%;
+            animation: spin-reverse 1.5s linear infinite;
+        }
 
-    /* MUSIC CONTROL */
-    .music-control{position:fixed;bottom:2rem;left:2rem;z-index:50;display:flex;align-items:center;gap:1rem;background:rgba(0,0,0,.4);backdrop-filter:blur(24px);padding:.5rem 1.5rem .5rem .5rem;border-radius:9999px;border:1px solid rgba(255,255,255,.1);cursor:pointer;transition:border-color .3s;}
-    .music-control:hover{border-color:var(--color-primary);}
-    .music-control__icon-wrap{width:2.75rem;height:2.75rem;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:#fff;transition:background .3s,color .3s;}
-    .music-control:hover .music-control__icon-wrap,.music-control.is-playing .music-control__icon-wrap{background:var(--color-primary);color:#000;}
-    .music-control__meta-sub{font-size:.5625rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.15em;line-height:1;}
-    .music-control__meta-title{font-size:.75rem;font-weight:700;color:#fff;text-transform:uppercase;}
+        .loader-percent {
+            font-size: 2rem;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 0 20px var(--primary);
+        }
+        @media (min-width: 768px) {
+            .loader-percent { font-size: 2.5rem; }
+        }
 
-    /* HERO */
-    .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 1.5rem;overflow:hidden;}
-    .hero__rings{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:.1;pointer-events:none;}
-    .hero__ring{position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.1);}
-    .hero__ring--lg{width:900px;height:900px;animation:spin 80s linear infinite;}
-    .hero__ring--md{width:700px;height:700px;border-color:rgba(0,242,255,.1);animation:spin 50s linear infinite reverse;}
-    .hero__content{position:relative;z-index:10;text-align:center;}
-    .hero__badge{display:inline-block;padding:.375rem 1.25rem;border-radius:9999px;border:1px solid rgba(0,242,255,.2);color:#22d3ee;font-size:.625rem;font-weight:900;letter-spacing:.4em;margin-bottom:2rem;background:rgba(0,242,255,.05);text-transform:uppercase;}
-    .hero__title{font-size:clamp(5rem,18vw,14rem);font-weight:900;line-height:1;letter-spacing:-.02em;color:#fff;text-shadow:0 0 40px rgba(0,242,255,.6),0 0 80px rgba(189,0,255,.4);margin:0 0 1rem;}
-    .hero__typewriter-wrap{height:2.5rem;margin-bottom:3rem;}
-    .hero__typewriter{font-size:clamp(1rem,2.5vw,1.875rem);font-weight:300;letter-spacing:.3em;color:#67e8f9;font-style:italic;text-transform:uppercase;}
-    .hero__cta-group{display:flex;flex-direction:column;gap:1.5rem;justify-content:center;align-items:center;}
-    @media(min-width:640px){.hero__cta-group{flex-direction:row;}}
-    .hero__scroll-hint{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);opacity:.2;animation:bounce 1.5s infinite;}
+        .scan-line {
+            position: absolute;
+            width: 120%; height: 2px;
+            background: var(--primary);
+            box-shadow: 0 0 15px var(--primary);
+            animation: scan 2s ease-in-out infinite;
+            opacity: 0.5;
+        }
 
-    /* BUTTONS */
-    .btn{position:relative;overflow:hidden;padding:1rem 3rem;border-radius:9999px;font-weight:900;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;transition:box-shadow .4s;display:inline-block;}
-    .btn::after{content:'';position:absolute;inset:0;left:-100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);transition:left .6s;}
-    .btn:hover::after{left:100%;}
-    .btn--white{background:#fff;color:#000;}
-    .btn--white:hover{box-shadow:0 0 30px rgba(255,255,255,.3);}
-    .btn--gradient{background:linear-gradient(to right,#06b6d4,#2563eb);color:#fff;box-shadow:0 20px 40px -10px rgba(6,182,212,.2);}
+        @keyframes scan {
+            0%, 100% { top: 10%; opacity: 0; }
+            50% { top: 90%; opacity: 1; }
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes spin-reverse { 100% { transform: rotate(-360deg); } }
 
-    /* TOOLS SECTION */
-    .tools-section{padding:8rem 0;position:relative;z-index:10;}
-    .tools-section__inner{max-width:80rem;margin:0 auto;padding:0 1.5rem;}
-    .tools-section__header{display:flex;flex-direction:column;gap:2rem;margin-bottom:6rem;}
-    @media(min-width:768px){.tools-section__header{flex-direction:row;align-items:flex-end;justify-content:space-between;}}
-    .tools-section__heading{font-size:3.75rem;font-weight:900;letter-spacing:-.025em;margin:0 0 1.5rem;}
-    .tools-section__divider{width:6rem;height:.5rem;background:linear-gradient(to right,#06b6d4,#9333ea);border-radius:9999px;}
-    .tools-section__description{color:#9ca3af;max-width:24rem;font-size:1.125rem;font-weight:300;line-height:1.75;margin:0;}
-    .tools-grid{display:grid;grid-template-columns:1fr;gap:2rem;}
-    @media(min-width:768px){.tools-grid{grid-template-columns:repeat(2,1fr);}}
-    @media(min-width:1024px){.tools-grid{grid-template-columns:repeat(3,1fr);}}
+        .preloader-finish { transform: translateY(-100%); opacity: 0; pointer-events: none; }
 
-    /* TOOL CARD */
-    .tool-card{background:rgba(255,255,255,.02);backdrop-filter:blur(15px) saturate(180%);border:1px solid rgba(255,255,255,.08);border-radius:2.5rem;padding:2.5rem;transition:background .5s cubic-bezier(.23,1,.32,1),border-color .5s cubic-bezier(.23,1,.32,1),box-shadow .5s cubic-bezier(.23,1,.32,1),transform .5s cubic-bezier(.23,1,.32,1);}
-    .tool-card:hover{background:rgba(255,255,255,.06);box-shadow:0 25px 50px -12px rgba(0,0,0,.5);}
-    .tool-card__icon-wrap{width:4rem;height:4rem;border-radius:1rem;display:flex;align-items:center;justify-content:center;margin-bottom:2.5rem;font-size:1.875rem;border:1px solid;transition:background .5s,color .5s;}
-    .tool-card__title{font-size:1.5rem;font-weight:700;letter-spacing:-.015em;text-transform:uppercase;margin:0 0 1rem;}
-    .tool-card__description{color:#9ca3af;line-height:1.75;margin:0 0 2.5rem;}
-    .tool-card__link{display:inline-flex;align-items:center;gap:.75rem;font-weight:900;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;transition:gap .3s;}
-    .tool-card__link:hover{gap:1.5rem;}
+        /* --- GIAO DIỆN CHÍNH --- */
+        .bg-gradient-dynamic {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #0a051a 0%, #030303 100%);
+        }
 
-    /* ACCENTS */
-    .tool-card[data-accent="cyan"] .tool-card__icon-wrap{background:rgba(0,242,255,.07);border-color:rgba(0,242,255,.2);color:#22d3ee;}
-    .tool-card[data-accent="cyan"]:hover .tool-card__icon-wrap{background:#22d3ee;color:#000;}
-    .tool-card[data-accent="cyan"]:hover{border-color:#22d3ee;}
-    .tool-card[data-accent="cyan"] .tool-card__link{color:#22d3ee;}
-    .tool-card[data-accent="pink"] .tool-card__icon-wrap{background:rgba(255,0,122,.07);border-color:rgba(255,0,122,.2);color:#f472b6;}
-    .tool-card[data-accent="pink"]:hover .tool-card__icon-wrap{background:#f472b6;color:#fff;}
-    .tool-card[data-accent="pink"]:hover{border-color:#f472b6;}
-    .tool-card[data-accent="pink"] .tool-card__link{color:#f472b6;}
-    .tool-card[data-accent="yellow"] .tool-card__icon-wrap{background:rgba(234,179,8,.07);border-color:rgba(234,179,8,.2);color:#facc15;}
-    .tool-card[data-accent="yellow"]:hover .tool-card__icon-wrap{background:#facc15;color:#000;}
-    .tool-card[data-accent="yellow"]:hover{border-color:#facc15;}
-    .tool-card[data-accent="yellow"] .tool-card__link{color:#facc15;}
-    .tool-card[data-accent="purple"] .tool-card__icon-wrap{background:rgba(189,0,255,.07);border-color:rgba(189,0,255,.2);color:#c084fc;}
-    .tool-card[data-accent="purple"]:hover .tool-card__icon-wrap{background:#c084fc;color:#fff;}
-    .tool-card[data-accent="purple"]:hover{border-color:#c084fc;}
-    .tool-card[data-accent="purple"] .tool-card__link{color:#c084fc;}
-    .tool-card[data-accent="green"] .tool-card__icon-wrap{background:rgba(34,197,94,.07);border-color:rgba(34,197,94,.2);color:#4ade80;}
-    .tool-card[data-accent="green"]:hover .tool-card__icon-wrap{background:#4ade80;color:#000;}
-    .tool-card[data-accent="green"]:hover{border-color:#4ade80;}
-    .tool-card[data-accent="green"] .tool-card__link{color:#4ade80;}
-    .tool-card[data-accent="blue"] .tool-card__icon-wrap{background:rgba(59,130,246,.07);border-color:rgba(59,130,246,.2);color:#60a5fa;}
-    .tool-card[data-accent="blue"]:hover .tool-card__icon-wrap{background:#60a5fa;color:#fff;}
-    .tool-card[data-accent="blue"]:hover{border-color:#60a5fa;}
-    .tool-card[data-accent="blue"] .tool-card__link{color:#60a5fa;}
+        .orb {
+            position: absolute; border-radius: 50%; filter: blur(80px);
+            opacity: 0.25; animation: float 20s infinite alternate;
+        }
+        @media (min-width: 768px) {
+            .orb { filter: blur(120px); opacity: 0.35; }
+        }
 
-    /* FOOTER */
-    .site-footer{padding:6rem 0;background:rgba(0,0,0,.8);backdrop-filter:blur(48px);border-top:1px solid rgba(255,255,255,.05);}
-    .site-footer__inner{max-width:80rem;margin:0 auto;padding:0 1.5rem;text-align:center;}
-    .site-footer__social-list{display:flex;justify-content:center;gap:2.5rem;margin-bottom:4rem;list-style:none;padding:0;}
-    .site-footer__social-link{font-size:1.5rem;color:#6b7280;text-decoration:none;transition:color .3s,transform .3s;}
-    .site-footer__social-link:hover{transform:scale(1.25);}
-    .site-footer__social-link--facebook:hover{color:#3b82f6;}
-    .site-footer__social-link--instagram:hover{color:#ec4899;}
-    .site-footer__social-link--tiktok:hover{color:#fff;}
-    .site-footer__credit{font-size:.75rem;letter-spacing:.4em;text-transform:uppercase;color:#6b7280;margin-bottom:1rem;}
-    .site-footer__author-link{color:#fff;font-weight:900;margin-left:.25rem;text-decoration:none;}
-    .site-footer__copyright{font-size:.625rem;color:#374151;font-family:monospace;}
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(40px, 20px) scale(1.05); }
+        }
 
-    /* KEYFRAMES */
-    @keyframes spin{to{transform:rotate(360deg);}}
-    @keyframes float{to{transform:translate(60px,40px) scale(1.1);}}
-    @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-12px);}}
-    @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
-    @keyframes scanline{0%,100%{top:10%;opacity:0;}50%{top:90%;opacity:1;}}
-  </style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px) saturate(180%);
+            -webkit-backdrop-filter: blur(15px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            will-change: transform;
+        }
+
+        @media (min-width: 1024px) {
+            .glass-card:hover {
+                background: rgba(255, 255, 255, 0.06);
+                border-color: var(--primary);
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+                transform: translateY(-10px) scale(1.02);
+            }
+        }
+
+        .text-glow {
+            text-shadow: 0 0 30px rgba(0, 242, 255, 0.5), 0 0 60px rgba(189, 0, 255, 0.3);
+        }
+
+        .btn-modern {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .btn-modern::after {
+            content: ''; position: absolute; top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.6s;
+        }
+
+        .btn-modern:hover::after { left: 100%; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(var(--secondary), var(--primary)); border-radius: 10px; }
+
+        /* --- HIỆU ỨNG TITAN NTS (PULSE GLOW & GLITCH) --- */
+        @keyframes pulseGlow {
+            0%, 100% {
+                text-shadow: 0 0 30px rgba(0, 242, 255, 0.4), 0 0 60px rgba(189, 0, 255, 0.2);
+                filter: drop-shadow(0 0 10px rgba(0, 242, 255, 0.2));
+            }
+            50% {
+                text-shadow: 0 0 50px rgba(0, 242, 255, 0.8), 0 0 100px rgba(189, 0, 255, 0.5);
+                filter: drop-shadow(0 0 25px rgba(0, 242, 255, 0.5));
+                transform: scale(1.01);
+            }
+        }
+        .animate-pulse-glow {
+            animation: pulseGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes glitchTime {
+            0% { transform: translate(0) }
+            20% { transform: translate(-3px, 3px) }
+            40% { transform: translate(-3px, -3px) }
+            60% { transform: translate(3px, 3px) }
+            80% { transform: translate(3px, -3px) }
+            100% { transform: translate(0) }
+        }
+        @keyframes glitchAnim1 {
+            0%, 100% { clip-path: inset(40% 0 61% 0); opacity: 0; }
+            20% { clip-path: inset(92% 0 1% 0); opacity: 1; transform: translate(-5px, -3px); }
+            40% { clip-path: inset(15% 0 80% 0); opacity: 1; transform: translate(5px, 3px); }
+            60% { clip-path: inset(80% 0 5% 0); opacity: 1; transform: translate(-5px, 5px); }
+            80% { clip-path: inset(3% 0 92% 0); opacity: 1; transform: translate(5px, -5px); }
+        }
+        @keyframes glitchAnim2 {
+            0%, 100% { clip-path: inset(25% 0 58% 0); opacity: 0; }
+            21% { clip-path: inset(12% 0 85% 0); opacity: 1; transform: translate(5px, 3px); }
+            39% { clip-path: inset(88% 0 5% 0); opacity: 1; transform: translate(-5px, -3px); }
+            61% { clip-path: inset(5% 0 90% 0); opacity: 1; transform: translate(5px, -5px); }
+            79% { clip-path: inset(70% 0 25% 0); opacity: 1; transform: translate(-5px, 5px); }
+        }
+
+        .hover\:animate-glitch-active:hover {
+            animation: glitchTime 0.3s linear infinite, pulseGlow 1s ease-in-out infinite;
+        }
+        .hover\:before\:animate-glitch-1:hover::before {
+            animation: glitchAnim1 0.2s linear infinite;
+        }
+        .hover\:after\:animate-glitch-2:hover::after {
+            animation: glitchAnim2 0.25s linear infinite;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- PRELOADER -->
-  <div id="preloader" role="status" aria-label="Loading">
-    <div class="preloader__spinner">
-      <div class="preloader__ring preloader__ring--outer"></div>
-      <div class="preloader__ring preloader__ring--inner"></div>
-      <div class="preloader__scan-line"></div>
-      <span class="preloader__percent" id="js-preloader-percent">0%</span>
-    </div>
-    <div class="preloader__label">
-      <p class="preloader__label-title">Establishing Neural Link</p>
-      <p class="preloader__label-status" id="js-preloader-status">Decrypting assets...</p>
-    </div>
-  </div>
-
-  <!-- AMBIENT BG -->
-  <div class="bg-ambient" aria-hidden="true">
-    <div class="bg-ambient__orb bg-ambient__orb--top-left"></div>
-    <div class="bg-ambient__orb bg-ambient__orb--bottom-right"></div>
-  </div>
-
-  <!-- AUDIO -->
-  <audio id="js-bg-music" loop>
-    <source src="nhacnen.mp3" type="audio/mpeg" />
-  </audio>
-
-  <!-- MUSIC CONTROL -->
-  <button id="js-music-control" class="music-control" aria-pressed="false">
-    <span class="music-control__icon-wrap" aria-hidden="true">
-      <i class="fas fa-music"></i>
-    </span>
-    <span>
-      <p class="music-control__meta-sub" data-i18n="music.sub">Vibe Check</p>
-      <p class="music-control__meta-title" data-i18n="music.title">Audio System</p>
-    </span>
-  </button>
-
-  <!-- LANGUAGE SWITCHER -->
-  <div id="js-lang-switcher" class="lang-switcher">
-    <button class="lang-switcher__toggle" id="js-lang-toggle" aria-haspopup="listbox" aria-expanded="false">
-      <span class="lang-switcher__flag" id="js-lang-flag"><span class="fi fi-vn"></span></span>
-      <span id="js-lang-label">Tiếng Việt</span>
-      <i class="fas fa-chevron-down lang-switcher__chevron" aria-hidden="true"></i>
-    </button>
-    <div class="lang-switcher__dropdown" role="listbox" id="js-lang-dropdown">
-      <button class="lang-switcher__option is-active" role="option" data-lang="vi"><span class="fi fi-vn"></span><span class="lang-switcher__option-name">Tiếng Việt</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="th"><span class="fi fi-th"></span><span class="lang-switcher__option-name">ภาษาไทย</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="km"><span class="fi fi-kh"></span><span class="lang-switcher__option-name">ភាសាខ្មែរ</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="lo"><span class="fi fi-la"></span><span class="lang-switcher__option-name">ພາສາລາວ</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="id"><span class="fi fi-id"></span><span class="lang-switcher__option-name">Bahasa Indonesia</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="ms"><span class="fi fi-my"></span><span class="lang-switcher__option-name">Bahasa Melayu</span></button>
-      <div class="lang-switcher__divider"></div>
-      <button class="lang-switcher__option" role="option" data-lang="zh"><span class="fi fi-cn"></span><span class="lang-switcher__option-name">中文 (简体)</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="zh-TW"><span class="fi fi-tw"></span><span class="lang-switcher__option-name">中文 (繁體·臺灣)</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="zh-HK"><span class="fi fi-hk"></span><span class="lang-switcher__option-name">中文 (繁體·香港)</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="zh-MO"><span class="fi fi-mo"></span><span class="lang-switcher__option-name">中文 (繁體·澳門)</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="ja"><span class="fi fi-jp"></span><span class="lang-switcher__option-name">日本語</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="ko"><span class="fi fi-kr"></span><span class="lang-switcher__option-name">한국어</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="kp"><span class="fi fi-kp"></span><span class="lang-switcher__option-name">조선말 (朝鮮)</span></button>
-      <div class="lang-switcher__divider"></div>
-      <button class="lang-switcher__option" role="option" data-lang="hi"><span class="fi fi-in"></span><span class="lang-switcher__option-name">हिन्दी</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="ar"><span class="fi fi-sa"></span><span class="lang-switcher__option-name">العربية</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="tr"><span class="fi fi-tr"></span><span class="lang-switcher__option-name">Türkçe</span></button>
-      <div class="lang-switcher__divider"></div>
-      <button class="lang-switcher__option" role="option" data-lang="en"><span class="fi fi-gb"></span><span class="lang-switcher__option-name">English (UK)</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="en-US"><span class="fi fi-us"></span><span class="lang-switcher__option-name">English (US)</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="en-NZ"><span class="fi fi-nz"></span><span class="lang-switcher__option-name">English (NZ)</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="de"><span class="fi fi-de"></span><span class="lang-switcher__option-name">Deutsch</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="de-CH"><span class="fi fi-ch"></span><span class="lang-switcher__option-name">Deutsch (Schweiz)</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="fr"><span class="fi fi-ca"></span><span class="lang-switcher__option-name">Français (Canada)</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="it"><span class="fi fi-it"></span><span class="lang-switcher__option-name">Italiano</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="es"><span class="fi fi-es"></span><span class="lang-switcher__option-name">Español</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="es-MX"><span class="fi fi-mx"></span><span class="lang-switcher__option-name">Español (México)</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="pt"><span class="fi fi-pt"></span><span class="lang-switcher__option-name">Português</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="nl"><span class="fi fi-nl"></span><span class="lang-switcher__option-name">Nederlands</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="ru"><span class="fi fi-ru"></span><span class="lang-switcher__option-name">Русский</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="fi"><span class="fi fi-fi"></span><span class="lang-switcher__option-name">Suomi</span></button>
-      <button class="lang-switcher__option" role="option" data-lang="sv"><span class="fi fi-se"></span><span class="lang-switcher__option-name">Svenska</span></button>
-    </div>
-  </div>
-
-  <!-- HERO -->
-  <header class="hero">
-    <div class="hero__rings" aria-hidden="true">
-      <div class="hero__ring hero__ring--lg"></div>
-      <div class="hero__ring hero__ring--md"></div>
-    </div>
-    <div class="hero__content" data-aos="fade-up" data-aos-duration="1500">
-      <span class="hero__badge" data-i18n="hero.badge">Phiên bản nâng cấp cải tiến</span>
-      <h1 class="hero__title">NTS</h1>
-      <div class="hero__typewriter-wrap">
-        <p id="js-typewriter" class="hero__typewriter"></p>
-      </div>
-      <div class="hero__cta-group">
-        <a href="#tools" class="btn btn--white" data-i18n="hero.cta.explore">Khám phá ngay</a>
-        <a href="totinh.html" class="btn btn--gradient" data-i18n="hero.cta.confess">Mở lời ngay</a>
-      </div>
-    </div>
-    <div class="hero__scroll-hint" aria-hidden="true">
-      <i class="fas fa-chevron-down" style="font-size:1.5rem;"></i>
-    </div>
-  </header>
-
-  <!-- TOOLS SECTION -->
-  <section id="tools" class="tools-section">
-    <div class="tools-section__inner">
-      <div class="tools-section__header" data-aos="fade-right">
-        <div>
-          <h2 class="tools-section__heading" data-i18n="tools.heading">Kho Tiện Ích</h2>
-          <div class="tools-section__divider"></div>
+    <!-- PRELOADER -->
+    <div id="preloader">
+        <div class="loader-wrapper">
+            <div class="loader-circle-outer"></div>
+            <div class="loader-circle-inner"></div>
+            <div class="scan-line"></div>
+            <div class="loader-percent" id="load-percentage">0%</div>
         </div>
-        <p class="tools-section__description" data-i18n="tools.description">
-          Nơi hội tụ những công cụ số được phát triển bởi NTS nhằm mang lại trải nghiệm độc đáo nhất.
-        </p>
-      </div>
-      <div class="tools-grid">
-
-        <!-- Minigames -->
-        <article class="tool-card" data-accent="cyan" data-aos="fade-up">
-          <div class="tool-card__icon-wrap" aria-hidden="true"><i class="fas fa-gamepad"></i></div>
-          <h3 class="tool-card__title" data-i18n="card.games.title">Minigames</h3>
-          <p class="tool-card__description" data-i18n="card.games.desc">Phòng lab trò chơi giải trí với những tựa game kinh điển được remake lại.</p>
-          <a href="game.html" class="tool-card__link">
-            <span data-i18n="card.games.cta">Launch Game</span>
-            <i class="fas fa-arrow-right" aria-hidden="true"></i>
-          </a>
-        </article>
-
-        <!-- Love -->
-        <article class="tool-card" data-accent="pink" data-aos="fade-up" data-aos-delay="100">
-          <div class="tool-card__icon-wrap" aria-hidden="true"><i class="fas fa-heart-pulse"></i></div>
-          <h3 class="tool-card__title" data-i18n="card.love.title">Lời Tỏ Tình</h3>
-          <p class="tool-card__description" data-i18n="card.love.desc">Giải mã trái tim Crush bằng những giao diện tỏ tình đầy sáng tạo (dành cho ai có người yêu).</p>
-          <a href="totinh.html" class="tool-card__link">
-            <span data-i18n="card.love.cta">Send Love</span>
-            <i class="fas fa-arrow-right" aria-hidden="true"></i>
-          </a>
-        </article>
-
-        <!-- Birthday -->
-        <article class="tool-card" data-accent="yellow" data-aos="fade-up" data-aos-delay="200">
-          <div class="tool-card__icon-wrap" aria-hidden="true"><i class="fas fa-cake-candles"></i></div>
-          <h3 class="tool-card__title" data-i18n="card.birthday.title">Birthday</h3>
-          <p class="tool-card__description" data-i18n="card.birthday.desc">Tạo những kỷ niệm kỹ thuật số không bao giờ phai cho bạn bè.</p>
-          <a href="chucmungsinhnhat.html" class="tool-card__link">
-            <span data-i18n="card.birthday.cta">Create Card</span>
-            <i class="fas fa-arrow-right" aria-hidden="true"></i>
-          </a>
-        </article>
-
-        <!-- Device -->
-        <article class="tool-card" data-accent="purple" data-aos="fade-up" data-aos-delay="300">
-          <div class="tool-card__icon-wrap" aria-hidden="true"><i class="fas fa-id-badge"></i></div>
-          <h3 class="tool-card__title" data-i18n="card.device.title">Kiểm Tra Thiết Bị</h3>
-          <p class="tool-card__description" data-i18n="card.device.desc">Phân tích sâu thông số phần cứng và địa chỉ định danh của bạn.</p>
-          <a href="hoso.html" class="tool-card__link">
-            <span data-i18n="card.device.cta">Check Now</span>
-            <i class="fas fa-arrow-right" aria-hidden="true"></i>
-          </a>
-        </article>
-
-        <!-- QR -->
-        <article class="tool-card" data-accent="green" data-aos="fade-up" data-aos-delay="400">
-          <div class="tool-card__icon-wrap" aria-hidden="true"><i class="fas fa-qrcode"></i></div>
-          <h3 class="tool-card__title" data-i18n="card.qr.title">Tạo QR</h3>
-          <p class="tool-card__description" data-i18n="card.qr.desc">Tạo mã định danh cá nhân nhanh chóng với nhiều định dạng tùy chỉnh.</p>
-          <a href="taomaqr.html" class="tool-card__link">
-            <span data-i18n="card.qr.cta">Generate</span>
-            <i class="fas fa-arrow-right" aria-hidden="true"></i>
-          </a>
-        </article>
-
-        <!-- Aquarium -->
-        <article class="tool-card" data-accent="blue" data-aos="fade-up" data-aos-delay="500">
-          <div class="tool-card__icon-wrap" aria-hidden="true"><i class="fas fa-water"></i></div>
-          <h3 class="tool-card__title" data-i18n="card.aquarium.title">Bể Cá</h3>
-          <p class="tool-card__description" data-i18n="card.aquarium.desc">Bể cá 3D ảo giúp bạn tìm lại sự cân bằng sau áp lực công việc.</p>
-          <a href="beca.html" class="tool-card__link">
-            <span data-i18n="card.aquarium.cta">Relax Now</span>
-            <i class="fas fa-arrow-right" aria-hidden="true"></i>
-          </a>
-        </article>
-
-      </div>
+        <div class="mt-10 text-center px-4">
+            <h2 id="loader-title" class="text-xs tracking-[0.6em] md:tracking-[1em] text-cyan-400 font-black uppercase animate-pulse" data-vi="Đang thiết lập kết nối dữ liệu" data-en="Establishing data connection">
+                Đang thiết lập kết nối dữ liệu
+            </h2>
+            <p class="text-[10px] text-gray-500 mt-3 font-mono" id="loader-status">Đang giải mã tài nguyên...</p>
+        </div>
     </div>
-  </section>
 
-  <!-- FOOTER -->
-  <footer class="site-footer">
-    <div class="site-footer__inner">
-      <ul class="site-footer__social-list" aria-label="Social">
-        <li><a href="https://www.facebook.com/nguyenthanhsang70" target="_blank" rel="noopener noreferrer" class="site-footer__social-link site-footer__social-link--facebook" aria-label="Facebook"><i class="fab fa-facebook-f" aria-hidden="true"></i></a></li>
-        <li><a href="https://www.instagram.com/ngth.sang70/" target="_blank" rel="noopener noreferrer" class="site-footer__social-link site-footer__social-link--instagram" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a></li>
-        <li><a href="https://www.tiktok.com/@thanh.sang70" target="_blank" rel="noopener noreferrer" class="site-footer__social-link site-footer__social-link--tiktok" aria-label="TikTok"><i class="fab fa-tiktok" aria-hidden="true"></i></a></li>
-      </ul>
-      <p class="site-footer__credit">
-        <span data-i18n="footer.credit">Designed &amp; Engineered by</span>
-        <a href="profile.html" target="_blank" class="site-footer__author-link" data-i18n="footer.author">Nguyễn Thanh Sang</a>
-      </p>
-      <p class="site-footer__copyright" data-i18n="footer.copyright">© 2026 Bản quyền được bảo lưu</p>
+    <div class="bg-gradient-dynamic">
+        <div class="orb w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-purple-900 top-[-10%] left-[-10%]"></div>
+        <div class="orb w-[350px] h-[350px] md:w-[700px] md:h-[700px] bg-blue-900 bottom-[-10%] right-[-10%]" style="animation-delay: -5s;"></div>
     </div>
-  </footer>
 
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script>
-  'use strict';
+    <audio id="backgroundMusic" loop>
+        <source src="nhacnen.mp3" type="audio/mpeg">
+    </audio>
 
-  var typewriterTimer = null;
+    <!-- NÚT ĐỔI NGÔN NGỮ HỢP LÝ (GÓC TRÊN BÊN PHẢI) -->
+    <nav class="absolute top-6 right-6 md:top-8 md:right-8 z-50">
+        <button id="langControl" class="flex items-center gap-2 bg-white/5 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 text-xs font-black tracking-widest text-gray-300 hover:text-white hover:border-cyan-400 hover:bg-white/10 transition-all uppercase select-none">
+            <i class="fas fa-globe text-cyan-400"></i>
+            <span id="langText">VI</span>
+        </button>
+    </nav>
 
-  /* ================================================================
-     TRANSLATIONS
-     ================================================================ */
-  const TRANSLATIONS = {
-    vi: {
-      'page.title':'NTS — Trang Chủ',
-      'hero.badge':'Phiên bản nâng cấp cải tiến',
-      'hero.typewriter':'KẾT NỐI - SÁNG TẠO - ĐỘT PHÁ',
-      'hero.cta.explore':'Khám phá ngay',
-      'hero.cta.confess':'Mở lời ngay',
-      'tools.heading':'Kho Tiện Ích',
-      'tools.description':'Nơi hội tụ những công cụ số được phát triển bởi NTS nhằm mang lại trải nghiệm độc đáo nhất.',
-      'card.games.title':'Minigames',
-      'card.games.desc':'Phòng lab trò chơi giải trí với những tựa game kinh điển được remake lại.',
-      'card.games.cta':'Launch Game',
-      'card.love.title':'Lời Tỏ Tình',
-      'card.love.desc':'Giải mã trái tim Crush bằng những giao diện tỏ tình đầy sáng tạo (dành cho ai có người yêu).',
-      'card.love.cta':'Send Love',
-      'card.birthday.title':'Birthday',
-      'card.birthday.desc':'Tạo những kỷ niệm kỹ thuật số không bao giờ phai cho bạn bè.',
-      'card.birthday.cta':'Create Card',
-      'card.device.title':'Kiểm Tra Thiết Bị',
-      'card.device.desc':'Phân tích sâu thông số phần cứng và địa chỉ định danh của bạn.',
-      'card.device.cta':'Check Now',
-      'card.qr.title':'Tạo QR',
-      'card.qr.desc':'Tạo mã định danh cá nhân nhanh chóng với nhiều định dạng tùy chỉnh.',
-      'card.qr.cta':'Generate',
-      'card.aquarium.title':'Bể Cá',
-      'card.aquarium.desc':'Bể cá 3D ảo giúp bạn tìm lại sự cân bằng sau áp lực công việc.',
-      'card.aquarium.cta':'Relax Now',
-      'footer.credit':'Designed & Engineered by',
-      'footer.author':'Nguyễn Thanh Sang',
-      'footer.copyright':'© 2026 Bản quyền được bảo lưu',
-      'music.sub':'Vibe Check',
-      'music.title':'Audio System',
-    },
-    en: {
-      'page.title':'NTS — Home',
-      'hero.badge':'Upgraded & Improved Version',
-      'hero.typewriter':'CONNECT - CREATE - INNOVATE',
-      'hero.cta.explore':'Explore Now',
-      'hero.cta.confess':'Confess Now',
-      'tools.heading':'Utility Hub',
-      'tools.description':'A collection of digital tools built by NTS to deliver the most unique experience possible.',
-      'card.games.title':'Minigames',
-      'card.games.desc':'A gaming lab featuring remakes of timeless classic titles.',
-      'card.games.cta':'Launch Game',
-      'card.love.title':'Love Confession',
-      'card.love.desc':'Decode your crush\'s heart with creative confession interfaces (for those who have someone special).',
-      'card.love.cta':'Send Love',
-      'card.birthday.title':'Birthday',
-      'card.birthday.desc':'Create unforgettable digital memories for your friends.',
-      'card.birthday.cta':'Create Card',
-      'card.device.title':'Device Inspector',
-      'card.device.desc':'Deep-dive analysis of your hardware specs and device identifiers.',
-      'card.device.cta':'Check Now',
-      'card.qr.title':'QR Generator',
-      'card.qr.desc':'Generate personal identity codes instantly with multiple custom formats.',
-      'card.qr.cta':'Generate',
-      'card.aquarium.title':'Aquarium',
-      'card.aquarium.desc':'A virtual 3D aquarium to help you find balance after a stressful day.',
-      'card.aquarium.cta':'Relax Now',
-      'footer.credit':'Designed & Engineered by',
-      'footer.author':'Nguyễn Thanh Sang',
-      'footer.copyright':'© 2026 All Rights Reserved',
-      'music.sub':'Vibe Check',
-      'music.title':'Audio System',
-    },
-    ja: {
-      'page.title':'NTS — ホーム',
-      'hero.badge':'アップグレード・改善バージョン',
-      'hero.typewriter':'つながる - 創造する - 革新する',
-      'hero.cta.explore':'今すぐ探索',
-      'hero.cta.confess':'告白する',
-      'tools.heading':'ツール一覧',
-      'tools.description':'NTSが開発したデジタルツールを集めたハブ。最もユニークな体験をお届けします。',
-      'card.games.title':'ミニゲーム',
-      'card.games.desc':'クラシックゲームをリメイクしたエンターテイメントラボ。',
-      'card.games.cta':'ゲーム起動',
-      'card.love.title':'ラブレター',
-      'card.love.desc':'創造的な告白インターフェースで好きな人の心をつかもう。',
-      'card.love.cta':'愛を送る',
-      'card.birthday.title':'バースデー',
-      'card.birthday.desc':'友達への忘れられないデジタルメモリーを作ろう。',
-      'card.birthday.cta':'カード作成',
-      'card.device.title':'デバイス診断',
-      'card.device.desc':'ハードウェアスペックとデバイス識別子を詳細に分析。',
-      'card.device.cta':'今すぐ確認',
-      'card.qr.title':'QR生成',
-      'card.qr.desc':'複数のカスタム形式で個人識別コードをすばやく生成。',
-      'card.qr.cta':'生成する',
-      'card.aquarium.title':'水族館',
-      'card.aquarium.desc':'仮想3D水族館で仕事のプレッシャーから解放されよう。',
-      'card.aquarium.cta':'リラックス',
-      'footer.credit':'デザイン・エンジニアリング by',
-      'footer.author':'グエン・タイン・サン',
-      'footer.copyright':'© 2026 全著作権所有',
-      'music.sub':'ヴァイブ',
-      'music.title':'オーディオ',
-    },
-    zh: {
-      'page.title':'NTS — 首页',
-      'hero.badge':'升级改进版本',
-      'hero.typewriter':'连接 - 创造 - 突破',
-      'hero.cta.explore':'立即探索',
-      'hero.cta.confess':'表白心意',
-      'tools.heading':'工具中心',
-      'tools.description':'汇聚NTS开发的数字工具，为您带来最独特的体验。',
-      'card.games.title':'小游戏',
-      'card.games.desc':'经典游戏重制实验室，充满趣味的娱乐体验。',
-      'card.games.cta':'启动游戏',
-      'card.love.title':'告白情书',
-      'card.love.desc':'用创意满满的表白界面，解锁心上人的心房。',
-      'card.love.cta':'发送爱意',
-      'card.birthday.title':'生日祝福',
-      'card.birthday.desc':'为朋友创造永不褪色的数字纪念。',
-      'card.birthday.cta':'制作卡片',
-      'card.device.title':'设备检测',
-      'card.device.desc':'深度分析您的硬件参数与设备标识信息。',
-      'card.device.cta':'立即检测',
-      'card.qr.title':'二维码生成',
-      'card.qr.desc':'快速生成多种自定义格式的个人识别码。',
-      'card.qr.cta':'生成',
-      'card.aquarium.title':'虚拟鱼缸',
-      'card.aquarium.desc':'3D虚拟鱼缸，帮助您在工作压力后找回平静。',
-      'card.aquarium.cta':'放松一下',
-      'footer.credit':'设计与开发 by',
-      'footer.author':'阮青桑',
-      'footer.copyright':'© 2026 版权所有',
-      'music.sub':'氛围',
-      'music.title':'音频系统',
-    },
-    ko: {
-      'page.title':'NTS — 홈',
-      'hero.badge':'업그레이드 및 개선 버전',
-      'hero.typewriter':'연결 - 창조 - 혁신',
-      'hero.cta.explore':'지금 탐색',
-      'hero.cta.confess':'고백하기',
-      'tools.heading':'도구 허브',
-      'tools.description':'NTS가 개발한 디지털 도구 모음으로 가장 독특한 경험을 선사합니다.',
-      'card.games.title':'미니게임',
-      'card.games.desc':'클래식 게임을 리메이크한 엔터테인먼트 실험실.',
-      'card.games.cta':'게임 시작',
-      'card.love.title':'고백 메시지',
-      'card.love.desc':'창의적인 고백 인터페이스로 좋아하는 사람의 마음을 열어보세요.',
-      'card.love.cta':'마음 전달',
-      'card.birthday.title':'생일 축하',
-      'card.birthday.desc':'친구를 위한 잊을 수 없는 디지털 추억을 만들어 보세요.',
-      'card.birthday.cta':'카드 만들기',
-      'card.device.title':'기기 진단',
-      'card.device.desc':'하드웨어 사양 및 기기 식별자 심층 분석.',
-      'card.device.cta':'지금 확인',
-      'card.qr.title':'QR 생성기',
-      'card.qr.desc':'다양한 맞춤 형식으로 개인 식별 코드를 빠르게 생성하세요.',
-      'card.qr.cta':'생성',
-      'card.aquarium.title':'수족관',
-      'card.aquarium.desc':'가상 3D 수족관으로 업무 스트레스 후 균형을 되찾으세요.',
-      'card.aquarium.cta':'릴렉스',
-      'footer.credit':'디자인 & 개발 by',
-      'footer.author':'응우옌 탄 상',
-      'footer.copyright':'© 2026 모든 권리 보유',
-      'music.sub':'바이브 체크',
-      'music.title':'오디오 시스템',
-    },
-    fr: {
-      'page.title':'NTS — Accueil',
-      'hero.badge':'Version améliorée et mise à niveau',
-      'hero.typewriter':'CONNECTER - CRÉER - INNOVER',
-      'hero.cta.explore':'Explorer maintenant',
-      'hero.cta.confess':'Déclarer maintenant',
-      'tools.heading':'Espace Outils',
-      'tools.description':'Un espace regroupant des outils numériques développés par NTS pour offrir l\'expérience la plus unique.',
-      'card.games.title':'Minijeux',
-      'card.games.desc':'Un laboratoire de jeux avec des classiques remis au goût du jour.',
-      'card.games.cta':'Lancer le jeu',
-      'card.love.title':'Déclaration d\'amour',
-      'card.love.desc':'Déchiffrez le cœur de votre crush avec des interfaces créatives.',
-      'card.love.cta':'Envoyer l\'amour',
-      'card.birthday.title':'Anniversaire',
-      'card.birthday.desc':'Créez des souvenirs numériques inoubliables pour vos amis.',
-      'card.birthday.cta':'Créer une carte',
-      'card.device.title':'Diagnostic Appareil',
-      'card.device.desc':'Analyse approfondie de vos spécifications matérielles et identifiants.',
-      'card.device.cta':'Vérifier',
-      'card.qr.title':'Générateur QR',
-      'card.qr.desc':'Générez des codes d\'identification personnels en plusieurs formats.',
-      'card.qr.cta':'Générer',
-      'card.aquarium.title':'Aquarium',
-      'card.aquarium.desc':'Un aquarium 3D virtuel pour retrouver l\'équilibre après une journée stressante.',
-      'card.aquarium.cta':'Se détendre',
-      'footer.credit':'Conçu & développé par',
-      'footer.author':'Nguyễn Thanh Sang',
-      'footer.copyright':'© 2026 Tous droits réservés',
-      'music.sub':'Ambiance',
-      'music.title':'Système Audio',
-    },
-    it: {
-      'page.title':'NTS — Home',
-      'hero.badge':'Versione aggiornata e migliorata',
-      'hero.typewriter':'CONNETTERE - CREARE - INNOVARE',
-      'hero.cta.explore':'Esplora ora',
-      'hero.cta.confess':'Dichiararsi ora',
-      'tools.heading':'Hub degli Strumenti',
-      'tools.description':'Una raccolta di strumenti digitali sviluppati da NTS per offrire l\'esperienza più unica possibile.',
-      'card.games.title':'Minigiochi',
-      'card.games.desc':'Un laboratorio di giochi con classici intramontabili rimasterizzati.',
-      'card.games.cta':'Avvia gioco',
-      'card.love.title':'Dichiarazione d\'Amore',
-      'card.love.desc':'Conquista il cuore del tuo crush con interfacce creative.',
-      'card.love.cta':'Invia amore',
-      'card.birthday.title':'Compleanno',
-      'card.birthday.desc':'Crea ricordi digitali indimenticabili per i tuoi amici.',
-      'card.birthday.cta':'Crea biglietto',
-      'card.device.title':'Diagnostica Dispositivo',
-      'card.device.desc':'Analisi approfondita delle specifiche hardware e degli identificatori.',
-      'card.device.cta':'Controlla ora',
-      'card.qr.title':'Generatore QR',
-      'card.qr.desc':'Genera codici identificativi personali in vari formati personalizzati.',
-      'card.qr.cta':'Genera',
-      'card.aquarium.title':'Acquario',
-      'card.aquarium.desc':'Un acquario virtuale 3D per ritrovare l\'equilibrio dopo una giornata stressante.',
-      'card.aquarium.cta':'Rilassati',
-      'footer.credit':'Progettato & sviluppato da',
-      'footer.author':'Nguyễn Thanh Sang',
-      'footer.copyright':'© 2026 Tutti i diritti riservati',
-      'music.sub':'Vibe',
-      'music.title':'Sistema Audio',
-    },
-    th: {
-      'page.title':'NTS — หน้าแรก',
-      'hero.badge':'เวอร์ชันอัปเกรดและปรับปรุง',
-      'hero.typewriter':'เชื่อมต่อ - สร้างสรรค์ - ก้าวล้ำ',
-      'hero.cta.explore':'สำรวจเลย',
-      'hero.cta.confess':'สารภาพรัก',
-      'tools.heading':'ศูนย์รวมเครื่องมือ',
-      'tools.description':'รวมเครื่องมือดิจิทัลที่พัฒนาโดย NTS เพื่อมอบประสบการณ์ที่ไม่เหมือนใคร',
-      'card.games.title':'มินิเกม',
-      'card.games.desc':'ห้องทดลองเกมสุดฮิตที่ได้รับการรีเมคใหม่อย่างสนุกสนาน',
-      'card.games.cta':'เริ่มเกม',
-      'card.love.title':'สารภาพรัก',
-      'card.love.desc':'ปลดล็อกหัวใจของคนที่คุณรัก ด้วยอินเทอร์เฟซสุดสร้างสรรค์',
-      'card.love.cta':'ส่งความรัก',
-      'card.birthday.title':'วันเกิด',
-      'card.birthday.desc':'สร้างความทรงจำดิจิทัลที่ไม่รู้ลืมให้เพื่อนของคุณ',
-      'card.birthday.cta':'สร้างการ์ด',
-      'card.device.title':'ตรวจสอบอุปกรณ์',
-      'card.device.desc':'วิเคราะห์เชิงลึกสเปกฮาร์ดแวร์และตัวระบุอุปกรณ์ของคุณ',
-      'card.device.cta':'ตรวจสอบเลย',
-      'card.qr.title':'สร้าง QR',
-      'card.qr.desc':'สร้างรหัสประจำตัวส่วนบุคคลอย่างรวดเร็วในหลากหลายรูปแบบ',
-      'card.qr.cta':'สร้าง',
-      'card.aquarium.title':'ตู้ปลา',
-      'card.aquarium.desc':'ตู้ปลา 3D เสมือนจริง ช่วยให้คุณผ่อนคลายหลังจากวันที่เครียด',
-      'card.aquarium.cta':'ผ่อนคลาย',
-      'footer.credit':'ออกแบบและพัฒนาโดย',
-      'footer.author':'เหงียน ทาน ซัง',
-      'footer.copyright':'© 2026 สงวนลิขสิทธิ์ทั้งหมด',
-      'music.sub':'ไวบ์เช็ค',
-      'music.title':'ระบบเสียง',
-    },
-    km: {
-      'page.title':'NTS — ទំព័រដើម',
-      'hero.badge':'កំណែដែលបានធ្វើឱ្យប្រសើរ',
-      'hero.typewriter':'ភ្ជាប់ - បង្កើត - ឈានមុខ',
-      'hero.cta.explore':'រុករកឥឡូវ',
-      'hero.cta.confess':'សញ្ញាក់ចិត្ត',
-      'tools.heading':'មជ្ឈមណ្ឌលឧបករណ៍',
-      'tools.description':'ការប្រមូលផ្ដុំឧបករណ៍ឌីជីថលដែលបង្កើតដោយ NTS ដើម្បីផ្ដល់បទពិសោធន៍ពិសេស។',
-      'card.games.title':'មីនីហ្គេម',
-      'card.games.desc':'មន្ទីរពិសោធហ្គេម ជាមួយហ្គេមបុរាណត្រូវបានធ្វើឡើងវិញ។',
-      'card.games.cta':'ចាប់ផ្ដើមហ្គេម',
-      'card.love.title':'សញ្ញាក់ចិត្ត',
-      'card.love.desc':'បង្ហាញចិត្តរបស់អ្នកដល់មនុស្សដែលអ្នកចូលចិត្ត ជាមួយចំណុចប្រទាក់ច្នៃប្រឌិត។',
-      'card.love.cta':'ផ្ញើក្ដីស្រឡាញ់',
-      'card.birthday.title':'ថ្ងៃកំណើត',
-      'card.birthday.desc':'បង្កើតការចងចាំឌីជីថលដែលមិនអាចបំភ្លេចបាន សម្រាប់មិត្តភ័ក្ដិ។',
-      'card.birthday.cta':'បង្កើតកាត',
-      'card.device.title':'ពិនិត្យឧបករណ៍',
-      'card.device.desc':'វិភាគស្រ អំពីលក្ខណៈបច្ចេកទេសសន្និដ្ឋានអុបករណ៍។',
-      'card.device.cta':'ពិនិត្យឥឡូវ',
-      'card.qr.title':'បង្កើត QR',
-      'card.qr.desc':'បង្កើតលេខសម្គាល់ផ្ទាល់ខ្លួនយ៉ាងរហ័ស ជាមួយទម្រង់ច្រើនប្រភេទ។',
-      'card.qr.cta':'បង្កើត',
-      'card.aquarium.title':'អាងត្រី',
-      'card.aquarium.desc':'អាងត្រី 3D និម្មិត ជួយឱ្យអ្នកស្ដារតុល្យភាពបន្ទាប់ពីភាពតានតឹងការងារ។',
-      'card.aquarium.cta':'ស្ដារ',
-      'footer.credit':'រចនា & អភិវឌ្ឍដោយ',
-      'footer.author':'នូយ៉េន ថាញ់ សាំង',
-      'footer.copyright':'© 2026 រក្សាសិទ្ធិទាំងអស់',
-      'music.sub':'ស្ទីល',
-      'music.title':'ប្រព័ន្ធសំឡេង',
-    },
-    hi: {
-      'page.title':'NTS — होम',
-      'hero.badge':'अपग्रेडेड और बेहतर संस्करण',
-      'hero.typewriter':'जुड़ें - रचनाएँ करें - नवीनता लाएँ',
-      'hero.cta.explore':'अभी एक्सप्लोर करें',
-      'hero.cta.confess':'दिल खोलें',
-      'tools.heading':'टूल्स हब',
-      'tools.description':'NTS द्वारा विकसित डिजिटल टूल्स का संग्रह, जो सबसे अनूठा अनुभव प्रदान करता है।',
-      'card.games.title':'मिनीगेम्स',
-      'card.games.desc':'क्लासिक गेम्स के रीमेक के साथ एक मनोरंजन प्रयोगशाला।',
-      'card.games.cta':'गेम शुरू करें',
-      'card.love.title':'प्रेम निवेदन',
-      'card.love.desc':'क्रिएटिव इंटरफेस से अपने क्रश का दिल जीतें।',
-      'card.love.cta':'प्यार भेजें',
-      'card.birthday.title':'जन्मदिन',
-      'card.birthday.desc':'दोस्तों के लिए अविस्मरणीय डिजिटल यादें बनाएं।',
-      'card.birthday.cta':'कार्ड बनाएं',
-      'card.device.title':'डिवाइस जांच',
-      'card.device.desc':'आपके हार्डवेयर स्पेक्स और डिवाइस पहचानकर्ताओं का गहन विश्लेषण।',
-      'card.device.cta':'अभी जांचें',
-      'card.qr.title':'QR जनरेटर',
-      'card.qr.desc':'कई कस्टम फॉर्मेट में तुरंत व्यक्तिगत पहचान कोड बनाएं।',
-      'card.qr.cta':'जनरेट करें',
-      'card.aquarium.title':'एक्वेरियम',
-      'card.aquarium.desc':'वर्चुअल 3D एक्वेरियम जो काम के तनाव के बाद आपको शांति दिलाता है।',
-      'card.aquarium.cta':'आराम करें',
-      'footer.credit':'डिज़ाइन & इंजीनियरिंग by',
-      'footer.author':'न्गुयेन थान सांग',
-      'footer.copyright':'© 2026 सर्वाधिकार सुरक्षित',
-      'music.sub':'वाइब चेक',
-      'music.title':'ऑडियो सिस्टम',
-    },
-    lo: {
-      'page.title':'NTS — ໜ້າຫຼັກ',
-      'hero.badge':'ສະບັບອັບເກຣດແລະປັບປຸງ',
-      'hero.typewriter':'ເຊື່ອມຕໍ່ - ສ້າງສັນ - ກ້າວໜ້າ',
-      'hero.cta.explore':'ສຳຫຼວດດຽວນີ້',
-      'hero.cta.confess':'ສາລະພາບຄວາມຮັກ',
-      'tools.heading':'ສູນລວມເຄື່ອງມື',
-      'tools.description':'ລວມເຄື່ອງມືດິຈິຕອລທີ່ພັດທະນາໂດຍ NTS ເພື່ອມອບປະສົບການທີ່ເປັນເອກະລັກ.',
-      'card.games.title':'ມິນິເກມ',
-      'card.games.desc':'ຫ້ອງທົດລອງເກມທີ່ສ້າງໃໝ່ຈາກເກມຄລາສສິກ.',
-      'card.games.cta':'ເລີ່ມເກມ',
-      'card.love.title':'ສາລະພາບຮັກ',
-      'card.love.desc':'ເປີດໃຈໃຫ້ຄົນທີ່ເຈົ້າຮັກດ້ວຍອິນເຕີເຟດສ້າງສັນ.',
-      'card.love.cta':'ສົ່ງຄວາມຮັກ',
-      'card.birthday.title':'ວັນເກີດ',
-      'card.birthday.desc':'ສ້າງຄວາມຊົງຈຳດິຈິຕອລທີ່ຊົງໃຈໃຫ້ເພື່ອນ.',
-      'card.birthday.cta':'ສ້າງກາດ',
-      'card.device.title':'ກວດສອບອຸປະກອນ',
-      'card.device.desc':'ວິເຄາະຂໍ້ມູນຮາດແວແລະຕົວລະບຸອຸປະກອນຢ່າງເລິກເຊິ່ງ.',
-      'card.device.cta':'ກວດສອບດຽວນີ້',
-      'card.qr.title':'ສ້າງ QR',
-      'card.qr.desc':'ສ້າງລະຫັດປະຈຳຕົວສ່ວນຕົວໄດ້ໄວດ້ວຍຫຼາຍຮູບແບບ.',
-      'card.qr.cta':'ສ້າງ',
-      'card.aquarium.title':'ຕູ້ປາ',
-      'card.aquarium.desc':'ຕູ້ປາ 3D ເສມືນຈິງ ຊ່ວຍໃຫ້ທ່ານຜ່ອນຄາຍຫຼັງຈາກວັນທີ່ຄຽດ.',
-      'card.aquarium.cta':'ຜ່ອນຄາຍ',
-      'footer.credit':'ອອກແບບ & ພັດທະນາໂດຍ',
-      'footer.author':'ເຫງວຽນ ທານ ຊັງ',
-      'footer.copyright':'© 2026 ສະຫງວນລິຂະສິດ',
-      'music.sub':'ໄວບ໌',
-      'music.title':'ລະບົບສຽງ',
-    },
-    id: {
-      'page.title':'NTS — Beranda',
-      'hero.badge':'Versi yang Ditingkatkan',
-      'hero.typewriter':'TERHUBUNG - BERKREASI - BERINOVASI',
-      'hero.cta.explore':'Jelajahi Sekarang',
-      'hero.cta.confess':'Ungkapkan Perasaan',
-      'tools.heading':'Pusat Alat',
-      'tools.description':'Kumpulan alat digital yang dikembangkan oleh NTS untuk memberikan pengalaman paling unik.',
-      'card.games.title':'Minigame',
-      'card.games.desc':'Laboratorium game dengan remake judul klasik yang menghibur.',
-      'card.games.cta':'Mulai Game',
-      'card.love.title':'Pengakuan Cinta',
-      'card.love.desc':'Ungkapkan perasaanmu kepada orang spesial dengan antarmuka kreatif.',
-      'card.love.cta':'Kirim Cinta',
-      'card.birthday.title':'Ulang Tahun',
-      'card.birthday.desc':'Ciptakan kenangan digital tak terlupakan untuk teman-temanmu.',
-      'card.birthday.cta':'Buat Kartu',
-      'card.device.title':'Periksa Perangkat',
-      'card.device.desc':'Analisis mendalam spesifikasi hardware dan identifikasi perangkatmu.',
-      'card.device.cta':'Periksa Sekarang',
-      'card.qr.title':'Generator QR',
-      'card.qr.desc':'Buat kode identitas pribadi dengan cepat dalam berbagai format.',
-      'card.qr.cta':'Buat',
-      'card.aquarium.title':'Akuarium',
-      'card.aquarium.desc':'Akuarium 3D virtual untuk menemukan keseimbangan setelah hari yang melelahkan.',
-      'card.aquarium.cta':'Santai Sekarang',
-      'footer.credit':'Dirancang & Dikembangkan oleh',
-      'footer.author':'Nguyễn Thanh Sang',
-      'footer.copyright':'© 2026 Semua Hak Dilindungi',
-      'music.sub':'Vibe Check',
-      'music.title':'Sistem Audio',
-    },
-    ms: {
-      'page.title':'NTS — Laman Utama',
-      'hero.badge':'Versi Dinaik Taraf & Ditambah Baik',
-      'hero.typewriter':'HUBUNGKAN - CIPTA - INOVASIKAN',
-      'hero.cta.explore':'Terokai Sekarang',
-      'hero.cta.confess':'Luahkan Perasaan',
-      'tools.heading':'Hab Alatan',
-      'tools.description':'Koleksi alatan digital yang dibangunkan oleh NTS untuk pengalaman paling unik.',
-      'card.games.title':'Minigem',
-      'card.games.desc':'Makmal permainan dengan tajuk klasik yang telah di-remake.',
-      'card.games.cta':'Mulakan Permainan',
-      'card.love.title':'Pengakuan Cinta',
-      'card.love.desc':'Takluk hati crush anda dengan antara muka pengakuan yang kreatif.',
-      'card.love.cta':'Hantar Cinta',
-      'card.birthday.title':'Hari Jadi',
-      'card.birthday.desc':'Cipta kenangan digital yang tidak terlupakan untuk rakan-rakan.',
-      'card.birthday.cta':'Buat Kad',
-      'card.device.title':'Semak Peranti',
-      'card.device.desc':'Analisis mendalam spesifikasi perkakasan dan pengecam peranti anda.',
-      'card.device.cta':'Semak Sekarang',
-      'card.qr.title':'Jana QR',
-      'card.qr.desc':'Jana kod pengenalan peribadi dengan cepat dalam pelbagai format.',
-      'card.qr.cta':'Jana',
-      'card.aquarium.title':'Akuarium',
-      'card.aquarium.desc':'Akuarium 3D maya untuk mencari keseimbangan selepas hari yang tertekan.',
-      'card.aquarium.cta':'Rehat Sekarang',
-      'footer.credit':'Direka & Dibangunkan oleh',
-      'footer.author':'Nguyễn Thanh Sang',
-      'footer.copyright':'© 2026 Hak Cipta Terpelihara',
-      'music.sub':'Vibe Check',
-      'music.title':'Sistem Audio',
-    },
-    'zh-TW': {
-      'page.title':'NTS — 首頁',
-      'hero.badge':'升級改進版本',
-      'hero.typewriter':'連結 - 創造 - 突破',
-      'hero.cta.explore':'立即探索',
-      'hero.cta.confess':'表白心意',
-      'tools.heading':'工具中心',
-      'tools.description':'匯聚 NTS 開發的數位工具，為您帶來最獨特的體驗。',
-      'card.games.title':'小遊戲',
-      'card.games.desc':'經典遊戲重製實驗室，充滿趣味的娛樂體驗。',
-      'card.games.cta':'啟動遊戲',
-      'card.love.title':'告白情書',
-      'card.love.desc':'用充滿創意的介面，向心儀的人表白。',
-      'card.love.cta':'傳送愛意',
-      'card.birthday.title':'生日祝福',
-      'card.birthday.desc':'為朋友創造永不褪色的數位紀念。',
-      'card.birthday.cta':'製作卡片',
-      'card.device.title':'裝置檢測',
-      'card.device.desc':'深度分析您的硬體規格與裝置識別資訊。',
-      'card.device.cta':'立即檢測',
-      'card.qr.title':'QR 碼產生器',
-      'card.qr.desc':'快速產生多種自訂格式的個人識別碼。',
-      'card.qr.cta':'產生',
-      'card.aquarium.title':'虛擬魚缸',
-      'card.aquarium.desc':'3D 虛擬魚缸，幫助您在工作壓力後找回平靜。',
-      'card.aquarium.cta':'放鬆一下',
-      'footer.credit':'設計與開發 by',
-      'footer.author':'阮青桑',
-      'footer.copyright':'© 2026 版權所有',
-      'music.sub':'氛圍',
-      'music.title':'音頻系統',
-    },
-    'zh-HK': {
-      'page.title':'NTS — 主頁',
-      'hero.badge':'升級改進版本',
-      'hero.typewriter':'連結 - 創造 - 突破',
-      'hero.cta.explore':'立即探索',
-      'hero.cta.confess':'表白心意',
-      'tools.heading':'工具中心',
-      'tools.description':'匯聚 NTS 開發嘅數碼工具，為您帶嚟最獨特嘅體驗。',
-      'card.games.title':'小遊戲',
-      'card.games.desc':'經典遊戲重製實驗室，充滿趣味嘅娛樂體驗。',
-      'card.games.cta':'啟動遊戲',
-      'card.love.title':'告白情書',
-      'card.love.desc':'用充滿創意嘅介面，向心儀嘅人表白。',
-      'card.love.cta':'傳送愛意',
-      'card.birthday.title':'生日祝福',
-      'card.birthday.desc':'為朋友創造永不褪色嘅數碼紀念。',
-      'card.birthday.cta':'製作卡片',
-      'card.device.title':'裝置檢測',
-      'card.device.desc':'深度分析您嘅硬件規格同裝置識別資訊。',
-      'card.device.cta':'立即檢測',
-      'card.qr.title':'QR 碼生成器',
-      'card.qr.desc':'快速生成多種自訂格式嘅個人識別碼。',
-      'card.qr.cta':'生成',
-      'card.aquarium.title':'虛擬魚缸',
-      'card.aquarium.desc':'3D 虛擬魚缸，幫助您喺工作壓力後搵返平靜。',
-      'card.aquarium.cta':'放鬆一下',
-      'footer.credit':'設計與開發 by',
-      'footer.author':'阮青桑',
-      'footer.copyright':'© 2026 版權所有',
-      'music.sub':'氛圍',
-      'music.title':'音頻系統',
-    },
-    'zh-MO': {
-      'page.title':'NTS — 主頁',
-      'hero.badge':'升級改進版本',
-      'hero.typewriter':'連結 - 創造 - 突破',
-      'hero.cta.explore':'立即探索',
-      'hero.cta.confess':'表白心意',
-      'tools.heading':'工具中心',
-      'tools.description':'匯聚 NTS 開發嘅數碼工具，為您帶嚟最獨特嘅體驗。（澳門版）',
-      'card.games.title':'小遊戲',
-      'card.games.desc':'經典遊戲重製實驗室，充滿趣味嘅娛樂體驗。',
-      'card.games.cta':'啟動遊戲',
-      'card.love.title':'告白情書',
-      'card.love.desc':'用充滿創意嘅介面，向心儀嘅人表白。',
-      'card.love.cta':'傳送愛意',
-      'card.birthday.title':'生日祝福',
-      'card.birthday.desc':'為朋友創造永不褪色嘅數碼紀念。',
-      'card.birthday.cta':'製作卡片',
-      'card.device.title':'裝置檢測',
-      'card.device.desc':'深度分析您嘅硬件規格同裝置識別資訊。',
-      'card.device.cta':'立即檢測',
-      'card.qr.title':'QR 碼生成器',
-      'card.qr.desc':'快速生成多種自訂格式嘅個人識別碼。',
-      'card.qr.cta':'生成',
-      'card.aquarium.title':'虛擬魚缸',
-      'card.aquarium.desc':'3D 虛擬魚缸，幫助您喺工作壓力後搵返平靜。',
-      'card.aquarium.cta':'放鬆一下',
-      'footer.credit':'設計與開發 by',
-      'footer.author':'阮青桑',
-      'footer.copyright':'© 2026 版權所有',
-      'music.sub':'氛圍',
-      'music.title':'音頻系統',
-    },
-    kp: {
-      'page.title':'NTS — 기본 페지',
-      'hero.badge':'갱신 및 개선된 판본',
-      'hero.typewriter':'련결 - 창조 - 혁신',
-      'hero.cta.explore':'지금 탐구',
-      'hero.cta.confess':'고백하기',
-      'tools.heading':'도구 중심',
-      'tools.description':'NTS가 개발한 디지털 도구 모음으로 가장 독특한 체험을 제공합니다.',
-      'card.games.title':'소형 유희',
-      'card.games.desc':'고전 유희를 새롭게 만든 오락 실험실.',
-      'card.games.cta':'유희 시작',
-      'card.love.title':'사랑 고백',
-      'card.love.desc':'창의적인 인터페이스로 마음을 전달하십시오.',
-      'card.love.cta':'사랑 전달',
-      'card.birthday.title':'생일 축하',
-      'card.birthday.desc':'동무들을 위한 잊을 수 없는 디지털 기념품을 만드십시오.',
-      'card.birthday.cta':'카드 만들기',
-      'card.device.title':'기재 검사',
-      'card.device.desc':'하드웨어 규격과 기재 식별자를 심층 분석.',
-      'card.device.cta':'지금 확인',
-      'card.qr.title':'QR 생성',
-      'card.qr.desc':'다양한 형식으로 개인 식별 부호를 빠르게 생성하십시오.',
-      'card.qr.cta':'생성',
-      'card.aquarium.title':'어항',
-      'card.aquarium.desc':'가상 3D 어항으로 로동 압력 후 균형을 되찾으십시오.',
-      'card.aquarium.cta':'휴식',
-      'footer.credit':'설계 & 개발',
-      'footer.author':'응우옌 탄 상',
-      'footer.copyright':'© 2026 모든 권리 보유',
-      'music.sub':'바이브',
-      'music.title':'음향 체계',
-    },
-    ar: {
-      'page.title':'NTS — الرئيسية',
-      'hero.badge':'النسخة المحسّنة والمطوّرة',
-      'hero.typewriter':'تواصل - ابتكر - تميّز',
-      'hero.cta.explore':'استكشف الآن',
-      'hero.cta.confess':'اعترف بحبك',
-      'tools.heading':'مركز الأدوات',
-      'tools.description':'مجموعة من الأدوات الرقمية التي طوّرها NTS لتقديم أفضل تجربة فريدة.',
-      'card.games.title':'ألعاب صغيرة',
-      'card.games.desc':'مختبر ألعاب يضمّ إعادة إنتاج الكلاسيكيات الخالدة.',
-      'card.games.cta':'ابدأ اللعبة',
-      'card.love.title':'رسالة حب',
-      'card.love.desc':'افتح قلبك لمن تحب بواجهات اعتراف إبداعية.',
-      'card.love.cta':'أرسل الحب',
-      'card.birthday.title':'عيد الميلاد',
-      'card.birthday.desc':'ابتكر ذكريات رقمية لا تُنسى لأصدقائك.',
-      'card.birthday.cta':'إنشاء بطاقة',
-      'card.device.title':'فحص الجهاز',
-      'card.device.desc':'تحليل عميق لمواصفات الجهاز ومعرّفاته.',
-      'card.device.cta':'فحص الآن',
-      'card.qr.title':'توليد QR',
-      'card.qr.desc':'أنشئ رموز هوية شخصية بسرعة بصيغ متعددة.',
-      'card.qr.cta':'توليد',
-      'card.aquarium.title':'حوض السمك',
-      'card.aquarium.desc':'حوض أسماك ثلاثي الأبعاد افتراضي يمنحك التوازن بعد يوم مرهق.',
-      'card.aquarium.cta':'استرخِ الآن',
-      'footer.credit':'تصميم وتطوير بواسطة',
-      'footer.author':'نغوين ثانه سانغ',
-      'footer.copyright':'© 2026 جميع الحقوق محفوظة',
-      'music.sub':'أجواء',
-      'music.title':'نظام الصوت',
-    },
-    tr: {
-      'page.title':'NTS — Ana Sayfa',
-      'hero.badge':'Geliştirilmiş ve İyileştirilmiş Sürüm',
-      'hero.typewriter':'BAĞLAN - YARAT - YENİLİK YAP',
-      'hero.cta.explore':'Hemen Keşfet',
-      'hero.cta.confess':'Hislerini Anlat',
-      'tools.heading':'Araç Merkezi',
-      'tools.description':'NTS tarafından geliştirilen dijital araçların koleksiyonu, en benzersiz deneyimi sunar.',
-      'card.games.title':'Mini Oyunlar',
-      'card.games.desc':'Zamansız klasiklerin yeniden yapımlarından oluşan oyun laboratuvarı.',
-      'card.games.cta':'Oyunu Başlat',
-      'card.love.title':'Aşk İtirafı',
-      'card.love.desc':'Yaratıcı arayüzlerle sevdiğine kalbini aç.',
-      'card.love.cta':'Sevgi Gönder',
-      'card.birthday.title':'Doğum Günü',
-      'card.birthday.desc':'Arkadaşların için unutulmaz dijital anılar yarat.',
-      'card.birthday.cta':'Kart Oluştur',
-      'card.device.title':'Cihaz İnceleme',
-      'card.device.desc':'Donanım özelliklerini ve cihaz tanımlayıcılarını derin analiz et.',
-      'card.device.cta':'Şimdi Kontrol Et',
-      'card.qr.title':'QR Oluşturucu',
-      'card.qr.desc':'Birden fazla özel formatta kişisel kimlik kodlarını anında oluştur.',
-      'card.qr.cta':'Oluştur',
-      'card.aquarium.title':'Akvaryum',
-      'card.aquarium.desc':'Stresli bir günün ardından denge bulmana yardımcı olan sanal 3D akvaryum.',
-      'card.aquarium.cta':'Şimdi Dinlen',
-      'footer.credit':'Tasarım & Geliştirme by',
-      'footer.author':'Nguyễn Thanh Sang',
-      'footer.copyright':'© 2026 Tüm Hakları Saklıdır',
-      'music.sub':'Vibe Check',
-      'music.title':'Ses Sistemi',
-    },
-    'en-US': {
-      'page.title':'NTS — Home',
-      'hero.badge':'Upgraded & Improved Version',
-      'hero.typewriter':'CONNECT - CREATE - INNOVATE',
-      'hero.cta.explore':'Explore Now',
-      'hero.cta.confess':'Confess Now',
-      'tools.heading':'Utility Hub',
-      'tools.description':'A collection of digital tools built by NTS to deliver the most unique experience possible.',
-      'card.games.title':'Minigames',
-      'card.games.desc':'A gaming lab featuring remakes of timeless classic titles.',
-      'card.games.cta':'Launch Game',
-      'card.love.title':'Love Confession',
-      'card.love.desc':'Unlock your crush\'s heart with creative confession interfaces.',
-      'card.love.cta':'Send Love',
-      'card.birthday.title':'Birthday',
-      'card.birthday.desc':'Create unforgettable digital memories for your friends.',
-      'card.birthday.cta':'Create Card',
-      'card.device.title':'Device Inspector',
-      'card.device.desc':'Deep-dive analysis of your hardware specs and device identifiers.',
-      'card.device.cta':'Check Now',
-      'card.qr.title':'QR Generator',
-      'card.qr.desc':'Generate personal identity codes instantly with multiple custom formats.',
-      'card.qr.cta':'Generate',
-      'card.aquarium.title':'Aquarium',
-      'card.aquarium.desc':'A virtual 3D aquarium to help you find balance after a stressful day.',
-      'card.aquarium.cta':'Relax Now',
-      'footer.credit':'Designed & Engineered by',
-      'footer.author':'Nguyễn Thanh Sang',
-      'footer.copyright':'© 2026 All Rights Reserved',
-      'music.sub':'Vibe Check',
-      'music.title':'Audio System',
-    },
-    'en-NZ': {
-      'page.title':'NTS — Home',
-      'hero.badge':'Upgraded & Improved Version',
-      'hero.typewriter':'CONNECT - CREATE - INNOVATE',
-      'hero.cta.explore':'Explore Now',
-      'hero.cta.confess':'Confess Now',
-      'tools.heading':'Utility Hub',
-      'tools.description':'A collection of digital tools built by NTS to deliver the most unique experience possible.',
-      'card.games.title':'Minigames',
-      'card.games.desc':'A gaming lab featuring remakes of timeless classic titles.',
-      'card.games.cta':'Launch Game',
-      'card.love.title':'Love Confession',
-      'card.love.desc':'Unlock your crush\'s heart with creative confession interfaces.',
-      'card.love.cta':'Send Love',
-      'card.birthday.title':'Birthday',
-      'card.birthday.desc':'Create unforgettable digital memories for your mates.',
-      'card.birthday.cta':'Create Card',
-      'card.device.title':'Device Inspector',
-      'card.device.desc':'Deep-dive analysis of your hardware specs and device identifiers.',
-      'card.device.cta':'Check Now',
-      'card.qr.title':'QR Generator',
-      'card.qr.desc':'Generate personal identity codes instantly with multiple custom formats.',
-      'card.qr.cta':'Generate',
-      'card.aquarium.title':'Aquarium',
-      'card.aquarium.desc':'A virtual 3D aquarium to help you unwind after a hard day.',
-      'card.aquarium.cta':'Relax Now',
-      'footer.credit':'Designed & Engineered by',
-      'footer.author':'Nguyễn Thanh Sang',
-      'footer.copyright':'© 2026 All Rights Reserved',
-      'music.sub':'Vibe Check',
-      'music.title':'Audio System',
-    },
-    de: {
-      'page.title':'NTS — Startseite',
-      'hero.badge':'Verbesserte & aktualisierte Version',
-      'hero.typewriter':'VERBINDEN - ERSCHAFFEN - INNOVIEREN',
-      'hero.cta.explore':'Jetzt entdecken',
-      'hero.cta.confess':'Gefühle ausdrücken',
-      'tools.heading':'Tool-Zentrum',
-      'tools.description':'Eine Sammlung digitaler Werkzeuge von NTS für das einzigartigste Erlebnis.',
-      'card.games.title':'Minispiele',
-      'card.games.desc':'Ein Spiellabor mit Remakes zeitloser Klassiker.',
-      'card.games.cta':'Spiel starten',
-      'card.love.title':'Liebeserklärung',
-      'card.love.desc':'Öffne das Herz deines Schwarms mit kreativen Geständnisschnittstellen.',
-      'card.love.cta':'Liebe senden',
-      'card.birthday.title':'Geburtstag',
-      'card.birthday.desc':'Schaffe unvergessliche digitale Erinnerungen für Freunde.',
-      'card.birthday.cta':'Karte erstellen',
-      'card.device.title':'Gerätediagnose',
-      'card.device.desc':'Tiefgehende Analyse deiner Hardware-Spezifikationen und Gerätekennungen.',
-      'card.device.cta':'Jetzt prüfen',
-      'card.qr.title':'QR-Generator',
-      'card.qr.desc':'Erstelle persönliche Identifikationscodes sofort in vielen Formaten.',
-      'card.qr.cta':'Generieren',
-      'card.aquarium.title':'Aquarium',
-      'card.aquarium.desc':'Ein virtuelles 3D-Aquarium, das dir nach einem stressigen Tag hilft.',
-      'card.aquarium.cta':'Jetzt entspannen',
-      'footer.credit':'Gestaltet & entwickelt von',
-      'footer.author':'Nguyễn Thanh Sang',
-      'footer.copyright':'© 2026 Alle Rechte vorbehalten',
-      'music.sub':'Vibe Check',
-      'music.title':'Audiosystem',
-    },
-    'de-CH': {
-      'page.title':'NTS — Startseite',
-      'hero.badge':'Verbesserte & aktualisierte Version',
-      'hero.typewriter':'VERBINDEN - ERSCHAFFEN - INNOVIEREN',
-      'hero.cta.explore':'Jetzt entdecken',
-      'hero.cta.confess':'Gefühle ausdrücken',
-      'tools.heading':'Tool-Zentrum',
-      'tools.description':'Eine Sammlung digitaler Werkzeuge von NTS für das einzigartigste Erlebnis. (Schweiz)',
-      'card.games.title':'Minispiele',
-      'card.games.desc':'Ein Spiellabor mit Remakes zeitloser Klassiker.',
-      'card.games.cta':'Spiel starten',
-      'card.love.title':'Liebeserklärung',
-      'card.love.desc':'Öffne das Herz deines Schwarms mit kreativen Geständnisschnittstellen.',
-      'card.love.cta':'Liebe senden',
-      'card.birthday.title':'Geburtstag',
-      'card.birthday.desc':'Schaffe unvergessliche digitale Erinnerungen für Freunde.',
-      'card.birthday.cta':'Karte erstellen',
-      'card.device.title':'Gerätediagnose',
-      'card.device.desc':'Tiefgehende Analyse deiner Hardware-Spezifikationen und Gerätekennungen.',
-      'card.device.cta':'Jetzt prüfen',
-      'card.qr.title':'QR-Generator',
-      'card.qr.desc':'Erstelle persönliche Identifikationscodes sofort in vielen Formaten.',
-      'card.qr.cta':'Generieren',
-      'card.aquarium.title':'Aquarium',
-      'card.aquarium.desc':'Ein virtuelles 3D-Aquarium, das dir nach einem stressigen Tag hilft.',
-      'card.aquarium.cta':'Jetzt entspannen',
-      'footer.credit':'Gestaltet & entwickelt von',
-      'footer.author':'Nguyễn Thanh Sang',
-      'footer.copyright':'© 2026 Alle Rechte vorbehalten',
-      'music.sub':'Vibe Check',
-      'music.title':'Audiosystem',
-    },
-    es: {
-      'page.title':'NTS — Inicio',
-      'hero.badge':'Versión mejorada y actualizada',
-      'hero.typewriter':'CONECTAR - CREAR - INNOVAR',
-      'hero.cta.explore':'Explorar ahora',
-      'hero.cta.confess':'Declararse ahora',
-      'tools.heading':'Centro de Herramientas',
-      'tools.description':'Una colección de herramientas digitales desarrolladas por NTS para la experiencia más única.',
-      'card.games.title':'Minijuegos',
-      'card.games.desc':'Un laboratorio de juegos con remakes de clásicos atemporales.',
-      'card.games.cta':'Iniciar juego',
-      'card.love.title':'Declaración de Amor',
-      'card.love.desc':'Conquista el corazón de tu crush con interfaces de confesión creativas.',
-      'card.love.cta':'Enviar amor',
-      'card.birthday.title':'Cumpleaños',
-      'card.birthday.desc':'Crea recuerdos digitales inolvidables para tus amigos.',
-      'card.birthday.cta':'Crear tarjeta',
-      'card.device.title':'Diagnóstico de Dispositivo',
-      'card.device.desc':'Análisis profundo de especificaciones de hardware e identificadores.',
-      'card.device.cta':'Verificar ahora',
-      'card.qr.title':'Generador QR',
-      'card.qr.desc':'Genera códigos de identidad personal al instante en varios formatos.',
-      'card.qr.cta':'Generar',
-      'card.aquarium.title':'Acuario',
-      'card.aquarium.desc':'Un acuario virtual 3D para encontrar el equilibrio tras un día estresante.',
-      'card.aquarium.cta':'Relajarse',
-      'footer.credit':'Diseñado & desarrollado por',
-      'footer.author':'Nguyễn Thanh Sang',
-      'footer.copyright':'© 2026 Todos los derechos reservados',
-      'music.sub':'Vibe Check',
-      'music.title':'Sistema de Audio',
-    },
-    'es-MX': {
-      'page.title':'NTS — Inicio',
-      'hero.badge':'Versión mejorada y actualizada',
-      'hero.typewriter':'CONECTAR - CREAR - INNOVAR',
-      'hero.cta.explore':'Explorar ahorita',
-      'hero.cta.confess':'Declararse ahorita',
-      'tools.heading':'Centro de Herramientas',
-      'tools.description':'Una colección de herramientas digitales desarrolladas por NTS para la experiencia más única.',
-      'card.games.title':'Minijuegos',
-      'card.games.desc':'Un laboratorio de juegos con remakes de clásicos atemporales.',
-      'card.games.cta':'Iniciar juego',
-      'card.love.title':'Declaración de Amor',
-      'card.love.desc':'Conquista el corazón de tu crush con interfaces de confesión creativas.',
-      'card.love.cta':'Enviar amor',
-      'card.birthday.title':'Cumpleaños',
-      'card.birthday.desc':'Crea recuerdos digitales inolvidables para tus cuates.',
-      'card.birthday.cta':'Crear tarjeta',
-      'card.device.title':'Diagnóstico de Dispositivo',
-      'card.device.desc':'Análisis profundo de especificaciones de hardware e identificadores.',
-      'card.device.cta':'Verificar ahorita',
-      'card.qr.title':'Generador QR',
-      'card.qr.desc':'Genera códigos de identidad personal al instante en varios formatos.',
-      'card.qr.cta':'Generar',
-      'card.aquarium.title':'Acuario',
-      'card.aquarium.desc':'Un acuario virtual 3D para encontrar el equilibrio tras un día estresante.',
-      'card.aquarium.cta':'Relajarse',
-      'footer.credit':'Diseñado & desarrollado por',
-      'footer.author':'Nguyễn Thanh Sang',
-      'footer.copyright':'© 2026 Todos los derechos reservados',
-      'music.sub':'Vibe Check',
-      'music.title':'Sistema de Audio',
-    },
-    pt: {
-      'page.title':'NTS — Página Inicial',
-      'hero.badge':'Versão melhorada e atualizada',
-      'hero.typewriter':'CONECTAR - CRIAR - INOVAR',
-      'hero.cta.explore':'Explorar agora',
-      'hero.cta.confess':'Declarar agora',
-      'tools.heading':'Centro de Ferramentas',
-      'tools.description':'Uma coleção de ferramentas digitais desenvolvidas pela NTS para a experiência mais única.',
-      'card.games.title':'Minijogos',
-      'card.games.desc':'Um laboratório de jogos com remakes de clássicos atemporais.',
-      'card.games.cta':'Iniciar jogo',
-      'card.love.title':'Declaração de Amor',
-      'card.love.desc':'Conquiste o coração do seu crush com interfaces de confissão criativas.',
-      'card.love.cta':'Enviar amor',
-      'card.birthday.title':'Aniversário',
-      'card.birthday.desc':'Crie memórias digitais inesquecíveis para os seus amigos.',
-      'card.birthday.cta':'Criar cartão',
-      'card.device.title':'Diagnóstico de Dispositivo',
-      'card.device.desc':'Análise profunda das especificações de hardware e identificadores.',
-      'card.device.cta':'Verificar agora',
-      'card.qr.title':'Gerador QR',
-      'card.qr.desc':'Gere códigos de identidade pessoal instantaneamente em vários formatos.',
-      'card.qr.cta':'Gerar',
-      'card.aquarium.title':'Aquário',
-      'card.aquarium.desc':'Um aquário virtual 3D para encontrar equilíbrio após um dia stressante.',
-      'card.aquarium.cta':'Relaxar agora',
-      'footer.credit':'Desenhado & desenvolvido por',
-      'footer.author':'Nguyễn Thanh Sang',
-      'footer.copyright':'© 2026 Todos os direitos reservados',
-      'music.sub':'Vibe Check',
-      'music.title':'Sistema de Áudio',
-    },
-    nl: {
-      'page.title':'NTS — Startpagina',
-      'hero.badge':'Verbeterde & bijgewerkte versie',
-      'hero.typewriter':'VERBINDEN - CREËREN - INNOVEREN',
-      'hero.cta.explore':'Nu verkennen',
-      'hero.cta.confess':'Gevoelens uiten',
-      'tools.heading':'Toolcentrum',
-      'tools.description':'Een verzameling digitale tools ontwikkeld door NTS voor de meest unieke ervaring.',
-      'card.games.title':'Minigames',
-      'card.games.desc':'Een speellab met remakes van tijdloze klassiekers.',
-      'card.games.cta':'Spel starten',
-      'card.love.title':'Liefdesverklaring',
-      'card.love.desc':'Open het hart van je crush met creatieve bekentenis-interfaces.',
-      'card.love.cta':'Liefde sturen',
-      'card.birthday.title':'Verjaardag',
-      'card.birthday.desc':'Maak onvergetelijke digitale herinneringen voor vrienden.',
-      'card.birthday.cta':'Kaart maken',
-      'card.device.title':'Apparaatdiagnose',
-      'card.device.desc':'Diepgaande analyse van je hardwarespecificaties en apparaatidentificatoren.',
-      'card.device.cta':'Nu controleren',
-      'card.qr.title':'QR-generator',
-      'card.qr.desc':'Genereer persoonlijke identificatiecodes direct in meerdere formaten.',
-      'card.qr.cta':'Genereren',
-      'card.aquarium.title':'Aquarium',
-      'card.aquarium.desc':'Een virtueel 3D-aquarium om balans te vinden na een stressvolle dag.',
-      'card.aquarium.cta':'Nu ontspannen',
-      'footer.credit':'Ontworpen & ontwikkeld door',
-      'footer.author':'Nguyễn Thanh Sang',
-      'footer.copyright':'© 2026 Alle rechten voorbehouden',
-      'music.sub':'Vibe Check',
-      'music.title':'Audiosysteem',
-    },
-    ru: {
-      'page.title':'NTS — Главная',
-      'hero.badge':'Улучшенная и обновлённая версия',
-      'hero.typewriter':'СВЯЗЬ - ТВОРЧЕСТВО - ИННОВАЦИИ',
-      'hero.cta.explore':'Исследовать',
-      'hero.cta.confess':'Признаться',
-      'tools.heading':'Центр инструментов',
-      'tools.description':'Коллекция цифровых инструментов от NTS для самого уникального опыта.',
-      'card.games.title':'Мини-игры',
-      'card.games.desc':'Игровая лаборатория с ремейками вечной классики.',
-      'card.games.cta':'Запустить игру',
-      'card.love.title':'Признание в любви',
-      'card.love.desc':'Открой сердце своей симпатии через творческий интерфейс.',
-      'card.love.cta':'Отправить любовь',
-      'card.birthday.title':'День рождения',
-      'card.birthday.desc':'Создай незабываемые цифровые воспоминания для друзей.',
-      'card.birthday.cta':'Создать открытку',
-      'card.device.title':'Диагностика устройства',
-      'card.device.desc':'Глубокий анализ характеристик оборудования и идентификаторов.',
-      'card.device.cta':'Проверить сейчас',
-      'card.qr.title':'QR-генератор',
-      'card.qr.desc':'Мгновенно создавай персональные коды в разных форматах.',
-      'card.qr.cta':'Сгенерировать',
-      'card.aquarium.title':'Аквариум',
-      'card.aquarium.desc':'Виртуальный 3D-аквариум для баланса после напряжённого дня.',
-      'card.aquarium.cta':'Расслабиться',
-      'footer.credit':'Дизайн & разработка by',
-      'footer.author':'Нгуен Тхань Санг',
-      'footer.copyright':'© 2026 Все права защищены',
-      'music.sub':'Атмосфера',
-      'music.title':'Аудиосистема',
-    },
-    fi: {
-      'page.title':'NTS — Etusivu',
-      'hero.badge':'Päivitetty ja parannettu versio',
-      'hero.typewriter':'YHDISTÄ - LUO - INNOVOI',
-      'hero.cta.explore':'Tutustu nyt',
-      'hero.cta.confess':'Tunnusta nyt',
-      'tools.heading':'Työkalukeskus',
-      'tools.description':'NTS:n kehittämien digitaalisten työkalujen kokoelma ainutlaatuisinta kokemusta varten.',
-      'card.games.title':'Minipelit',
-      'card.games.desc':'Pelilaboratorio ajattomien klassikoiden uudelleentoteutuksilla.',
-      'card.games.cta':'Käynnistä peli',
-      'card.love.title':'Rakkaudentunnustus',
-      'card.love.desc':'Avaa rakastamasi ihmisen sydän luovien tunnustusliittymien avulla.',
-      'card.love.cta':'Lähetä rakkautta',
-      'card.birthday.title':'Syntymäpäivä',
-      'card.birthday.desc':'Luo unohtumattomia digitaalisia muistoja ystävillesi.',
-      'card.birthday.cta':'Luo kortti',
-      'card.device.title':'Laitetarkistus',
-      'card.device.desc':'Laitteiston ja laitetunnisteiden syvällinen analyysi.',
-      'card.device.cta':'Tarkista nyt',
-      'card.qr.title':'QR-generaattori',
-      'card.qr.desc':'Luo henkilökohtaisia tunnistekoodeja välittömästi monessa formaatissa.',
-      'card.qr.cta':'Luo',
-      'card.aquarium.title':'Akvaario',
-      'card.aquarium.desc':'Virtuaalinen 3D-akvaario tasapainon löytämiseen stressaavan päivän jälkeen.',
-      'card.aquarium.cta':'Rentoudu nyt',
-      'footer.credit':'Suunniteltu & kehitetty by',
-      'footer.author':'Nguyễn Thanh Sang',
-      'footer.copyright':'© 2026 Kaikki oikeudet pidätetään',
-      'music.sub':'Vibe',
-      'music.title':'Äärijärjestelmä',
-    },
-    sv: {
-      'page.title':'NTS — Startsida',
-      'hero.badge':'Uppgraderad och förbättrad version',
-      'hero.typewriter':'ANSLUT - SKAPA - INNOVERA',
-      'hero.cta.explore':'Utforska nu',
-      'hero.cta.confess':'Bekänn nu',
-      'tools.heading':'Verktygscenter',
-      'tools.description':'En samling digitala verktyg utvecklade av NTS för den mest unika upplevelsen.',
-      'card.games.title':'Minispel',
-      'card.games.desc':'Ett spellab med remakes av tidlösa klassiker.',
-      'card.games.cta':'Starta spel',
-      'card.love.title':'Kärleksförklaring',
-      'card.love.desc':'Öppna hjärtat hos den du gillar med kreativa bekännelsegränssnitt.',
-      'card.love.cta':'Skicka kärlek',
-      'card.birthday.title':'Födelsedag',
-      'card.birthday.desc':'Skapa oförglömliga digitala minnen för dina vänner.',
-      'card.birthday.cta':'Skapa kort',
-      'card.device.title':'Enhetsdiagnos',
-      'card.device.desc':'Djupgående analys av dina hårdvaruspecifikationer och enhetsidentifierare.',
-      'card.device.cta':'Kontrollera nu',
-      'card.qr.title':'QR-generator',
-      'card.qr.desc':'Generera personliga identitetskoder direkt i flera format.',
-      'card.qr.cta':'Generera',
-      'card.aquarium.title':'Akvarium',
-      'card.aquarium.desc':'Ett virtuellt 3D-akvarium för att hitta balansen efter en stressig dag.',
-      'card.aquarium.cta':'Slappna av nu',
-      'footer.credit':'Designad & utvecklad av',
-      'footer.author':'Nguyễn Thanh Sang',
-      'footer.copyright':'© 2026 Alla rättigheter förbehållna',
-      'music.sub':'Vibe Check',
-      'music.title':'Ljudsystem',
-    },
-  };
+    <!-- BỘ ĐIỀU KHIỂN ÂM THANH (GIỮ NGUYÊN Ở GÓC DƯỚI TRÁI) -->
+    <div id="musicControl" class="fixed bottom-6 left-6 md:bottom-8 md:left-8 z-50 flex items-center gap-3 md:gap-4 bg-black/60 backdrop-blur-2xl p-1.5 pr-4 md:p-2 md:pr-6 rounded-full border border-white/10 cursor-pointer hover:border-cyan-400 transition-all group select-none">
+        <div id="musicIconContainer" class="w-9 h-9 md:w-11 md:h-11 rounded-full bg-white/10 flex items-center justify-center text-white group-hover:bg-cyan-500 group-hover:text-black transition-all">
+            <i class="fas fa-sliders" id="musicIcon"></i>
+        </div>
+        <div>
+            <p class="text-[8px] md:text-[9px] text-gray-400 uppercase tracking-widest leading-none" data-vi="Kiểm tra nhạc" data-en="Check audio">Kiểm tra nhạc</p>
+            <p class="text-[10px] md:text-xs font-bold text-white uppercase mt-0.5" data-vi="Hệ thống âm thanh" data-en="Sound system">Hệ thống âm thanh</p>
+        </div>
+    </div>
 
-  /* ================================================================
-     LANG META
-     ================================================================ */
-  const LANG_META = {
-    vi:{'flagClass':'fi-vn','label':'Tiếng Việt'},
-    th:{'flagClass':'fi-th','label':'ภาษาไทย'},
-    km:{'flagClass':'fi-kh','label':'ភាសាខ្មែរ'},
-    lo:{'flagClass':'fi-la','label':'ພາສາລາວ'},
-    id:{'flagClass':'fi-id','label':'Bahasa Indonesia'},
-    ms:{'flagClass':'fi-my','label':'Bahasa Melayu'},
-    zh:{'flagClass':'fi-cn','label':'中文 (简体)'},
-    'zh-TW':{'flagClass':'fi-tw','label':'中文 (繁體·臺灣)'},
-    'zh-HK':{'flagClass':'fi-hk','label':'中文 (繁體·香港)'},
-    'zh-MO':{'flagClass':'fi-mo','label':'中文 (繁體·澳門)'},
-    ja:{'flagClass':'fi-jp','label':'日本語'},
-    ko:{'flagClass':'fi-kr','label':'한국어'},
-    kp:{'flagClass':'fi-kp','label':'조선말 (朝鮮)'},
-    hi:{'flagClass':'fi-in','label':'हिन्दी'},
-    ar:{'flagClass':'fi-sa','label':'العربية'},
-    tr:{'flagClass':'fi-tr','label':'Türkçe'},
-    en:{'flagClass':'fi-gb','label':'English (UK)'},
-    'en-US':{'flagClass':'fi-us','label':'English (US)'},
-    'en-NZ':{'flagClass':'fi-nz','label':'English (NZ)'},
-    de:{'flagClass':'fi-de','label':'Deutsch'},
-    'de-CH':{'flagClass':'fi-ch','label':'Deutsch (Schweiz)'},
-    fr:{'flagClass':'fi-ca','label':'Français (Canada)'},
-    it:{'flagClass':'fi-it','label':'Italiano'},
-    es:{'flagClass':'fi-es','label':'Español'},
-    'es-MX':{'flagClass':'fi-mx','label':'Español (México)'},
-    pt:{'flagClass':'fi-pt','label':'Português'},
-    nl:{'flagClass':'fi-nl','label':'Nederlands'},
-    ru:{'flagClass':'fi-ru','label':'Русский'},
-    fi:{'flagClass':'fi-fi','label':'Suomi'},
-    sv:{'flagClass':'fi-se','label':'Svenska'},
-  };
+    <!-- HEADER -->
+    <header class="relative min-h-screen flex flex-col items-center justify-center px-4 overflow-hidden">
+        <div class="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
+            <div class="w-[300px] h-[300px] sm:w-[600px] sm:h-[600px] md:w-[900px] md:h-[900px] border border-white/10 rounded-full animate-[spin_80s_linear_infinite]"></div>
+            <div class="absolute w-[250px] h-[250px] sm:w-[500px] sm:h-[500px] md:w-[700px] md:h-[700px] border border-cyan-500/10 rounded-full animate-[spin_50s_linear_infinite_reverse]"></div>
+        </div>
 
-  /* ================================================================
-     LANGUAGE SWITCHER
-     ================================================================ */
-  (function initLanguageSwitcher() {
-    const STORAGE_KEY  = 'nts-lang';
-    const DEFAULT_LANG = 'vi';
+        <div class="relative z-10 text-center w-full max-w-4xl mx-auto" data-aos="fade-up" data-aos-duration="1500">
+            <span class="px-4 py-1 md:px-5 md:py-1.5 rounded-full border border-cyan-500/20 text-cyan-400 text-[8px] md:text-[10px] font-black tracking-[0.3em] md:tracking-[0.4em] mb-6 md:mb-8 inline-block bg-cyan-500/5 uppercase" data-vi="Phiên bản nâng cấp cải tiến" data-en="Upgraded Advanced Version">
+                Phiên bản nâng cấp cải tiến
+            </span>
+            
+            <h1 class="text-6xl sm:text-8xl md:text-[12rem] lg:text-[14rem] font-black text-glow leading-none mb-4 tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-neutral-200 to-neutral-500 relative select-none animate-pulse-glow hover:animate-glitch-active transition-all duration-300 before:content-[attr(data-text)] before:absolute before:left-0 before:top-0 before:w-full before:text-cyan-400 before:opacity-0 before:z-[-1] hover:before:animate-glitch-1 after:content-[attr(data-text)] after:absolute after:left-0 after:top-0 after:w-full after:text-fuchsia-500 after:opacity-0 after:z-[-1] hover:after:animate-glitch-2" data-text="NTS">
+                NTS
+            </h1>
+            
+            <div class="h-8 md:h-10 mb-8 md:mb-12">
+                <p id="typewriter" class="text-sm sm:text-lg md:text-3xl font-light tracking-[0.2em] md:tracking-[0.3em] text-cyan-300 italic uppercase" data-vi="KẾT NỐI - SÁNG TẠO - ĐỘT PHÁ" data-en="CONNECT - CREATE - BREAKTHROUGH"></p>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center w-full max-w-xs sm:max-w-none mx-auto">
+                <a href="#explore" class="btn-modern w-full sm:w-auto text-center px-8 py-3.5 md:px-12 md:py-4 rounded-full bg-white text-black font-black text-xs uppercase tracking-widest hover:shadow-[0_0_30px_rgba(255,255,255,0.3)]" data-vi="Khám phá ngay" data-en="Explore Now">
+                    Khám phá ngay
+                </a>
+                <a href="totinh.html" class="btn-modern w-full sm:w-auto text-center px-8 py-3.5 md:px-12 md:py-4 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-cyan-500/20" data-vi="Mở lời ngay" data-en="Confess Now">
+                    Mở lời ngay
+                </a>
+            </div>
+        </div>
 
-    const switcherEl = document.getElementById('js-lang-switcher');
-    const toggleBtn  = document.getElementById('js-lang-toggle');
-    const flagEl     = document.getElementById('js-lang-flag');
-    const labelEl    = document.getElementById('js-lang-label');
-    const optionBtns = switcherEl.querySelectorAll('.lang-switcher__option');
+        <div class="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-30 hidden sm:block">
+            <i class="fas fa-angles-down text-xl md:text-2xl text-cyan-400"></i>
+        </div>
+    </header>
 
-    function getText(lang, key) {
-      return (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) ?? key;
-    }
+    <!-- EXPLORE SECTION -->
+    <section id="explore" class="py-20 md:py-32 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 md:mb-24 gap-6 md:gap-8" data-aos="fade-right">
+                <div>
+                    <h2 class="text-4xl md:text-6xl font-black mb-4 md:mb-6 tracking-tighter" data-vi="KHO TIỆN ÍCH" data-en="UTILITY HUB">KHO TIỆN ÍCH</h2>
+                    <div class="w-20 md:w-24 h-1.5 md:h-2 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full"></div>
+                </div>
+                <p class="text-gray-400 max-w-sm text-base md:text-lg font-light leading-relaxed" data-vi="Nơi hội tụ những công cụ số được phát triển bởi NTS nhằm mang lại trải nghiệm độc đáo nhất." data-en="The convergence of digital utilities developed by NTS to deliver the most unique experiences.">
+                    Nơi hội tụ những công cụ số được phát triển bởi NTS nhằm mang lại trải nghiệm độc đáo nhất.
+                </p>
+            </div>
 
-    function applyTranslations(lang) {
-      document.documentElement.lang = lang;
-      document.title = getText(lang, 'page.title');
-      document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                <!-- Card 1 -->
+                <div class="glass-card group p-8 md:p-10 rounded-[30px] md:rounded-[40px]" data-aos="fade-up">
+                    <div class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center mb-8 md:mb-10 border border-cyan-500/20 lg:group-hover:bg-cyan-500 lg:group-hover:text-black transition-all duration-500">
+                        <i class="fas fa-gamepad text-2xl md:text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 tracking-tight uppercase">Minigames</h3>
+                    <p class="text-gray-400 text-sm md:text-base leading-relaxed mb-8 md:mb-10" data-vi="Phòng lab trò chơi giải trí với những tựa game kinh điển được remake lại." data-en="Entertainment game lab featuring completely remade classic titles.">Phòng lab trò chơi giải trí với những tựa game kinh điển được remake lại.</p>
+                    <a href="game.html" class="inline-flex items-center gap-3 text-cyan-400 font-black tracking-widest text-xs uppercase lg:hover:gap-6 transition-all">
+                        <span data-vi="Khởi chạy game" data-en="Launch Game">Khởi chạy game</span> <i class="fas fa-terminal"></i>
+                    </a>
+                </div>
 
-      document.querySelectorAll('[data-i18n]').forEach(function(el) {
-        var key  = el.dataset.i18n;
-        var text = getText(lang, key);
+                <!-- Card 2 -->
+                <div class="glass-card group p-8 md:p-10 rounded-[30px] md:rounded-[40px]" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-pink-500/10 flex items-center justify-center mb-8 md:mb-10 border border-pink-500/20 lg:group-hover:bg-pink-500 lg:group-hover:text-white transition-all duration-500">
+                        <i class="fas fa-heart-pulse text-2xl md:text-3xl animate-[pulse_1s_infinite]"></i>
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 tracking-tight uppercase" data-vi="Lời Tỏ Tình" data-en="Confession">Lời Tỏ Tình</h3>
+                    <p class="text-gray-400 text-sm md:text-base leading-relaxed mb-8 md:mb-10" data-vi="Giải mã trái tim Crush bằng những giao diện tỏ tình đầy sáng tạo (dành cho ai có người yêu)." data-en="Decode your Crush's heart with highly creative confession interfaces (for lovers).">Giải mã trái tim Crush bằng những giao diện tỏ tình đầy sáng tạo (dành cho ai có người yêu).</p>
+                    <a href="totinh.html" class="inline-flex items-center gap-3 text-pink-500 font-black tracking-widest text-xs uppercase lg:hover:gap-6 transition-all">
+                        <span data-vi="Gửi yêu thương" data-en="Send Love">Gửi yêu thương</span> <i class="fas fa-heart"></i>
+                    </a>
+                </div>
 
-        var iconEl = el.querySelector('i');
-        if (iconEl) {
-          var nodes = Array.from(el.childNodes);
-          var textNode = nodes.find(function(n) {
-            return n.nodeType === Node.TEXT_NODE && n.textContent.trim() !== '';
-          });
-          if (textNode) {
-            textNode.textContent = text + ' ';
-          } else {
-            el.insertBefore(document.createTextNode(text + ' '), iconEl);
-          }
-        } else {
-          el.textContent = text;
+                <!-- Card 3 -->
+                <div class="glass-card group p-8 md:p-10 rounded-[30px] md:rounded-[40px]" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-yellow-500/10 flex items-center justify-center mb-8 md:mb-10 border border-yellow-500/20 lg:group-hover:bg-yellow-500 lg:group-hover:text-black transition-all duration-500">
+                        <i class="fas fa-gift text-2xl md:text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 tracking-tight uppercase">Birthday</h3>
+                    <p class="text-gray-400 text-sm md:text-base leading-relaxed mb-8 md:mb-10" data-vi="Tạo những kỷ niệm kỹ thuật số không bao giờ phai cho bạn bè." data-en="Create everlasting digital memories for your beloved friends.">Tạo những kỷ niệm kỹ thuật số không bao giờ phai cho bạn bè.</p>
+                    <a href="chucmungsinhnhat.html" class="inline-flex items-center gap-3 text-yellow-400 font-black tracking-widest text-xs uppercase lg:hover:gap-6 transition-all">
+                        <span data-vi="Tạo thiệp ngay" data-en="Create Card">Tạo thiệp ngay</span> <i class="fas fa-wand-magic-sparkles"></i>
+                    </a>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="glass-card group p-8 md:p-10 rounded-[30px] md:rounded-[40px]" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-purple-500/10 flex items-center justify-center mb-8 md:mb-10 border border-purple-500/20 lg:group-hover:bg-purple-500 lg:group-hover:text-white transition-all duration-500">
+                        <i class="fas fa-microchip text-2xl md:text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 tracking-tight uppercase" data-vi="Kiểm Tra Thiết Bị" data-en="Device Check">Kiểm Tra Thiết Bị</h3>
+                    <p class="text-gray-400 text-sm md:text-base leading-relaxed mb-8 md:mb-10" data-vi="Phân tích sâu thông số phần hardware và địa chỉ định danh của bạn." data-en="Deep analysis of your hardware configurations and identifier system.">Phân tích sâu thông số phần hardware và địa chỉ định danh của bạn.</p>
+                    <a href="hoso.html" class="inline-flex items-center gap-3 text-purple-400 font-black tracking-widest text-xs uppercase lg:hover:gap-6 transition-all">
+                        <span data-vi="Kiểm tra ngay" data-en="Check Now">Kiểm tra ngay</span> <i class="fas fa-shield-halved"></i>
+                    </a>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="glass-card group p-8 md:p-10 rounded-[30px] md:rounded-[40px]" data-aos="fade-up" data-aos-delay="400">
+                    <div class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-green-500/10 flex items-center justify-center mb-8 md:mb-10 border border-green-500/20 lg:group-hover:bg-green-500 lg:group-hover:text-black transition-all duration-500">
+                        <i class="fas fa-qrcode text-2xl md:text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 tracking-tight uppercase" data-vi="Tạo QR" data-en="QR Generator">Tạo QR</h3>
+                    <p class="text-gray-400 text-sm md:text-base leading-relaxed mb-8 md:mb-10" data-vi="Tạo mã định danh cá nhân nhanh chóng với nhiều định dạng tùy chỉnh." data-en="Quickly generate personal identifier codes with custom presets.">Tạo mã định danh cá nhân nhanh chóng với nhiều định dạng tùy chỉnh.</p>
+                    <a href="taomaqr.html" class="inline-flex items-center gap-3 text-green-400 font-black tracking-widest text-xs uppercase lg:hover:gap-6 transition-all">
+                        <span data-vi="Tạo mã liền" data-en="Generate Now">Tạo mã liền</span> <i class="fas fa-bolt"></i>
+                    </a>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="glass-card group p-8 md:p-10 rounded-[30px] md:rounded-[40px]" data-aos="fade-up" data-aos-delay="500">
+                    <div class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-8 md:mb-10 border border-blue-500/20 lg:group-hover:bg-blue-500 lg:group-hover:text-white transition-all duration-500">
+                        <i class="fas fa-fish-fins text-2xl md:text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 tracking-tight uppercase" data-vi="Bể Cá" data-en="Aquarium">Bể Cá</h3>
+                    <p class="text-gray-400 text-sm md:text-base leading-relaxed mb-8 md:mb-10" data-vi="Bể cá 3D ảo giúp bạn tìm lại sự cân bằng sau áp lực công việc." data-en="Virtual 3D aquarium to regain your balance after stressful work hours.">Bể cá 3D ảo giúp bạn tìm lại sự cân bằng sau áp lực công việc.</p>
+                    <a href="beca.html" class="inline-flex items-center gap-3 text-blue-400 font-black tracking-widest text-xs uppercase lg:hover:gap-6 transition-all">
+                        <span data-vi="Thư giãn ngay" data-en="Relax Now">Thư giãn ngay</span> <i class="fas fa-compass"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-16 md:py-24 bg-black/80 backdrop-blur-3xl border-t border-white/5 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="flex justify-center gap-8 md:gap-10 mb-12 md:mb-16">
+                <a href="https://www.facebook.com/nguyenthanhsang70" target="_blank" class="text-gray-500 hover:text-blue-500 hover:scale-125 transition-all text-xl md:text-2xl">
+                    <i class="fab fa-facebook"></i>
+                </a>
+                <a href="https://www.instagram.com/ngth.sang70/" target="_blank" class="text-gray-500 hover:text-pink-500 hover:scale-125 transition-all text-xl md:text-2xl">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://www.tiktok.com/@thanh.sang70" target="_blank" class="text-gray-500 hover:text-white hover:scale-125 transition-all text-xl md:text-2xl">
+                    <i class="fab fa-tiktok"></i>
+                </a>
+            </div>
+            <p class="text-gray-500 text-[10px] md:text-xs tracking-[0.2em] md:tracking-[0.4em] uppercase mb-4 leading-loose">
+                <span data-vi="Thiết kế & Phát triển bởi" data-en="Designed & Developed by">Thiết kế & Phát triển bởi</span>
+                 <a href="profile.html" target="_blank" class="footer-author-link text-white font-black ml-1 block sm:inline">
+                    Nguyễn Thanh Sang
+                </a>
+            </p>
+            <p class="text-[9px] md:text-[10px] text-gray-700 font-mono" data-vi="© 2026 BẢN QUYỀN ĐƯỢC BẢO LƯU" data-en="© 2026 ALL RIGHTS RESERVED">© 2026 BẢN QUYỀN ĐƯỢC BẢO LƯU</p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // --- QUẢN LÝ NGÔN NGỮ ---
+        let currentLang = localStorage.getItem('siteLang') || 'vi';
+
+        const loadingTranslations = {
+            vi: ["Đang giải mã tài nguyên...", "Đang đồng bộ các phân hệ thống...", "Đang thiết lập cổng bảo mật...", "Hoàn tất cấu trúc giao diện..."],
+            en: ["Decrypting resources...", "Synchronizing subsystems...", "Establishing security gateway...", "Finalizing interface structure..."]
+        };
+
+        function updateLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('siteLang', lang);
+            document.documentElement.lang = lang;
+
+            // Dịch các thành phần có thuộc tính dữ liệu song ngữ
+            document.querySelectorAll('[data-vi]').forEach(el => {
+                if (el.id !== 'typewriter') {
+                    el.innerText = el.getAttribute(`data-${lang}`);
+                }
+            });
+
+            // Đồng bộ tiêu đề tab trang web và data-text của hiệu ứng H1 Glitch
+            document.getElementById('site-title').innerText = document.getElementById('site-title').getAttribute(`data-${lang}`);
+            const mainTitle = document.querySelector('h1');
+            if (mainTitle) mainTitle.setAttribute('data-text', mainTitle.innerText.trim());
+
+            // Thay đổi text nhãn nút (VI / EN)
+            document.getElementById('langText').innerText = lang.toUpperCase();
+
+            // Kích hoạt lại hiệu ứng typewriter
+            initTypewriter();
         }
-      });
-    }
 
-    function updateToggleDisplay(lang) {
-      var meta = LANG_META[lang];
-      flagEl.innerHTML = '<span class="fi ' + meta.flagClass + '"></span>';
-      labelEl.textContent = meta.label;
-    }
+        document.getElementById('langControl').addEventListener('click', () => {
+            updateLanguage(currentLang === 'vi' ? 'en' : 'vi');
+        });
 
-    function updateActiveOption(lang) {
-      optionBtns.forEach(function(btn) {
-        btn.classList.toggle('is-active', btn.dataset.lang === lang);
-      });
-    }
 
-    function switchLanguage(lang) {
-      if (!TRANSLATIONS[lang]) return;
-      applyTranslations(lang);
-      updateToggleDisplay(lang);
-      updateActiveOption(lang);
-      localStorage.setItem(STORAGE_KEY, lang);
-      restartTypewriter(lang);
-      closeDropdown();
-    }
+        // --- XỬ LÝ LOADING ---
+        window.addEventListener('load', () => {
+            let percentage = 0;
+            const percentText = document.getElementById('load-percentage');
+            const statusText = document.getElementById('loader-status');
+            const preloader = document.getElementById('preloader');
+            
+            updateLanguage(currentLang);
 
-    function openDropdown()  { switcherEl.classList.add('is-open');    toggleBtn.setAttribute('aria-expanded','true');  }
-    function closeDropdown() { switcherEl.classList.remove('is-open'); toggleBtn.setAttribute('aria-expanded','false'); }
+            const interval = setInterval(() => {
+                percentage += Math.floor(Math.random() * 4) + 1;
+                if (percentage >= 100) {
+                    percentage = 100;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        preloader.classList.add('preloader-finish');
+                        AOS.init({ once: true, duration: 800 });
+                    }, 600);
+                }
+                percentText.innerText = percentage + "%";
+                
+                const textPool = loadingTranslations[currentLang];
+                if(percentage <= 30) statusText.innerText = textPool[0];
+                if(percentage > 30 && percentage <= 60) statusText.innerText = textPool[1];
+                if(percentage > 60 && percentage <= 90) statusText.innerText = textPool[2];
+                if(percentage > 90) statusText.innerText = textPool[3];
+            }, 40);
+        });
 
-    toggleBtn.addEventListener('click', function(e) { e.stopPropagation(); switcherEl.classList.contains('is-open') ? closeDropdown() : openDropdown(); });
-    optionBtns.forEach(function(btn) { btn.addEventListener('click', function() { switchLanguage(btn.dataset.lang); }); });
-    document.addEventListener('click', function(e) { if (!switcherEl.contains(e.target)) closeDropdown(); });
-    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeDropdown(); });
 
-    var savedLang = localStorage.getItem(STORAGE_KEY) || DEFAULT_LANG;
-    switchLanguage(savedLang);
-  })();
+        // --- TYPEWRITER EFFECT ---
+        let typewriterTimeout;
+        let typewriterIndex = 0;
 
-  /* ================================================================
-     PRELOADER
-     ================================================================ */
-  (function initPreloader() {
-    var percentEl = document.getElementById('js-preloader-percent');
-    var statusEl  = document.getElementById('js-preloader-status');
-    var overlay   = document.getElementById('preloader');
-    var progress  = 0;
+        function initTypewriter() {
+            clearTimeout(typewriterTimeout);
+            const container = document.getElementById("typewriter");
+            if (!container) return;
+            
+            const fullText = container.getAttribute(`data-${currentLang}`);
+            container.innerHTML = "";
+            typewriterIndex = 0;
 
-    var STATUS_MESSAGES = [
-      {threshold:30, text:'Syncing system modules...'},
-      {threshold:60, text:'Establishing secure bridge...'},
-      {threshold:90, text:'Finalizing UI/UX...'},
-    ];
+            function type() {
+                if (typewriterIndex < fullText.length) {
+                    container.innerHTML += fullText.charAt(typewriterIndex);
+                    typewriterIndex++;
+                    typewriterTimeout = setTimeout(type, 100);
+                }
+            }
+            type();
+        }
 
-    function updateStatus() {
-      STATUS_MESSAGES.forEach(function(msg) {
-        if (progress > msg.threshold) statusEl.textContent = msg.text;
-      });
-    }
 
-    var timer = setInterval(function() {
-      progress += Math.floor(Math.random() * 4) + 1;
-      if (progress >= 100) {
-        progress = 100;
-        percentEl.textContent = '100%';
-        clearInterval(timer);
-        setTimeout(function() {
-          overlay.classList.add('is-hidden');
-          AOS.init({once:true, duration:800});
-        }, 600);
-      } else {
-        percentEl.textContent = progress + '%';
-        updateStatus();
-      }
-    }, 40);
-  })();
+        // --- MUSIC CONTROL ---
+        const music = document.getElementById('backgroundMusic');
+        const control = document.getElementById('musicControl');
+        const musicIcon = document.getElementById('musicIcon');
+        const iconWrapper = document.getElementById('musicIconContainer');
+        let isPlaying = false;
+        
+        control.addEventListener('click', () => {
+            if (isPlaying) {
+                music.pause();
+                iconWrapper.classList.remove('bg-cyan-500', 'text-black');
+                iconWrapper.classList.add('bg-white/10', 'text-white');
+                musicIcon.className = "fas fa-sliders";
+            } else {
+                music.play().catch(err => console.log("Lỗi chặn phát âm thanh tự động: ", err));
+                iconWrapper.classList.remove('bg-white/10', 'text-white');
+                iconWrapper.classList.add('bg-cyan-500', 'text-black');
+                musicIcon.className = "fas fa-compact-disc fa-spin";
+            }
+            isPlaying = !isPlaying;
+        });
 
-  /* ================================================================
-     TYPEWRITER
-     ================================================================ */
-  function restartTypewriter(lang) {
-    var outputEl   = document.getElementById('js-typewriter');
-    var targetText = (TRANSLATIONS[lang] && TRANSLATIONS[lang]['hero.typewriter'])
-                      || 'KẾT NỐI - SÁNG TẠO - ĐỘT PHÁ';
-    var CHAR_DELAY = 80;
 
-    clearTimeout(typewriterTimer);
-    outputEl.textContent = '';
-
-    var charIndex = 0;
-    function typeNextChar() {
-      if (charIndex < targetText.length) {
-        outputEl.textContent += targetText.charAt(charIndex);
-        charIndex++;
-        typewriterTimer = setTimeout(typeNextChar, CHAR_DELAY);
-      }
-    }
-    typeNextChar();
-  }
-
-  setTimeout(function() {
-    var savedLang = localStorage.getItem('nts-lang') || 'vi';
-    restartTypewriter(savedLang);
-  }, 1800);
-
-  /* ================================================================
-     MUSIC CONTROL
-     ================================================================ */
-  (function initMusicControl() {
-    var audioEl  = document.getElementById('js-bg-music');
-    var buttonEl = document.getElementById('js-music-control');
-    var isPlaying = false;
-
-    buttonEl.addEventListener('click', function() {
-      if (isPlaying) {
-        audioEl.pause();
-        buttonEl.setAttribute('aria-pressed','false');
-        buttonEl.classList.remove('is-playing');
-      } else {
-        audioEl.play();
-        buttonEl.setAttribute('aria-pressed','true');
-        buttonEl.classList.add('is-playing');
-      }
-      isPlaying = !isPlaying;
-    });
-  })();
-
-  /* ================================================================
-     TILT EFFECT
-     ================================================================ */
-  (function initCardTilt() {
-    var TILT_MAX = 8, SCALE_HOVER = 1.02;
-    document.querySelectorAll('.tool-card').forEach(function(card) {
-      card.addEventListener('mousemove', function(e) {
-        var r = card.getBoundingClientRect();
-        var relX = (e.clientX - r.left) / r.width  - 0.5;
-        var relY = (e.clientY - r.top)  / r.height - 0.5;
-        card.style.transform = 'perspective(1000px) rotateX('+(-relY*TILT_MAX)+'deg) rotateY('+(relX*TILT_MAX)+'deg) scale3d('+SCALE_HOVER+','+SCALE_HOVER+','+SCALE_HOVER+')';
-      });
-      card.addEventListener('mouseleave', function() {
-        card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)';
-      });
-    });
-  })();
-  </script>
+        // --- 3D TILT EFFECT CHO CARD ---
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        
+        if (!isTouchDevice) {
+            const cards = document.querySelectorAll('.glass-card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const rotateX = ((y - rect.height/2) / (rect.height/2)) * -8;
+                    const rotateY = ((x - rect.width/2) / (rect.width/2)) * 8;
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                });
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+                });
+            });
+        }
+    </script>
 </body>
 </html>
