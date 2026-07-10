@@ -1046,6 +1046,127 @@ body{-webkit-tap-highlight-color:transparent}
 }
 </style>
 
+
+<style id="language-and-source-guard">
+/* Complete country/language selector */
+#langMenu{
+    width:min(92vw,460px)!important;
+    max-height:min(72vh,680px);
+    align-content:start;
+    overscroll-behavior:contain;
+}
+.language-menu-tools{
+    grid-column:1/-1;
+    position:sticky;
+    top:-.5rem;
+    z-index:6;
+    margin:-.15rem -.15rem .25rem;
+    padding:.55rem;
+    border-radius:13px;
+    background:linear-gradient(180deg,rgba(3,8,20,.98),rgba(3,8,20,.91));
+    border:1px solid rgba(53,231,255,.13);
+    box-shadow:0 12px 28px rgba(0,0,0,.28);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+}
+.language-search-row{display:flex;align-items:center;gap:.55rem}
+.language-search{
+    min-width:0;
+    width:100%;
+    height:40px;
+    padding:0 .85rem;
+    border-radius:10px;
+    color:#f5fbff;
+    background:rgba(255,255,255,.045);
+    border:1px solid rgba(255,255,255,.09);
+    outline:none;
+    font-size:.78rem;
+    font-weight:700;
+    transition:.2s ease;
+}
+.language-search::placeholder{color:#708099}
+.language-search:focus{
+    border-color:rgba(53,231,255,.52);
+    box-shadow:0 0 0 3px rgba(53,231,255,.09),0 0 20px rgba(53,231,255,.08);
+}
+.language-result-count{
+    flex:0 0 auto;
+    min-width:46px;
+    text-align:center;
+    font:800 .64rem/1 var(--font-sans);
+    letter-spacing:.08em;
+    color:#8cefff;
+}
+.language-section-title{
+    grid-column:1/-1;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:.75rem;
+    padding:.55rem .55rem .25rem;
+    color:#7f90aa;
+    font-size:.6rem;
+    font-weight:900;
+    letter-spacing:.15em;
+    text-transform:uppercase;
+}
+.language-section-title::after{
+    content:'';
+    flex:1;
+    height:1px;
+    background:linear-gradient(90deg,rgba(53,231,255,.22),transparent);
+}
+.language-empty{
+    grid-column:1/-1;
+    padding:1.4rem .75rem;
+    text-align:center;
+    color:#7f90aa;
+    font-size:.75rem;
+}
+.language-option[hidden],.language-section-title[hidden],.language-empty[hidden]{display:none!important}
+.flag-emoji{
+    display:grid;
+    place-items:center;
+    width:1.35rem;
+    height:1.05rem;
+    font-size:1.12rem;
+    line-height:1;
+    filter:drop-shadow(0 2px 5px rgba(0,0,0,.35));
+}
+
+/* Client-side deterrent notice. This discourages common source/devtools shortcuts,
+   but it is not a substitute for server-side security. */
+.source-guard-toast{
+    position:fixed;
+    left:50%;
+    bottom:calc(1.25rem + env(safe-area-inset-bottom,0px));
+    z-index:20000;
+    width:min(92vw,440px);
+    padding:.85rem 1rem;
+    border:1px solid rgba(53,231,255,.28);
+    border-radius:14px;
+    color:#e9fdff;
+    background:linear-gradient(135deg,rgba(3,10,24,.96),rgba(20,8,32,.96));
+    box-shadow:0 18px 55px rgba(0,0,0,.52),0 0 28px rgba(53,231,255,.1);
+    font-size:.76rem;
+    font-weight:800;
+    letter-spacing:.02em;
+    text-align:center;
+    opacity:0;
+    pointer-events:none;
+    transform:translate(-50%,18px) scale(.97);
+    transition:opacity .2s ease,transform .2s ease;
+}
+.source-guard-toast.show{opacity:1;transform:translate(-50%,0) scale(1)}
+@media(max-width:560px){
+    #langMenu{width:auto!important}
+    .language-result-count{min-width:40px}
+}
+@media(max-width:380px){
+    .language-menu-tools,.language-section-title,.language-empty{grid-column:1}
+}
+</style>
+
 </head>
 <body id="top">
 
@@ -1306,22 +1427,2625 @@ body{-webkit-tap-highlight-color:transparent}
     root.classList.toggle('performance-lite', performanceLite);
     root.dataset.device = deviceType;
 
-    const languages = {
-        vi:      { label: 'Tiếng Việt',          country: 'vn', api: 'vi',    short: 'VI' },
-        zh:      { label: '简体中文',             country: 'cn', api: 'zh-CN', short: '中' },
-        'zh-TW': { label: '繁體中文',             country: 'tw', api: 'zh-TW', short: '台' },
-        en:      { label: 'English',              country: 'gb', api: 'en',    short: 'EN' },
-        fr:      { label: 'Français',             country: 'fr', api: 'fr',    short: 'FR' },
-        ko:      { label: '한국어',                country: 'kr', api: 'ko',    short: 'KO' },
-        ja:      { label: '日本語',                country: 'jp', api: 'ja',    short: 'JA' },
-        hi:      { label: 'हिन्दी',                country: 'in', api: 'hi',    short: 'HI' },
-        'en-CA': { label: 'English (Canada)',     country: 'ca', api: 'en',    short: 'CA' },
-        'en-AU': { label: 'English (Australia)',  country: 'au', api: 'en',    short: 'AU' },
-        ru:      { label: 'Русский',              country: 'ru', api: 'ru',    short: 'RU' },
-        km:      { label: 'ភាសាខ្មែរ',             country: 'kh', api: 'km',    short: 'KM' },
-        es:      { label: 'Español (Cuba)',       country: 'cu', api: 'es',    short: 'CU' },
-        lo:      { label: 'ພາສາລາວ',             country: 'la', api: 'lo',    short: 'LO' }
-    };
+    const popularLanguages = {
+    "vi": {
+        "label": "Tiếng Việt",
+        "country": "vn",
+        "api": "vi",
+        "short": "VI",
+        "group": "popular",
+        "search": "tiếng việt vietnam vi vn"
+    },
+    "zh": {
+        "label": "简体中文",
+        "country": "cn",
+        "api": "zh-CN",
+        "short": "中",
+        "group": "popular",
+        "search": "trung quốc trung văn giản thể china chinese zh cn"
+    },
+    "zh-TW": {
+        "label": "繁體中文",
+        "country": "tw",
+        "api": "zh-TW",
+        "short": "台",
+        "group": "popular",
+        "search": "đài loan trung văn phồn thể taiwan chinese zh tw"
+    },
+    "en": {
+        "label": "English",
+        "country": "gb",
+        "api": "en",
+        "short": "EN",
+        "group": "popular",
+        "search": "english anh united kingdom uk gb en"
+    },
+    "fr": {
+        "label": "Français",
+        "country": "fr",
+        "api": "fr",
+        "short": "FR",
+        "group": "popular",
+        "search": "français pháp france french fr"
+    },
+    "ko": {
+        "label": "한국어",
+        "country": "kr",
+        "api": "ko",
+        "short": "KO",
+        "group": "popular",
+        "search": "hàn quốc korean korea ko kr"
+    },
+    "ja": {
+        "label": "日本語",
+        "country": "jp",
+        "api": "ja",
+        "short": "JA",
+        "group": "popular",
+        "search": "nhật bản japanese japan ja jp"
+    },
+    "hi": {
+        "label": "हिन्दी",
+        "country": "in",
+        "api": "hi",
+        "short": "HI",
+        "group": "popular",
+        "search": "ấn độ hindi india hi in"
+    },
+    "en-CA": {
+        "label": "English (Canada)",
+        "country": "ca",
+        "api": "en",
+        "short": "CA",
+        "group": "popular",
+        "search": "canada english en ca"
+    },
+    "en-AU": {
+        "label": "English (Australia)",
+        "country": "au",
+        "api": "en",
+        "short": "AU",
+        "group": "popular",
+        "search": "úc australia english en au"
+    },
+    "ru": {
+        "label": "Русский",
+        "country": "ru",
+        "api": "ru",
+        "short": "RU",
+        "group": "popular",
+        "search": "nga russian русский ru"
+    },
+    "km": {
+        "label": "ភាសាខ្មែរ",
+        "country": "kh",
+        "api": "km",
+        "short": "KM",
+        "group": "popular",
+        "search": "campuchia khmer cambodia km kh"
+    },
+    "es": {
+        "label": "Español",
+        "country": "es",
+        "api": "es",
+        "short": "ES",
+        "group": "popular",
+        "search": "tây ban nha spanish español spain es"
+    },
+    "lo": {
+        "label": "ພາສາລາວ",
+        "country": "la",
+        "api": "lo",
+        "short": "LO",
+        "group": "popular",
+        "search": "lào lao laos lo la"
+    }
+};
+
+    const countryLanguages = {
+    "country-AF": {
+        "label": "Afghanistan · Tiếng Ba Tư",
+        "countryName": "Afghanistan",
+        "country": "af",
+        "api": "fa",
+        "fallbackApi": "en",
+        "short": "AF",
+        "group": "country",
+        "search": "Afghanistan Afghanistan AF Tiếng Ba Tư fa"
+    },
+    "country-EG": {
+        "label": "Ai Cập · Tiếng Ả Rập",
+        "countryName": "Ai Cập",
+        "country": "eg",
+        "api": "ar",
+        "fallbackApi": "en",
+        "short": "EG",
+        "group": "country",
+        "search": "Ai Cập Egypt EG Tiếng Ả Rập ar"
+    },
+    "country-AL": {
+        "label": "Albania · Tiếng Albania",
+        "countryName": "Albania",
+        "country": "al",
+        "api": "sq",
+        "fallbackApi": "en",
+        "short": "AL",
+        "group": "country",
+        "search": "Albania Albania AL Tiếng Albania sq"
+    },
+    "country-DZ": {
+        "label": "Algeria · Tiếng Ả Rập",
+        "countryName": "Algeria",
+        "country": "dz",
+        "api": "ar",
+        "fallbackApi": "en",
+        "short": "DZ",
+        "group": "country",
+        "search": "Algeria Algeria DZ Tiếng Ả Rập ar"
+    },
+    "country-AD": {
+        "label": "Andorra · Tiếng Catalan",
+        "countryName": "Andorra",
+        "country": "ad",
+        "api": "ca",
+        "fallbackApi": "en",
+        "short": "AD",
+        "group": "country",
+        "search": "Andorra Andorra AD Tiếng Catalan ca"
+    },
+    "country-AO": {
+        "label": "Angola · Tiếng Bồ Đào Nha",
+        "countryName": "Angola",
+        "country": "ao",
+        "api": "pt",
+        "fallbackApi": "en",
+        "short": "AO",
+        "group": "country",
+        "search": "Angola Angola AO Tiếng Bồ Đào Nha pt"
+    },
+    "country-AI": {
+        "label": "Anguilla · Tiếng Anh",
+        "countryName": "Anguilla",
+        "country": "ai",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "AI",
+        "group": "country",
+        "search": "Anguilla Anguilla AI Tiếng Anh en"
+    },
+    "country-AG": {
+        "label": "Antigua và Barbuda · Tiếng Anh",
+        "countryName": "Antigua và Barbuda",
+        "country": "ag",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "AG",
+        "group": "country",
+        "search": "Antigua và Barbuda Antigua and Barbuda AG Tiếng Anh en"
+    },
+    "country-AR": {
+        "label": "Argentina · Tiếng Tây Ban Nha",
+        "countryName": "Argentina",
+        "country": "ar",
+        "api": "es",
+        "fallbackApi": "en",
+        "short": "AR",
+        "group": "country",
+        "search": "Argentina Argentina AR Tiếng Tây Ban Nha es"
+    },
+    "country-AM": {
+        "label": "Armenia · Tiếng Armenia",
+        "countryName": "Armenia",
+        "country": "am",
+        "api": "hy",
+        "fallbackApi": "en",
+        "short": "AM",
+        "group": "country",
+        "search": "Armenia Armenia AM Tiếng Armenia hy"
+    },
+    "country-AW": {
+        "label": "Aruba · Tiếng Hà Lan",
+        "countryName": "Aruba",
+        "country": "aw",
+        "api": "nl",
+        "fallbackApi": "en",
+        "short": "AW",
+        "group": "country",
+        "search": "Aruba Aruba AW Tiếng Hà Lan nl"
+    },
+    "country-AU": {
+        "label": "Australia · Tiếng Anh",
+        "countryName": "Australia",
+        "country": "au",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "AU",
+        "group": "country",
+        "search": "Australia Australia AU Tiếng Anh en"
+    },
+    "country-AZ": {
+        "label": "Azerbaijan · Tiếng Azerbaijan",
+        "countryName": "Azerbaijan",
+        "country": "az",
+        "api": "az",
+        "fallbackApi": "en",
+        "short": "AZ",
+        "group": "country",
+        "search": "Azerbaijan Azerbaijan AZ Tiếng Azerbaijan az"
+    },
+    "country-PL": {
+        "label": "Ba Lan · Tiếng Ba Lan",
+        "countryName": "Ba Lan",
+        "country": "pl",
+        "api": "pl",
+        "fallbackApi": "en",
+        "short": "PL",
+        "group": "country",
+        "search": "Ba Lan Poland PL Tiếng Ba Lan pl"
+    },
+    "country-BS": {
+        "label": "Bahamas · Tiếng Anh",
+        "countryName": "Bahamas",
+        "country": "bs",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "BS",
+        "group": "country",
+        "search": "Bahamas Bahamas BS Tiếng Anh en"
+    },
+    "country-BH": {
+        "label": "Bahrain · Tiếng Ả Rập",
+        "countryName": "Bahrain",
+        "country": "bh",
+        "api": "ar",
+        "fallbackApi": "en",
+        "short": "BH",
+        "group": "country",
+        "search": "Bahrain Bahrain BH Tiếng Ả Rập ar"
+    },
+    "country-BD": {
+        "label": "Bangladesh · Tiếng Bangla",
+        "countryName": "Bangladesh",
+        "country": "bd",
+        "api": "bn",
+        "fallbackApi": "en",
+        "short": "BD",
+        "group": "country",
+        "search": "Bangladesh Bangladesh BD Tiếng Bangla bn"
+    },
+    "country-BB": {
+        "label": "Barbados · Tiếng Anh",
+        "countryName": "Barbados",
+        "country": "bb",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "BB",
+        "group": "country",
+        "search": "Barbados Barbados BB Tiếng Anh en"
+    },
+    "country-BY": {
+        "label": "Belarus · Tiếng Belarus",
+        "countryName": "Belarus",
+        "country": "by",
+        "api": "be",
+        "fallbackApi": "en",
+        "short": "BY",
+        "group": "country",
+        "search": "Belarus Belarus BY Tiếng Belarus be"
+    },
+    "country-BZ": {
+        "label": "Belize · Tiếng Anh",
+        "countryName": "Belize",
+        "country": "bz",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "BZ",
+        "group": "country",
+        "search": "Belize Belize BZ Tiếng Anh en"
+    },
+    "country-BJ": {
+        "label": "Benin · Tiếng Pháp",
+        "countryName": "Benin",
+        "country": "bj",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "BJ",
+        "group": "country",
+        "search": "Benin Benin BJ Tiếng Pháp fr"
+    },
+    "country-BM": {
+        "label": "Bermuda · Tiếng Anh",
+        "countryName": "Bermuda",
+        "country": "bm",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "BM",
+        "group": "country",
+        "search": "Bermuda Bermuda BM Tiếng Anh en"
+    },
+    "country-BT": {
+        "label": "Bhutan · Tiếng Dzongkha",
+        "countryName": "Bhutan",
+        "country": "bt",
+        "api": "dz",
+        "fallbackApi": "en",
+        "short": "BT",
+        "group": "country",
+        "search": "Bhutan Bhutan BT Tiếng Dzongkha dz"
+    },
+    "country-BO": {
+        "label": "Bolivia · Tiếng Tây Ban Nha",
+        "countryName": "Bolivia",
+        "country": "bo",
+        "api": "es",
+        "fallbackApi": "en",
+        "short": "BO",
+        "group": "country",
+        "search": "Bolivia Bolivia, Plurinational State of BO Tiếng Tây Ban Nha es"
+    },
+    "country-BA": {
+        "label": "Bosnia và Herzegovina · Tiếng Bosnia",
+        "countryName": "Bosnia và Herzegovina",
+        "country": "ba",
+        "api": "bs",
+        "fallbackApi": "en",
+        "short": "BA",
+        "group": "country",
+        "search": "Bosnia và Herzegovina Bosnia and Herzegovina BA Tiếng Bosnia bs"
+    },
+    "country-BW": {
+        "label": "Botswana · Tiếng Anh",
+        "countryName": "Botswana",
+        "country": "bw",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "BW",
+        "group": "country",
+        "search": "Botswana Botswana BW Tiếng Anh en"
+    },
+    "country-BR": {
+        "label": "Brazil · Tiếng Bồ Đào Nha",
+        "countryName": "Brazil",
+        "country": "br",
+        "api": "pt",
+        "fallbackApi": "en",
+        "short": "BR",
+        "group": "country",
+        "search": "Brazil Brazil BR Tiếng Bồ Đào Nha pt"
+    },
+    "country-BN": {
+        "label": "Brunei · Tiếng Mã Lai",
+        "countryName": "Brunei",
+        "country": "bn",
+        "api": "ms",
+        "fallbackApi": "en",
+        "short": "BN",
+        "group": "country",
+        "search": "Brunei Brunei Darussalam BN Tiếng Mã Lai ms"
+    },
+    "country-BG": {
+        "label": "Bulgaria · Tiếng Bulgaria",
+        "countryName": "Bulgaria",
+        "country": "bg",
+        "api": "bg",
+        "fallbackApi": "en",
+        "short": "BG",
+        "group": "country",
+        "search": "Bulgaria Bulgaria BG Tiếng Bulgaria bg"
+    },
+    "country-BF": {
+        "label": "Burkina Faso · Tiếng Pháp",
+        "countryName": "Burkina Faso",
+        "country": "bf",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "BF",
+        "group": "country",
+        "search": "Burkina Faso Burkina Faso BF Tiếng Pháp fr"
+    },
+    "country-BI": {
+        "label": "Burundi · Tiếng Rundi",
+        "countryName": "Burundi",
+        "country": "bi",
+        "api": "rn",
+        "fallbackApi": "en",
+        "short": "BI",
+        "group": "country",
+        "search": "Burundi Burundi BI Tiếng Rundi rn"
+    },
+    "country-MK": {
+        "label": "Bắc Macedonia · Tiếng Macedonia",
+        "countryName": "Bắc Macedonia",
+        "country": "mk",
+        "api": "mk",
+        "fallbackApi": "en",
+        "short": "MK",
+        "group": "country",
+        "search": "Bắc Macedonia North Macedonia MK Tiếng Macedonia mk"
+    },
+    "country-BE": {
+        "label": "Bỉ · Tiếng Hà Lan",
+        "countryName": "Bỉ",
+        "country": "be",
+        "api": "nl",
+        "fallbackApi": "en",
+        "short": "BE",
+        "group": "country",
+        "search": "Bỉ Belgium BE Tiếng Hà Lan nl"
+    },
+    "country-PT": {
+        "label": "Bồ Đào Nha · Tiếng Bồ Đào Nha",
+        "countryName": "Bồ Đào Nha",
+        "country": "pt",
+        "api": "pt",
+        "fallbackApi": "en",
+        "short": "PT",
+        "group": "country",
+        "search": "Bồ Đào Nha Portugal PT Tiếng Bồ Đào Nha pt"
+    },
+    "country-BQ": {
+        "label": "Ca-ri-bê Hà Lan · Tiếng Hà Lan",
+        "countryName": "Ca-ri-bê Hà Lan",
+        "country": "bq",
+        "api": "nl",
+        "fallbackApi": "en",
+        "short": "BQ",
+        "group": "country",
+        "search": "Ca-ri-bê Hà Lan Bonaire, Sint Eustatius and Saba BQ Tiếng Hà Lan nl"
+    },
+    "country-CM": {
+        "label": "Cameroon · Tiếng Pháp",
+        "countryName": "Cameroon",
+        "country": "cm",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "CM",
+        "group": "country",
+        "search": "Cameroon Cameroon CM Tiếng Pháp fr"
+    },
+    "country-KH": {
+        "label": "Campuchia · Tiếng Khmer",
+        "countryName": "Campuchia",
+        "country": "kh",
+        "api": "km",
+        "fallbackApi": "en",
+        "short": "KH",
+        "group": "country",
+        "search": "Campuchia Cambodia KH Tiếng Khmer km"
+    },
+    "country-CA": {
+        "label": "Canada · Tiếng Anh",
+        "countryName": "Canada",
+        "country": "ca",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "CA",
+        "group": "country",
+        "search": "Canada Canada CA Tiếng Anh en"
+    },
+    "country-CV": {
+        "label": "Cape Verde · Tiếng Bồ Đào Nha",
+        "countryName": "Cape Verde",
+        "country": "cv",
+        "api": "pt",
+        "fallbackApi": "en",
+        "short": "CV",
+        "group": "country",
+        "search": "Cape Verde Cabo Verde CV Tiếng Bồ Đào Nha pt"
+    },
+    "country-TD": {
+        "label": "Chad · Tiếng Ả Rập",
+        "countryName": "Chad",
+        "country": "td",
+        "api": "ar",
+        "fallbackApi": "en",
+        "short": "TD",
+        "group": "country",
+        "search": "Chad Chad TD Tiếng Ả Rập ar"
+    },
+    "country-CL": {
+        "label": "Chile · Tiếng Tây Ban Nha",
+        "countryName": "Chile",
+        "country": "cl",
+        "api": "es",
+        "fallbackApi": "en",
+        "short": "CL",
+        "group": "country",
+        "search": "Chile Chile CL Tiếng Tây Ban Nha es"
+    },
+    "country-CO": {
+        "label": "Colombia · Tiếng Tây Ban Nha",
+        "countryName": "Colombia",
+        "country": "co",
+        "api": "es",
+        "fallbackApi": "en",
+        "short": "CO",
+        "group": "country",
+        "search": "Colombia Colombia CO Tiếng Tây Ban Nha es"
+    },
+    "country-KM": {
+        "label": "Comoros · Tiếng Ả Rập",
+        "countryName": "Comoros",
+        "country": "km",
+        "api": "ar",
+        "fallbackApi": "en",
+        "short": "KM",
+        "group": "country",
+        "search": "Comoros Comoros KM Tiếng Ả Rập ar"
+    },
+    "country-CG": {
+        "label": "Congo - Brazzaville · Tiếng Pháp",
+        "countryName": "Congo - Brazzaville",
+        "country": "cg",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "CG",
+        "group": "country",
+        "search": "Congo - Brazzaville Congo CG Tiếng Pháp fr"
+    },
+    "country-CD": {
+        "label": "Congo - Kinshasa · Tiếng Pháp",
+        "countryName": "Congo - Kinshasa",
+        "country": "cd",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "CD",
+        "group": "country",
+        "search": "Congo - Kinshasa Congo, The Democratic Republic of the CD Tiếng Pháp fr"
+    },
+    "country-CR": {
+        "label": "Costa Rica · Tiếng Tây Ban Nha",
+        "countryName": "Costa Rica",
+        "country": "cr",
+        "api": "es",
+        "fallbackApi": "en",
+        "short": "CR",
+        "group": "country",
+        "search": "Costa Rica Costa Rica CR Tiếng Tây Ban Nha es"
+    },
+    "country-HR": {
+        "label": "Croatia · Tiếng Croatia",
+        "countryName": "Croatia",
+        "country": "hr",
+        "api": "hr",
+        "fallbackApi": "en",
+        "short": "HR",
+        "group": "country",
+        "search": "Croatia Croatia HR Tiếng Croatia hr"
+    },
+    "country-CU": {
+        "label": "Cuba · Tiếng Tây Ban Nha",
+        "countryName": "Cuba",
+        "country": "cu",
+        "api": "es",
+        "fallbackApi": "en",
+        "short": "CU",
+        "group": "country",
+        "search": "Cuba Cuba CU Tiếng Tây Ban Nha es"
+    },
+    "country-CW": {
+        "label": "Curaçao · Tiếng Hà Lan",
+        "countryName": "Curaçao",
+        "country": "cw",
+        "api": "nl",
+        "fallbackApi": "en",
+        "short": "CW",
+        "group": "country",
+        "search": "Curaçao Curaçao CW Tiếng Hà Lan nl"
+    },
+    "country-AE": {
+        "label": "Các Tiểu Vương quốc Ả Rập Thống nhất · Tiếng Ả Rập",
+        "countryName": "Các Tiểu Vương quốc Ả Rập Thống nhất",
+        "country": "ae",
+        "api": "ar",
+        "fallbackApi": "en",
+        "short": "AE",
+        "group": "country",
+        "search": "Các Tiểu Vương quốc Ả Rập Thống nhất United Arab Emirates AE Tiếng Ả Rập ar"
+    },
+    "country-UM": {
+        "label": "Các tiểu đảo xa của Hoa Kỳ · Tiếng Anh",
+        "countryName": "Các tiểu đảo xa của Hoa Kỳ",
+        "country": "um",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "UM",
+        "group": "country",
+        "search": "Các tiểu đảo xa của Hoa Kỳ United States Minor Outlying Islands UM Tiếng Anh en"
+    },
+    "country-CI": {
+        "label": "Côte d’Ivoire · Tiếng Pháp",
+        "countryName": "Côte d’Ivoire",
+        "country": "ci",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "CI",
+        "group": "country",
+        "search": "Côte d’Ivoire Côte d'Ivoire CI Tiếng Pháp fr"
+    },
+    "country-DO": {
+        "label": "Cộng hòa Dominica · Tiếng Tây Ban Nha",
+        "countryName": "Cộng hòa Dominica",
+        "country": "do",
+        "api": "es",
+        "fallbackApi": "en",
+        "short": "DO",
+        "group": "country",
+        "search": "Cộng hòa Dominica Dominican Republic DO Tiếng Tây Ban Nha es"
+    },
+    "country-CF": {
+        "label": "Cộng hòa Trung Phi · Tiếng Sango",
+        "countryName": "Cộng hòa Trung Phi",
+        "country": "cf",
+        "api": "sg",
+        "fallbackApi": "en",
+        "short": "CF",
+        "group": "country",
+        "search": "Cộng hòa Trung Phi Central African Republic CF Tiếng Sango sg"
+    },
+    "country-DJ": {
+        "label": "Djibouti · Tiếng Pháp",
+        "countryName": "Djibouti",
+        "country": "dj",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "DJ",
+        "group": "country",
+        "search": "Djibouti Djibouti DJ Tiếng Pháp fr"
+    },
+    "country-DM": {
+        "label": "Dominica · Tiếng Anh",
+        "countryName": "Dominica",
+        "country": "dm",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "DM",
+        "group": "country",
+        "search": "Dominica Dominica DM Tiếng Anh en"
+    },
+    "country-EC": {
+        "label": "Ecuador · Tiếng Tây Ban Nha",
+        "countryName": "Ecuador",
+        "country": "ec",
+        "api": "es",
+        "fallbackApi": "en",
+        "short": "EC",
+        "group": "country",
+        "search": "Ecuador Ecuador EC Tiếng Tây Ban Nha es"
+    },
+    "country-SV": {
+        "label": "El Salvador · Tiếng Tây Ban Nha",
+        "countryName": "El Salvador",
+        "country": "sv",
+        "api": "es",
+        "fallbackApi": "en",
+        "short": "SV",
+        "group": "country",
+        "search": "El Salvador El Salvador SV Tiếng Tây Ban Nha es"
+    },
+    "country-ER": {
+        "label": "Eritrea · Tiếng Anh",
+        "countryName": "Eritrea",
+        "country": "er",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "ER",
+        "group": "country",
+        "search": "Eritrea Eritrea ER Tiếng Anh en"
+    },
+    "country-EE": {
+        "label": "Estonia · Tiếng Estonia",
+        "countryName": "Estonia",
+        "country": "ee",
+        "api": "et",
+        "fallbackApi": "en",
+        "short": "EE",
+        "group": "country",
+        "search": "Estonia Estonia EE Tiếng Estonia et"
+    },
+    "country-SZ": {
+        "label": "Eswatini · Tiếng Anh",
+        "countryName": "Eswatini",
+        "country": "sz",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "SZ",
+        "group": "country",
+        "search": "Eswatini Eswatini SZ Tiếng Anh en"
+    },
+    "country-ET": {
+        "label": "Ethiopia · Tiếng Amharic",
+        "countryName": "Ethiopia",
+        "country": "et",
+        "api": "am",
+        "fallbackApi": "en",
+        "short": "ET",
+        "group": "country",
+        "search": "Ethiopia Ethiopia ET Tiếng Amharic am"
+    },
+    "country-FJ": {
+        "label": "Fiji · Tiếng Anh",
+        "countryName": "Fiji",
+        "country": "fj",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "FJ",
+        "group": "country",
+        "search": "Fiji Fiji FJ Tiếng Anh en"
+    },
+    "country-GA": {
+        "label": "Gabon · Tiếng Pháp",
+        "countryName": "Gabon",
+        "country": "ga",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "GA",
+        "group": "country",
+        "search": "Gabon Gabon GA Tiếng Pháp fr"
+    },
+    "country-GM": {
+        "label": "Gambia · Tiếng Anh",
+        "countryName": "Gambia",
+        "country": "gm",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "GM",
+        "group": "country",
+        "search": "Gambia Gambia GM Tiếng Anh en"
+    },
+    "country-GE": {
+        "label": "Georgia · Tiếng Georgia",
+        "countryName": "Georgia",
+        "country": "ge",
+        "api": "ka",
+        "fallbackApi": "en",
+        "short": "GE",
+        "group": "country",
+        "search": "Georgia Georgia GE Tiếng Georgia ka"
+    },
+    "country-GH": {
+        "label": "Ghana · Tiếng Anh",
+        "countryName": "Ghana",
+        "country": "gh",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "GH",
+        "group": "country",
+        "search": "Ghana Ghana GH Tiếng Anh en"
+    },
+    "country-GI": {
+        "label": "Gibraltar · Tiếng Anh",
+        "countryName": "Gibraltar",
+        "country": "gi",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "GI",
+        "group": "country",
+        "search": "Gibraltar Gibraltar GI Tiếng Anh en"
+    },
+    "country-GL": {
+        "label": "Greenland · Tiếng Kalaallisut",
+        "countryName": "Greenland",
+        "country": "gl",
+        "api": "kl",
+        "fallbackApi": "en",
+        "short": "GL",
+        "group": "country",
+        "search": "Greenland Greenland GL Tiếng Kalaallisut kl"
+    },
+    "country-GD": {
+        "label": "Grenada · Tiếng Anh",
+        "countryName": "Grenada",
+        "country": "gd",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "GD",
+        "group": "country",
+        "search": "Grenada Grenada GD Tiếng Anh en"
+    },
+    "country-GP": {
+        "label": "Guadeloupe · Tiếng Pháp",
+        "countryName": "Guadeloupe",
+        "country": "gp",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "GP",
+        "group": "country",
+        "search": "Guadeloupe Guadeloupe GP Tiếng Pháp fr"
+    },
+    "country-GU": {
+        "label": "Guam · Tiếng Chamorro",
+        "countryName": "Guam",
+        "country": "gu",
+        "api": "ch",
+        "fallbackApi": "en",
+        "short": "GU",
+        "group": "country",
+        "search": "Guam Guam GU Tiếng Chamorro ch"
+    },
+    "country-GT": {
+        "label": "Guatemala · Tiếng Tây Ban Nha",
+        "countryName": "Guatemala",
+        "country": "gt",
+        "api": "es",
+        "fallbackApi": "en",
+        "short": "GT",
+        "group": "country",
+        "search": "Guatemala Guatemala GT Tiếng Tây Ban Nha es"
+    },
+    "country-GG": {
+        "label": "Guernsey · Tiếng Anh",
+        "countryName": "Guernsey",
+        "country": "gg",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "GG",
+        "group": "country",
+        "search": "Guernsey Guernsey GG Tiếng Anh en"
+    },
+    "country-GF": {
+        "label": "Guiana thuộc Pháp · Tiếng Pháp",
+        "countryName": "Guiana thuộc Pháp",
+        "country": "gf",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "GF",
+        "group": "country",
+        "search": "Guiana thuộc Pháp French Guiana GF Tiếng Pháp fr"
+    },
+    "country-GN": {
+        "label": "Guinea · Tiếng Pháp",
+        "countryName": "Guinea",
+        "country": "gn",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "GN",
+        "group": "country",
+        "search": "Guinea Guinea GN Tiếng Pháp fr"
+    },
+    "country-GQ": {
+        "label": "Guinea Xích Đạo · Tiếng Tây Ban Nha",
+        "countryName": "Guinea Xích Đạo",
+        "country": "gq",
+        "api": "es",
+        "fallbackApi": "en",
+        "short": "GQ",
+        "group": "country",
+        "search": "Guinea Xích Đạo Equatorial Guinea GQ Tiếng Tây Ban Nha es"
+    },
+    "country-GW": {
+        "label": "Guinea-Bissau · Tiếng Bồ Đào Nha",
+        "countryName": "Guinea-Bissau",
+        "country": "gw",
+        "api": "pt",
+        "fallbackApi": "en",
+        "short": "GW",
+        "group": "country",
+        "search": "Guinea-Bissau Guinea-Bissau GW Tiếng Bồ Đào Nha pt"
+    },
+    "country-GY": {
+        "label": "Guyana · Tiếng Anh",
+        "countryName": "Guyana",
+        "country": "gy",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "GY",
+        "group": "country",
+        "search": "Guyana Guyana GY Tiếng Anh en"
+    },
+    "country-HT": {
+        "label": "Haiti · Tiếng Haiti",
+        "countryName": "Haiti",
+        "country": "ht",
+        "api": "ht",
+        "fallbackApi": "en",
+        "short": "HT",
+        "group": "country",
+        "search": "Haiti Haiti HT Tiếng Haiti ht"
+    },
+    "country-US": {
+        "label": "Hoa Kỳ · Tiếng Anh",
+        "countryName": "Hoa Kỳ",
+        "country": "us",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "US",
+        "group": "country",
+        "search": "Hoa Kỳ United States US Tiếng Anh en"
+    },
+    "country-HN": {
+        "label": "Honduras · Tiếng Tây Ban Nha",
+        "countryName": "Honduras",
+        "country": "hn",
+        "api": "es",
+        "fallbackApi": "en",
+        "short": "HN",
+        "group": "country",
+        "search": "Honduras Honduras HN Tiếng Tây Ban Nha es"
+    },
+    "country-HU": {
+        "label": "Hungary · Tiếng Hungary",
+        "countryName": "Hungary",
+        "country": "hu",
+        "api": "hu",
+        "fallbackApi": "en",
+        "short": "HU",
+        "group": "country",
+        "search": "Hungary Hungary HU Tiếng Hungary hu"
+    },
+    "country-GR": {
+        "label": "Hy Lạp · Tiếng Hy Lạp",
+        "countryName": "Hy Lạp",
+        "country": "gr",
+        "api": "el",
+        "fallbackApi": "en",
+        "short": "GR",
+        "group": "country",
+        "search": "Hy Lạp Greece GR Tiếng Hy Lạp el"
+    },
+    "country-NL": {
+        "label": "Hà Lan · Tiếng Hà Lan",
+        "countryName": "Hà Lan",
+        "country": "nl",
+        "api": "nl",
+        "fallbackApi": "en",
+        "short": "NL",
+        "group": "country",
+        "search": "Hà Lan Netherlands NL Tiếng Hà Lan nl"
+    },
+    "country-KR": {
+        "label": "Hàn Quốc · Tiếng Hàn",
+        "countryName": "Hàn Quốc",
+        "country": "kr",
+        "api": "ko",
+        "fallbackApi": "en",
+        "short": "KR",
+        "group": "country",
+        "search": "Hàn Quốc Korea, Republic of KR Tiếng Hàn ko"
+    },
+    "country-IS": {
+        "label": "Iceland · Tiếng Iceland",
+        "countryName": "Iceland",
+        "country": "is",
+        "api": "is",
+        "fallbackApi": "en",
+        "short": "IS",
+        "group": "country",
+        "search": "Iceland Iceland IS Tiếng Iceland is"
+    },
+    "country-ID": {
+        "label": "Indonesia · Tiếng Indonesia",
+        "countryName": "Indonesia",
+        "country": "id",
+        "api": "id",
+        "fallbackApi": "en",
+        "short": "ID",
+        "group": "country",
+        "search": "Indonesia Indonesia ID Tiếng Indonesia id"
+    },
+    "country-IR": {
+        "label": "Iran · Tiếng Ba Tư",
+        "countryName": "Iran",
+        "country": "ir",
+        "api": "fa",
+        "fallbackApi": "en",
+        "short": "IR",
+        "group": "country",
+        "search": "Iran Iran, Islamic Republic of IR Tiếng Ba Tư fa"
+    },
+    "country-IQ": {
+        "label": "Iraq · Tiếng Ả Rập",
+        "countryName": "Iraq",
+        "country": "iq",
+        "api": "ar",
+        "fallbackApi": "en",
+        "short": "IQ",
+        "group": "country",
+        "search": "Iraq Iraq IQ Tiếng Ả Rập ar"
+    },
+    "country-IE": {
+        "label": "Ireland · Tiếng Anh",
+        "countryName": "Ireland",
+        "country": "ie",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "IE",
+        "group": "country",
+        "search": "Ireland Ireland IE Tiếng Anh en"
+    },
+    "country-IL": {
+        "label": "Israel · Tiếng Do Thái",
+        "countryName": "Israel",
+        "country": "il",
+        "api": "he",
+        "fallbackApi": "en",
+        "short": "IL",
+        "group": "country",
+        "search": "Israel Israel IL Tiếng Do Thái he"
+    },
+    "country-IT": {
+        "label": "Italy · Tiếng Italy",
+        "countryName": "Italy",
+        "country": "it",
+        "api": "it",
+        "fallbackApi": "en",
+        "short": "IT",
+        "group": "country",
+        "search": "Italy Italy IT Tiếng Italy it"
+    },
+    "country-JM": {
+        "label": "Jamaica · Tiếng Anh",
+        "countryName": "Jamaica",
+        "country": "jm",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "JM",
+        "group": "country",
+        "search": "Jamaica Jamaica JM Tiếng Anh en"
+    },
+    "country-JE": {
+        "label": "Jersey · Tiếng Anh",
+        "countryName": "Jersey",
+        "country": "je",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "JE",
+        "group": "country",
+        "search": "Jersey Jersey JE Tiếng Anh en"
+    },
+    "country-JO": {
+        "label": "Jordan · Tiếng Ả Rập",
+        "countryName": "Jordan",
+        "country": "jo",
+        "api": "ar",
+        "fallbackApi": "en",
+        "short": "JO",
+        "group": "country",
+        "search": "Jordan Jordan JO Tiếng Ả Rập ar"
+    },
+    "country-KZ": {
+        "label": "Kazakhstan · Tiếng Nga",
+        "countryName": "Kazakhstan",
+        "country": "kz",
+        "api": "ru",
+        "fallbackApi": "en",
+        "short": "KZ",
+        "group": "country",
+        "search": "Kazakhstan Kazakhstan KZ Tiếng Nga ru"
+    },
+    "country-KE": {
+        "label": "Kenya · Tiếng Swahili",
+        "countryName": "Kenya",
+        "country": "ke",
+        "api": "sw",
+        "fallbackApi": "en",
+        "short": "KE",
+        "group": "country",
+        "search": "Kenya Kenya KE Tiếng Swahili sw"
+    },
+    "country-KI": {
+        "label": "Kiribati · Tiếng Anh",
+        "countryName": "Kiribati",
+        "country": "ki",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "KI",
+        "group": "country",
+        "search": "Kiribati Kiribati KI Tiếng Anh en"
+    },
+    "country-XK": {
+        "label": "Kosovo · Tiếng Albania",
+        "countryName": "Kosovo",
+        "country": "xk",
+        "api": "sq",
+        "fallbackApi": "en",
+        "short": "XK",
+        "group": "country",
+        "search": "Kosovo Kosovo XK Tiếng Albania sq"
+    },
+    "country-KW": {
+        "label": "Kuwait · Tiếng Ả Rập",
+        "countryName": "Kuwait",
+        "country": "kw",
+        "api": "ar",
+        "fallbackApi": "en",
+        "short": "KW",
+        "group": "country",
+        "search": "Kuwait Kuwait KW Tiếng Ả Rập ar"
+    },
+    "country-KG": {
+        "label": "Kyrgyzstan · Tiếng Kyrgyz",
+        "countryName": "Kyrgyzstan",
+        "country": "kg",
+        "api": "ky",
+        "fallbackApi": "en",
+        "short": "KG",
+        "group": "country",
+        "search": "Kyrgyzstan Kyrgyzstan KG Tiếng Kyrgyz ky"
+    },
+    "country-LV": {
+        "label": "Latvia · Tiếng Latvia",
+        "countryName": "Latvia",
+        "country": "lv",
+        "api": "lv",
+        "fallbackApi": "en",
+        "short": "LV",
+        "group": "country",
+        "search": "Latvia Latvia LV Tiếng Latvia lv"
+    },
+    "country-LS": {
+        "label": "Lesotho · Tiếng Sotho Miền Nam",
+        "countryName": "Lesotho",
+        "country": "ls",
+        "api": "st",
+        "fallbackApi": "en",
+        "short": "LS",
+        "group": "country",
+        "search": "Lesotho Lesotho LS Tiếng Sotho Miền Nam st"
+    },
+    "country-LB": {
+        "label": "Li-băng · Tiếng Ả Rập",
+        "countryName": "Li-băng",
+        "country": "lb",
+        "api": "ar",
+        "fallbackApi": "en",
+        "short": "LB",
+        "group": "country",
+        "search": "Li-băng Lebanon LB Tiếng Ả Rập ar"
+    },
+    "country-LR": {
+        "label": "Liberia · Tiếng Anh",
+        "countryName": "Liberia",
+        "country": "lr",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "LR",
+        "group": "country",
+        "search": "Liberia Liberia LR Tiếng Anh en"
+    },
+    "country-LY": {
+        "label": "Libya · Tiếng Ả Rập",
+        "countryName": "Libya",
+        "country": "ly",
+        "api": "ar",
+        "fallbackApi": "en",
+        "short": "LY",
+        "group": "country",
+        "search": "Libya Libya LY Tiếng Ả Rập ar"
+    },
+    "country-LI": {
+        "label": "Liechtenstein · Tiếng Đức",
+        "countryName": "Liechtenstein",
+        "country": "li",
+        "api": "de",
+        "fallbackApi": "en",
+        "short": "LI",
+        "group": "country",
+        "search": "Liechtenstein Liechtenstein LI Tiếng Đức de"
+    },
+    "country-LT": {
+        "label": "Litva · Tiếng Litva",
+        "countryName": "Litva",
+        "country": "lt",
+        "api": "lt",
+        "fallbackApi": "en",
+        "short": "LT",
+        "group": "country",
+        "search": "Litva Lithuania LT Tiếng Litva lt"
+    },
+    "country-LU": {
+        "label": "Luxembourg · Tiếng Pháp",
+        "countryName": "Luxembourg",
+        "country": "lu",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "LU",
+        "group": "country",
+        "search": "Luxembourg Luxembourg LU Tiếng Pháp fr"
+    },
+    "country-LA": {
+        "label": "Lào · Tiếng Lào",
+        "countryName": "Lào",
+        "country": "la",
+        "api": "lo",
+        "fallbackApi": "en",
+        "short": "LA",
+        "group": "country",
+        "search": "Lào Lao People's Democratic Republic LA Tiếng Lào lo"
+    },
+    "country-PS": {
+        "label": "Lãnh thổ Palestine · Tiếng Ả Rập",
+        "countryName": "Lãnh thổ Palestine",
+        "country": "ps",
+        "api": "ar",
+        "fallbackApi": "en",
+        "short": "PS",
+        "group": "country",
+        "search": "Lãnh thổ Palestine Palestine, State of PS Tiếng Ả Rập ar"
+    },
+    "country-TF": {
+        "label": "Lãnh thổ phía Nam Thuộc Pháp · Tiếng Pháp",
+        "countryName": "Lãnh thổ phía Nam Thuộc Pháp",
+        "country": "tf",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "TF",
+        "group": "country",
+        "search": "Lãnh thổ phía Nam Thuộc Pháp French Southern Territories TF Tiếng Pháp fr"
+    },
+    "country-IO": {
+        "label": "Lãnh thổ Ấn Độ Dương thuộc Anh · Tiếng Anh",
+        "countryName": "Lãnh thổ Ấn Độ Dương thuộc Anh",
+        "country": "io",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "IO",
+        "group": "country",
+        "search": "Lãnh thổ Ấn Độ Dương thuộc Anh British Indian Ocean Territory IO Tiếng Anh en"
+    },
+    "country-MA": {
+        "label": "Ma-rốc · Tiếng Ả Rập",
+        "countryName": "Ma-rốc",
+        "country": "ma",
+        "api": "ar",
+        "fallbackApi": "en",
+        "short": "MA",
+        "group": "country",
+        "search": "Ma-rốc Morocco MA Tiếng Ả Rập ar"
+    },
+    "country-MG": {
+        "label": "Madagascar · Tiếng Malagasy",
+        "countryName": "Madagascar",
+        "country": "mg",
+        "api": "mg",
+        "fallbackApi": "en",
+        "short": "MG",
+        "group": "country",
+        "search": "Madagascar Madagascar MG Tiếng Malagasy mg"
+    },
+    "country-MW": {
+        "label": "Malawi · Tiếng Nyanja",
+        "countryName": "Malawi",
+        "country": "mw",
+        "api": "ny",
+        "fallbackApi": "en",
+        "short": "MW",
+        "group": "country",
+        "search": "Malawi Malawi MW Tiếng Nyanja ny"
+    },
+    "country-MY": {
+        "label": "Malaysia · Tiếng Mã Lai",
+        "countryName": "Malaysia",
+        "country": "my",
+        "api": "ms",
+        "fallbackApi": "en",
+        "short": "MY",
+        "group": "country",
+        "search": "Malaysia Malaysia MY Tiếng Mã Lai ms"
+    },
+    "country-MV": {
+        "label": "Maldives · Tiếng Divehi",
+        "countryName": "Maldives",
+        "country": "mv",
+        "api": "dv",
+        "fallbackApi": "en",
+        "short": "MV",
+        "group": "country",
+        "search": "Maldives Maldives MV Tiếng Divehi dv"
+    },
+    "country-ML": {
+        "label": "Mali · Tiếng Pháp",
+        "countryName": "Mali",
+        "country": "ml",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "ML",
+        "group": "country",
+        "search": "Mali Mali ML Tiếng Pháp fr"
+    },
+    "country-MT": {
+        "label": "Malta · Tiếng Malta",
+        "countryName": "Malta",
+        "country": "mt",
+        "api": "mt",
+        "fallbackApi": "en",
+        "short": "MT",
+        "group": "country",
+        "search": "Malta Malta MT Tiếng Malta mt"
+    },
+    "country-MQ": {
+        "label": "Martinique · Tiếng Pháp",
+        "countryName": "Martinique",
+        "country": "mq",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "MQ",
+        "group": "country",
+        "search": "Martinique Martinique MQ Tiếng Pháp fr"
+    },
+    "country-MR": {
+        "label": "Mauritania · Tiếng Ả Rập",
+        "countryName": "Mauritania",
+        "country": "mr",
+        "api": "ar",
+        "fallbackApi": "en",
+        "short": "MR",
+        "group": "country",
+        "search": "Mauritania Mauritania MR Tiếng Ả Rập ar"
+    },
+    "country-MU": {
+        "label": "Mauritius · Tiếng Pháp",
+        "countryName": "Mauritius",
+        "country": "mu",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "MU",
+        "group": "country",
+        "search": "Mauritius Mauritius MU Tiếng Pháp fr"
+    },
+    "country-YT": {
+        "label": "Mayotte · Tiếng Pháp",
+        "countryName": "Mayotte",
+        "country": "yt",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "YT",
+        "group": "country",
+        "search": "Mayotte Mayotte YT Tiếng Pháp fr"
+    },
+    "country-MX": {
+        "label": "Mexico · Tiếng Tây Ban Nha",
+        "countryName": "Mexico",
+        "country": "mx",
+        "api": "es",
+        "fallbackApi": "en",
+        "short": "MX",
+        "group": "country",
+        "search": "Mexico Mexico MX Tiếng Tây Ban Nha es"
+    },
+    "country-FM": {
+        "label": "Micronesia · Tiếng Anh",
+        "countryName": "Micronesia",
+        "country": "fm",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "FM",
+        "group": "country",
+        "search": "Micronesia Micronesia, Federated States of FM Tiếng Anh en"
+    },
+    "country-MD": {
+        "label": "Moldova · Tiếng Romania",
+        "countryName": "Moldova",
+        "country": "md",
+        "api": "ro",
+        "fallbackApi": "en",
+        "short": "MD",
+        "group": "country",
+        "search": "Moldova Moldova, Republic of MD Tiếng Romania ro"
+    },
+    "country-MC": {
+        "label": "Monaco · Tiếng Pháp",
+        "countryName": "Monaco",
+        "country": "mc",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "MC",
+        "group": "country",
+        "search": "Monaco Monaco MC Tiếng Pháp fr"
+    },
+    "country-ME": {
+        "label": "Montenegro · Tiếng Serbia",
+        "countryName": "Montenegro",
+        "country": "me",
+        "api": "sr",
+        "fallbackApi": "en",
+        "short": "ME",
+        "group": "country",
+        "search": "Montenegro Montenegro ME Tiếng Serbia sr"
+    },
+    "country-MS": {
+        "label": "Montserrat · Tiếng Anh",
+        "countryName": "Montserrat",
+        "country": "ms",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "MS",
+        "group": "country",
+        "search": "Montserrat Montserrat MS Tiếng Anh en"
+    },
+    "country-MZ": {
+        "label": "Mozambique · Tiếng Bồ Đào Nha",
+        "countryName": "Mozambique",
+        "country": "mz",
+        "api": "pt",
+        "fallbackApi": "en",
+        "short": "MZ",
+        "group": "country",
+        "search": "Mozambique Mozambique MZ Tiếng Bồ Đào Nha pt"
+    },
+    "country-MM": {
+        "label": "Myanmar (Miến Điện) · Tiếng Miến Điện",
+        "countryName": "Myanmar (Miến Điện)",
+        "country": "mm",
+        "api": "my",
+        "fallbackApi": "en",
+        "short": "MM",
+        "group": "country",
+        "search": "Myanmar (Miến Điện) Myanmar MM Tiếng Miến Điện my"
+    },
+    "country-MN": {
+        "label": "Mông Cổ · Tiếng Mông Cổ",
+        "countryName": "Mông Cổ",
+        "country": "mn",
+        "api": "mn",
+        "fallbackApi": "en",
+        "short": "MN",
+        "group": "country",
+        "search": "Mông Cổ Mongolia MN Tiếng Mông Cổ mn"
+    },
+    "country-NO": {
+        "label": "Na Uy · Tiếng Na Uy",
+        "countryName": "Na Uy",
+        "country": "no",
+        "api": "no",
+        "fallbackApi": "en",
+        "short": "NO",
+        "group": "country",
+        "search": "Na Uy Norway NO Tiếng Na Uy no"
+    },
+    "country-AQ": {
+        "label": "Nam Cực · Tiếng Anh",
+        "countryName": "Nam Cực",
+        "country": "aq",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "AQ",
+        "group": "country",
+        "search": "Nam Cực Antarctica AQ Tiếng Anh en"
+    },
+    "country-GS": {
+        "label": "Nam Georgia & Quần đảo Nam Sandwich · Tiếng Anh",
+        "countryName": "Nam Georgia & Quần đảo Nam Sandwich",
+        "country": "gs",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "GS",
+        "group": "country",
+        "search": "Nam Georgia & Quần đảo Nam Sandwich South Georgia and the South Sandwich Islands GS Tiếng Anh en"
+    },
+    "country-ZA": {
+        "label": "Nam Phi · Tiếng Anh",
+        "countryName": "Nam Phi",
+        "country": "za",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "ZA",
+        "group": "country",
+        "search": "Nam Phi South Africa ZA Tiếng Anh en"
+    },
+    "country-SS": {
+        "label": "Nam Sudan · Tiếng Anh",
+        "countryName": "Nam Sudan",
+        "country": "ss",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "SS",
+        "group": "country",
+        "search": "Nam Sudan South Sudan SS Tiếng Anh en"
+    },
+    "country-NA": {
+        "label": "Namibia · Tiếng Anh",
+        "countryName": "Namibia",
+        "country": "na",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "NA",
+        "group": "country",
+        "search": "Namibia Namibia NA Tiếng Anh en"
+    },
+    "country-NR": {
+        "label": "Nauru · Tiếng Anh",
+        "countryName": "Nauru",
+        "country": "nr",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "NR",
+        "group": "country",
+        "search": "Nauru Nauru NR Tiếng Anh en"
+    },
+    "country-NP": {
+        "label": "Nepal · Tiếng Nepal",
+        "countryName": "Nepal",
+        "country": "np",
+        "api": "ne",
+        "fallbackApi": "en",
+        "short": "NP",
+        "group": "country",
+        "search": "Nepal Nepal NP Tiếng Nepal ne"
+    },
+    "country-NC": {
+        "label": "New Caledonia · Tiếng Pháp",
+        "countryName": "New Caledonia",
+        "country": "nc",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "NC",
+        "group": "country",
+        "search": "New Caledonia New Caledonia NC Tiếng Pháp fr"
+    },
+    "country-NZ": {
+        "label": "New Zealand · Tiếng Māori",
+        "countryName": "New Zealand",
+        "country": "nz",
+        "api": "mi",
+        "fallbackApi": "en",
+        "short": "NZ",
+        "group": "country",
+        "search": "New Zealand New Zealand NZ Tiếng Māori mi"
+    },
+    "country-RU": {
+        "label": "Nga · Tiếng Nga",
+        "countryName": "Nga",
+        "country": "ru",
+        "api": "ru",
+        "fallbackApi": "en",
+        "short": "RU",
+        "group": "country",
+        "search": "Nga Russian Federation RU Tiếng Nga ru"
+    },
+    "country-JP": {
+        "label": "Nhật Bản · Tiếng Nhật",
+        "countryName": "Nhật Bản",
+        "country": "jp",
+        "api": "ja",
+        "fallbackApi": "en",
+        "short": "JP",
+        "group": "country",
+        "search": "Nhật Bản Japan JP Tiếng Nhật ja"
+    },
+    "country-NI": {
+        "label": "Nicaragua · Tiếng Tây Ban Nha",
+        "countryName": "Nicaragua",
+        "country": "ni",
+        "api": "es",
+        "fallbackApi": "en",
+        "short": "NI",
+        "group": "country",
+        "search": "Nicaragua Nicaragua NI Tiếng Tây Ban Nha es"
+    },
+    "country-NE": {
+        "label": "Niger · Tiếng Pháp",
+        "countryName": "Niger",
+        "country": "ne",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "NE",
+        "group": "country",
+        "search": "Niger Niger NE Tiếng Pháp fr"
+    },
+    "country-NG": {
+        "label": "Nigeria · Tiếng Anh",
+        "countryName": "Nigeria",
+        "country": "ng",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "NG",
+        "group": "country",
+        "search": "Nigeria Nigeria NG Tiếng Anh en"
+    },
+    "country-NU": {
+        "label": "Niue · Tiếng Anh",
+        "countryName": "Niue",
+        "country": "nu",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "NU",
+        "group": "country",
+        "search": "Niue Niue NU Tiếng Anh en"
+    },
+    "country-OM": {
+        "label": "Oman · Tiếng Ả Rập",
+        "countryName": "Oman",
+        "country": "om",
+        "api": "ar",
+        "fallbackApi": "en",
+        "short": "OM",
+        "group": "country",
+        "search": "Oman Oman OM Tiếng Ả Rập ar"
+    },
+    "country-PK": {
+        "label": "Pakistan · Tiếng Urdu",
+        "countryName": "Pakistan",
+        "country": "pk",
+        "api": "ur",
+        "fallbackApi": "en",
+        "short": "PK",
+        "group": "country",
+        "search": "Pakistan Pakistan PK Tiếng Urdu ur"
+    },
+    "country-PW": {
+        "label": "Palau · Tiếng Anh",
+        "countryName": "Palau",
+        "country": "pw",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "PW",
+        "group": "country",
+        "search": "Palau Palau PW Tiếng Anh en"
+    },
+    "country-PA": {
+        "label": "Panama · Tiếng Tây Ban Nha",
+        "countryName": "Panama",
+        "country": "pa",
+        "api": "es",
+        "fallbackApi": "en",
+        "short": "PA",
+        "group": "country",
+        "search": "Panama Panama PA Tiếng Tây Ban Nha es"
+    },
+    "country-PG": {
+        "label": "Papua New Guinea · Tiếng Anh",
+        "countryName": "Papua New Guinea",
+        "country": "pg",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "PG",
+        "group": "country",
+        "search": "Papua New Guinea Papua New Guinea PG Tiếng Anh en"
+    },
+    "country-PY": {
+        "label": "Paraguay · Tiếng Guarani",
+        "countryName": "Paraguay",
+        "country": "py",
+        "api": "gn",
+        "fallbackApi": "en",
+        "short": "PY",
+        "group": "country",
+        "search": "Paraguay Paraguay PY Tiếng Guarani gn"
+    },
+    "country-PE": {
+        "label": "Peru · Tiếng Tây Ban Nha",
+        "countryName": "Peru",
+        "country": "pe",
+        "api": "es",
+        "fallbackApi": "en",
+        "short": "PE",
+        "group": "country",
+        "search": "Peru Peru PE Tiếng Tây Ban Nha es"
+    },
+    "country-PH": {
+        "label": "Philippines · Tiếng Anh",
+        "countryName": "Philippines",
+        "country": "ph",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "PH",
+        "group": "country",
+        "search": "Philippines Philippines PH Tiếng Anh en"
+    },
+    "country-FR": {
+        "label": "Pháp · Tiếng Pháp",
+        "countryName": "Pháp",
+        "country": "fr",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "FR",
+        "group": "country",
+        "search": "Pháp France FR Tiếng Pháp fr"
+    },
+    "country-FI": {
+        "label": "Phần Lan · Tiếng Phần Lan",
+        "countryName": "Phần Lan",
+        "country": "fi",
+        "api": "fi",
+        "fallbackApi": "en",
+        "short": "FI",
+        "group": "country",
+        "search": "Phần Lan Finland FI Tiếng Phần Lan fi"
+    },
+    "country-PF": {
+        "label": "Polynesia thuộc Pháp · Tiếng Pháp",
+        "countryName": "Polynesia thuộc Pháp",
+        "country": "pf",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "PF",
+        "group": "country",
+        "search": "Polynesia thuộc Pháp French Polynesia PF Tiếng Pháp fr"
+    },
+    "country-PR": {
+        "label": "Puerto Rico · Tiếng Tây Ban Nha",
+        "countryName": "Puerto Rico",
+        "country": "pr",
+        "api": "es",
+        "fallbackApi": "en",
+        "short": "PR",
+        "group": "country",
+        "search": "Puerto Rico Puerto Rico PR Tiếng Tây Ban Nha es"
+    },
+    "country-QA": {
+        "label": "Qatar · Tiếng Ả Rập",
+        "countryName": "Qatar",
+        "country": "qa",
+        "api": "ar",
+        "fallbackApi": "en",
+        "short": "QA",
+        "group": "country",
+        "search": "Qatar Qatar QA Tiếng Ả Rập ar"
+    },
+    "country-MP": {
+        "label": "Quần đảo Bắc Mariana · Tiếng Anh",
+        "countryName": "Quần đảo Bắc Mariana",
+        "country": "mp",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "MP",
+        "group": "country",
+        "search": "Quần đảo Bắc Mariana Northern Mariana Islands MP Tiếng Anh en"
+    },
+    "country-KY": {
+        "label": "Quần đảo Cayman · Tiếng Anh",
+        "countryName": "Quần đảo Cayman",
+        "country": "ky",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "KY",
+        "group": "country",
+        "search": "Quần đảo Cayman Cayman Islands KY Tiếng Anh en"
+    },
+    "country-CC": {
+        "label": "Quần đảo Cocos (Keeling) · Tiếng Anh",
+        "countryName": "Quần đảo Cocos (Keeling)",
+        "country": "cc",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "CC",
+        "group": "country",
+        "search": "Quần đảo Cocos (Keeling) Cocos (Keeling) Islands CC Tiếng Anh en"
+    },
+    "country-CK": {
+        "label": "Quần đảo Cook · Tiếng Anh",
+        "countryName": "Quần đảo Cook",
+        "country": "ck",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "CK",
+        "group": "country",
+        "search": "Quần đảo Cook Cook Islands CK Tiếng Anh en"
+    },
+    "country-FK": {
+        "label": "Quần đảo Falkland · Tiếng Anh",
+        "countryName": "Quần đảo Falkland",
+        "country": "fk",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "FK",
+        "group": "country",
+        "search": "Quần đảo Falkland Falkland Islands (Malvinas) FK Tiếng Anh en"
+    },
+    "country-FO": {
+        "label": "Quần đảo Faroe · Tiếng Faroe",
+        "countryName": "Quần đảo Faroe",
+        "country": "fo",
+        "api": "fo",
+        "fallbackApi": "en",
+        "short": "FO",
+        "group": "country",
+        "search": "Quần đảo Faroe Faroe Islands FO Tiếng Faroe fo"
+    },
+    "country-HM": {
+        "label": "Quần đảo Heard và McDonald · Tiếng Anh",
+        "countryName": "Quần đảo Heard và McDonald",
+        "country": "hm",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "HM",
+        "group": "country",
+        "search": "Quần đảo Heard và McDonald Heard Island and McDonald Islands HM Tiếng Anh en"
+    },
+    "country-MH": {
+        "label": "Quần đảo Marshall · Tiếng Anh",
+        "countryName": "Quần đảo Marshall",
+        "country": "mh",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "MH",
+        "group": "country",
+        "search": "Quần đảo Marshall Marshall Islands MH Tiếng Anh en"
+    },
+    "country-PN": {
+        "label": "Quần đảo Pitcairn · Tiếng Anh",
+        "countryName": "Quần đảo Pitcairn",
+        "country": "pn",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "PN",
+        "group": "country",
+        "search": "Quần đảo Pitcairn Pitcairn PN Tiếng Anh en"
+    },
+    "country-SB": {
+        "label": "Quần đảo Solomon · Tiếng Anh",
+        "countryName": "Quần đảo Solomon",
+        "country": "sb",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "SB",
+        "group": "country",
+        "search": "Quần đảo Solomon Solomon Islands SB Tiếng Anh en"
+    },
+    "country-TC": {
+        "label": "Quần đảo Turks và Caicos · Tiếng Anh",
+        "countryName": "Quần đảo Turks và Caicos",
+        "country": "tc",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "TC",
+        "group": "country",
+        "search": "Quần đảo Turks và Caicos Turks and Caicos Islands TC Tiếng Anh en"
+    },
+    "country-VG": {
+        "label": "Quần đảo Virgin thuộc Anh · Tiếng Anh",
+        "countryName": "Quần đảo Virgin thuộc Anh",
+        "country": "vg",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "VG",
+        "group": "country",
+        "search": "Quần đảo Virgin thuộc Anh Virgin Islands, British VG Tiếng Anh en"
+    },
+    "country-VI": {
+        "label": "Quần đảo Virgin thuộc Hoa Kỳ · Tiếng Anh",
+        "countryName": "Quần đảo Virgin thuộc Hoa Kỳ",
+        "country": "vi",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "VI",
+        "group": "country",
+        "search": "Quần đảo Virgin thuộc Hoa Kỳ Virgin Islands, U.S. VI Tiếng Anh en"
+    },
+    "country-AX": {
+        "label": "Quần đảo Åland · Tiếng Thụy Điển",
+        "countryName": "Quần đảo Åland",
+        "country": "ax",
+        "api": "sv",
+        "fallbackApi": "en",
+        "short": "AX",
+        "group": "country",
+        "search": "Quần đảo Åland Åland Islands AX Tiếng Thụy Điển sv"
+    },
+    "country-RO": {
+        "label": "Romania · Tiếng Romania",
+        "countryName": "Romania",
+        "country": "ro",
+        "api": "ro",
+        "fallbackApi": "en",
+        "short": "RO",
+        "group": "country",
+        "search": "Romania Romania RO Tiếng Romania ro"
+    },
+    "country-RW": {
+        "label": "Rwanda · Tiếng Kinyarwanda",
+        "countryName": "Rwanda",
+        "country": "rw",
+        "api": "rw",
+        "fallbackApi": "en",
+        "short": "RW",
+        "group": "country",
+        "search": "Rwanda Rwanda RW Tiếng Kinyarwanda rw"
+    },
+    "country-RE": {
+        "label": "Réunion · Tiếng Pháp",
+        "countryName": "Réunion",
+        "country": "re",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "RE",
+        "group": "country",
+        "search": "Réunion Réunion RE Tiếng Pháp fr"
+    },
+    "country-PM": {
+        "label": "Saint Pierre và Miquelon · Tiếng Pháp",
+        "countryName": "Saint Pierre và Miquelon",
+        "country": "pm",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "PM",
+        "group": "country",
+        "search": "Saint Pierre và Miquelon Saint Pierre and Miquelon PM Tiếng Pháp fr"
+    },
+    "country-WS": {
+        "label": "Samoa · Tiếng Samoa",
+        "countryName": "Samoa",
+        "country": "ws",
+        "api": "sm",
+        "fallbackApi": "en",
+        "short": "WS",
+        "group": "country",
+        "search": "Samoa Samoa WS Tiếng Samoa sm"
+    },
+    "country-AS": {
+        "label": "Samoa thuộc Mỹ · Tiếng Samoa",
+        "countryName": "Samoa thuộc Mỹ",
+        "country": "as",
+        "api": "sm",
+        "fallbackApi": "en",
+        "short": "AS",
+        "group": "country",
+        "search": "Samoa thuộc Mỹ American Samoa AS Tiếng Samoa sm"
+    },
+    "country-SM": {
+        "label": "San Marino · Tiếng Italy",
+        "countryName": "San Marino",
+        "country": "sm",
+        "api": "it",
+        "fallbackApi": "en",
+        "short": "SM",
+        "group": "country",
+        "search": "San Marino San Marino SM Tiếng Italy it"
+    },
+    "country-SN": {
+        "label": "Senegal · Tiếng Pháp",
+        "countryName": "Senegal",
+        "country": "sn",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "SN",
+        "group": "country",
+        "search": "Senegal Senegal SN Tiếng Pháp fr"
+    },
+    "country-RS": {
+        "label": "Serbia · Tiếng Serbia",
+        "countryName": "Serbia",
+        "country": "rs",
+        "api": "sr",
+        "fallbackApi": "en",
+        "short": "RS",
+        "group": "country",
+        "search": "Serbia Serbia RS Tiếng Serbia sr"
+    },
+    "country-SC": {
+        "label": "Seychelles · Tiếng Pháp",
+        "countryName": "Seychelles",
+        "country": "sc",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "SC",
+        "group": "country",
+        "search": "Seychelles Seychelles SC Tiếng Pháp fr"
+    },
+    "country-SL": {
+        "label": "Sierra Leone · Tiếng Anh",
+        "countryName": "Sierra Leone",
+        "country": "sl",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "SL",
+        "group": "country",
+        "search": "Sierra Leone Sierra Leone SL Tiếng Anh en"
+    },
+    "country-SG": {
+        "label": "Singapore · Tiếng Anh",
+        "countryName": "Singapore",
+        "country": "sg",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "SG",
+        "group": "country",
+        "search": "Singapore Singapore SG Tiếng Anh en"
+    },
+    "country-SX": {
+        "label": "Sint Maarten · Tiếng Anh",
+        "countryName": "Sint Maarten",
+        "country": "sx",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "SX",
+        "group": "country",
+        "search": "Sint Maarten Sint Maarten (Dutch part) SX Tiếng Anh en"
+    },
+    "country-SK": {
+        "label": "Slovakia · Tiếng Slovak",
+        "countryName": "Slovakia",
+        "country": "sk",
+        "api": "sk",
+        "fallbackApi": "en",
+        "short": "SK",
+        "group": "country",
+        "search": "Slovakia Slovakia SK Tiếng Slovak sk"
+    },
+    "country-SI": {
+        "label": "Slovenia · Tiếng Slovenia",
+        "countryName": "Slovenia",
+        "country": "si",
+        "api": "sl",
+        "fallbackApi": "en",
+        "short": "SI",
+        "group": "country",
+        "search": "Slovenia Slovenia SI Tiếng Slovenia sl"
+    },
+    "country-SO": {
+        "label": "Somalia · Tiếng Somali",
+        "countryName": "Somalia",
+        "country": "so",
+        "api": "so",
+        "fallbackApi": "en",
+        "short": "SO",
+        "group": "country",
+        "search": "Somalia Somalia SO Tiếng Somali so"
+    },
+    "country-LK": {
+        "label": "Sri Lanka · Tiếng Sinhala",
+        "countryName": "Sri Lanka",
+        "country": "lk",
+        "api": "si",
+        "fallbackApi": "en",
+        "short": "LK",
+        "group": "country",
+        "search": "Sri Lanka Sri Lanka LK Tiếng Sinhala si"
+    },
+    "country-BL": {
+        "label": "St. Barthélemy · Tiếng Pháp",
+        "countryName": "St. Barthélemy",
+        "country": "bl",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "BL",
+        "group": "country",
+        "search": "St. Barthélemy Saint Barthélemy BL Tiếng Pháp fr"
+    },
+    "country-SH": {
+        "label": "St. Helena · Tiếng Anh",
+        "countryName": "St. Helena",
+        "country": "sh",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "SH",
+        "group": "country",
+        "search": "St. Helena Saint Helena, Ascension and Tristan da Cunha SH Tiếng Anh en"
+    },
+    "country-KN": {
+        "label": "St. Kitts và Nevis · Tiếng Anh",
+        "countryName": "St. Kitts và Nevis",
+        "country": "kn",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "KN",
+        "group": "country",
+        "search": "St. Kitts và Nevis Saint Kitts and Nevis KN Tiếng Anh en"
+    },
+    "country-LC": {
+        "label": "St. Lucia · Tiếng Anh",
+        "countryName": "St. Lucia",
+        "country": "lc",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "LC",
+        "group": "country",
+        "search": "St. Lucia Saint Lucia LC Tiếng Anh en"
+    },
+    "country-MF": {
+        "label": "St. Martin · Tiếng Pháp",
+        "countryName": "St. Martin",
+        "country": "mf",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "MF",
+        "group": "country",
+        "search": "St. Martin Saint Martin (French part) MF Tiếng Pháp fr"
+    },
+    "country-VC": {
+        "label": "St. Vincent và Grenadines · Tiếng Anh",
+        "countryName": "St. Vincent và Grenadines",
+        "country": "vc",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "VC",
+        "group": "country",
+        "search": "St. Vincent và Grenadines Saint Vincent and the Grenadines VC Tiếng Anh en"
+    },
+    "country-SD": {
+        "label": "Sudan · Tiếng Anh",
+        "countryName": "Sudan",
+        "country": "sd",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "SD",
+        "group": "country",
+        "search": "Sudan Sudan SD Tiếng Anh en"
+    },
+    "country-SR": {
+        "label": "Suriname · Tiếng Hà Lan",
+        "countryName": "Suriname",
+        "country": "sr",
+        "api": "nl",
+        "fallbackApi": "en",
+        "short": "SR",
+        "group": "country",
+        "search": "Suriname Suriname SR Tiếng Hà Lan nl"
+    },
+    "country-SJ": {
+        "label": "Svalbard và Jan Mayen · Tiếng Na Uy",
+        "countryName": "Svalbard và Jan Mayen",
+        "country": "sj",
+        "api": "no",
+        "fallbackApi": "en",
+        "short": "SJ",
+        "group": "country",
+        "search": "Svalbard và Jan Mayen Svalbard and Jan Mayen SJ Tiếng Na Uy no"
+    },
+    "country-SY": {
+        "label": "Syria · Tiếng Ả Rập",
+        "countryName": "Syria",
+        "country": "sy",
+        "api": "ar",
+        "fallbackApi": "en",
+        "short": "SY",
+        "group": "country",
+        "search": "Syria Syrian Arab Republic SY Tiếng Ả Rập ar"
+    },
+    "country-ST": {
+        "label": "São Tomé và Príncipe · Tiếng Bồ Đào Nha",
+        "countryName": "São Tomé và Príncipe",
+        "country": "st",
+        "api": "pt",
+        "fallbackApi": "en",
+        "short": "ST",
+        "group": "country",
+        "search": "São Tomé và Príncipe Sao Tome and Principe ST Tiếng Bồ Đào Nha pt"
+    },
+    "country-CZ": {
+        "label": "Séc · Tiếng Séc",
+        "countryName": "Séc",
+        "country": "cz",
+        "api": "cs",
+        "fallbackApi": "en",
+        "short": "CZ",
+        "group": "country",
+        "search": "Séc Czechia CZ Tiếng Séc cs"
+    },
+    "country-CY": {
+        "label": "Síp · Tiếng Hy Lạp",
+        "countryName": "Síp",
+        "country": "cy",
+        "api": "el",
+        "fallbackApi": "en",
+        "short": "CY",
+        "group": "country",
+        "search": "Síp Cyprus CY Tiếng Hy Lạp el"
+    },
+    "country-TJ": {
+        "label": "Tajikistan · Tiếng Tajik",
+        "countryName": "Tajikistan",
+        "country": "tj",
+        "api": "tg",
+        "fallbackApi": "en",
+        "short": "TJ",
+        "group": "country",
+        "search": "Tajikistan Tajikistan TJ Tiếng Tajik tg"
+    },
+    "country-TZ": {
+        "label": "Tanzania · Tiếng Swahili",
+        "countryName": "Tanzania",
+        "country": "tz",
+        "api": "sw",
+        "fallbackApi": "en",
+        "short": "TZ",
+        "group": "country",
+        "search": "Tanzania Tanzania, United Republic of TZ Tiếng Swahili sw"
+    },
+    "country-VA": {
+        "label": "Thành Vatican · Tiếng Italy",
+        "countryName": "Thành Vatican",
+        "country": "va",
+        "api": "it",
+        "fallbackApi": "en",
+        "short": "VA",
+        "group": "country",
+        "search": "Thành Vatican Holy See (Vatican City State) VA Tiếng Italy it"
+    },
+    "country-TH": {
+        "label": "Thái Lan · Tiếng Thái",
+        "countryName": "Thái Lan",
+        "country": "th",
+        "api": "th",
+        "fallbackApi": "en",
+        "short": "TH",
+        "group": "country",
+        "search": "Thái Lan Thailand TH Tiếng Thái th"
+    },
+    "country-TR": {
+        "label": "Thổ Nhĩ Kỳ · Tiếng Thổ Nhĩ Kỳ",
+        "countryName": "Thổ Nhĩ Kỳ",
+        "country": "tr",
+        "api": "tr",
+        "fallbackApi": "en",
+        "short": "TR",
+        "group": "country",
+        "search": "Thổ Nhĩ Kỳ Türkiye TR Tiếng Thổ Nhĩ Kỳ tr"
+    },
+    "country-CH": {
+        "label": "Thụy Sĩ · Tiếng Đức",
+        "countryName": "Thụy Sĩ",
+        "country": "ch",
+        "api": "de",
+        "fallbackApi": "en",
+        "short": "CH",
+        "group": "country",
+        "search": "Thụy Sĩ Switzerland CH Tiếng Đức de"
+    },
+    "country-SE": {
+        "label": "Thụy Điển · Tiếng Thụy Điển",
+        "countryName": "Thụy Điển",
+        "country": "se",
+        "api": "sv",
+        "fallbackApi": "en",
+        "short": "SE",
+        "group": "country",
+        "search": "Thụy Điển Sweden SE Tiếng Thụy Điển sv"
+    },
+    "country-TL": {
+        "label": "Timor-Leste · Tiếng Bồ Đào Nha",
+        "countryName": "Timor-Leste",
+        "country": "tl",
+        "api": "pt",
+        "fallbackApi": "en",
+        "short": "TL",
+        "group": "country",
+        "search": "Timor-Leste Timor-Leste TL Tiếng Bồ Đào Nha pt"
+    },
+    "country-TG": {
+        "label": "Togo · Tiếng Pháp",
+        "countryName": "Togo",
+        "country": "tg",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "TG",
+        "group": "country",
+        "search": "Togo Togo TG Tiếng Pháp fr"
+    },
+    "country-TK": {
+        "label": "Tokelau · Tiếng Anh",
+        "countryName": "Tokelau",
+        "country": "tk",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "TK",
+        "group": "country",
+        "search": "Tokelau Tokelau TK Tiếng Anh en"
+    },
+    "country-TO": {
+        "label": "Tonga · Tiếng Tonga",
+        "countryName": "Tonga",
+        "country": "to",
+        "api": "to",
+        "fallbackApi": "en",
+        "short": "TO",
+        "group": "country",
+        "search": "Tonga Tonga TO Tiếng Tonga to"
+    },
+    "country-TT": {
+        "label": "Trinidad và Tobago · Tiếng Anh",
+        "countryName": "Trinidad và Tobago",
+        "country": "tt",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "TT",
+        "group": "country",
+        "search": "Trinidad và Tobago Trinidad and Tobago TT Tiếng Anh en"
+    },
+    "country-KP": {
+        "label": "Triều Tiên · Tiếng Hàn",
+        "countryName": "Triều Tiên",
+        "country": "kp",
+        "api": "ko",
+        "fallbackApi": "en",
+        "short": "KP",
+        "group": "country",
+        "search": "Triều Tiên Korea, Democratic People's Republic of KP Tiếng Hàn ko"
+    },
+    "country-CN": {
+        "label": "Trung Quốc · Tiếng Trung (giản thể)",
+        "countryName": "Trung Quốc",
+        "country": "cn",
+        "api": "zh-CN",
+        "fallbackApi": "en",
+        "short": "CN",
+        "group": "country",
+        "search": "Trung Quốc China CN Tiếng Trung (giản thể) zh-CN"
+    },
+    "country-TN": {
+        "label": "Tunisia · Tiếng Ả Rập",
+        "countryName": "Tunisia",
+        "country": "tn",
+        "api": "ar",
+        "fallbackApi": "en",
+        "short": "TN",
+        "group": "country",
+        "search": "Tunisia Tunisia TN Tiếng Ả Rập ar"
+    },
+    "country-TM": {
+        "label": "Turkmenistan · Tiếng Turkmen",
+        "countryName": "Turkmenistan",
+        "country": "tm",
+        "api": "tk",
+        "fallbackApi": "en",
+        "short": "TM",
+        "group": "country",
+        "search": "Turkmenistan Turkmenistan TM Tiếng Turkmen tk"
+    },
+    "country-TV": {
+        "label": "Tuvalu · Tiếng Anh",
+        "countryName": "Tuvalu",
+        "country": "tv",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "TV",
+        "group": "country",
+        "search": "Tuvalu Tuvalu TV Tiếng Anh en"
+    },
+    "country-ES": {
+        "label": "Tây Ban Nha · Tiếng Tây Ban Nha",
+        "countryName": "Tây Ban Nha",
+        "country": "es",
+        "api": "es",
+        "fallbackApi": "en",
+        "short": "ES",
+        "group": "country",
+        "search": "Tây Ban Nha Spain ES Tiếng Tây Ban Nha es"
+    },
+    "country-EH": {
+        "label": "Tây Sahara · Tiếng Ả Rập",
+        "countryName": "Tây Sahara",
+        "country": "eh",
+        "api": "ar",
+        "fallbackApi": "en",
+        "short": "EH",
+        "group": "country",
+        "search": "Tây Sahara Western Sahara EH Tiếng Ả Rập ar"
+    },
+    "country-UG": {
+        "label": "Uganda · Tiếng Swahili",
+        "countryName": "Uganda",
+        "country": "ug",
+        "api": "sw",
+        "fallbackApi": "en",
+        "short": "UG",
+        "group": "country",
+        "search": "Uganda Uganda UG Tiếng Swahili sw"
+    },
+    "country-UA": {
+        "label": "Ukraina · Tiếng Ukraina",
+        "countryName": "Ukraina",
+        "country": "ua",
+        "api": "uk",
+        "fallbackApi": "en",
+        "short": "UA",
+        "group": "country",
+        "search": "Ukraina Ukraine UA Tiếng Ukraina uk"
+    },
+    "country-UY": {
+        "label": "Uruguay · Tiếng Tây Ban Nha",
+        "countryName": "Uruguay",
+        "country": "uy",
+        "api": "es",
+        "fallbackApi": "en",
+        "short": "UY",
+        "group": "country",
+        "search": "Uruguay Uruguay UY Tiếng Tây Ban Nha es"
+    },
+    "country-UZ": {
+        "label": "Uzbekistan · Tiếng Uzbek",
+        "countryName": "Uzbekistan",
+        "country": "uz",
+        "api": "uz",
+        "fallbackApi": "en",
+        "short": "UZ",
+        "group": "country",
+        "search": "Uzbekistan Uzbekistan UZ Tiếng Uzbek uz"
+    },
+    "country-VU": {
+        "label": "Vanuatu · Tiếng Bislama",
+        "countryName": "Vanuatu",
+        "country": "vu",
+        "api": "bi",
+        "fallbackApi": "en",
+        "short": "VU",
+        "group": "country",
+        "search": "Vanuatu Vanuatu VU Tiếng Bislama bi"
+    },
+    "country-VE": {
+        "label": "Venezuela · Tiếng Tây Ban Nha",
+        "countryName": "Venezuela",
+        "country": "ve",
+        "api": "es",
+        "fallbackApi": "en",
+        "short": "VE",
+        "group": "country",
+        "search": "Venezuela Venezuela, Bolivarian Republic of VE Tiếng Tây Ban Nha es"
+    },
+    "country-VN": {
+        "label": "Việt Nam · Tiếng Việt",
+        "countryName": "Việt Nam",
+        "country": "vn",
+        "api": "vi",
+        "fallbackApi": "en",
+        "short": "VN",
+        "group": "country",
+        "search": "Việt Nam Viet Nam VN Tiếng Việt vi"
+    },
+    "country-GB": {
+        "label": "Vương quốc Anh · Tiếng Anh",
+        "countryName": "Vương quốc Anh",
+        "country": "gb",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "GB",
+        "group": "country",
+        "search": "Vương quốc Anh United Kingdom GB Tiếng Anh en"
+    },
+    "country-WF": {
+        "label": "Wallis và Futuna · Tiếng Pháp",
+        "countryName": "Wallis và Futuna",
+        "country": "wf",
+        "api": "fr",
+        "fallbackApi": "en",
+        "short": "WF",
+        "group": "country",
+        "search": "Wallis và Futuna Wallis and Futuna WF Tiếng Pháp fr"
+    },
+    "country-YE": {
+        "label": "Yemen · Tiếng Ả Rập",
+        "countryName": "Yemen",
+        "country": "ye",
+        "api": "ar",
+        "fallbackApi": "en",
+        "short": "YE",
+        "group": "country",
+        "search": "Yemen Yemen YE Tiếng Ả Rập ar"
+    },
+    "country-ZM": {
+        "label": "Zambia · Tiếng Anh",
+        "countryName": "Zambia",
+        "country": "zm",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "ZM",
+        "group": "country",
+        "search": "Zambia Zambia ZM Tiếng Anh en"
+    },
+    "country-ZW": {
+        "label": "Zimbabwe · Tiếng Shona",
+        "countryName": "Zimbabwe",
+        "country": "zw",
+        "api": "sn",
+        "fallbackApi": "en",
+        "short": "ZW",
+        "group": "country",
+        "search": "Zimbabwe Zimbabwe ZW Tiếng Shona sn"
+    },
+    "country-AT": {
+        "label": "Áo · Tiếng Đức",
+        "countryName": "Áo",
+        "country": "at",
+        "api": "de",
+        "fallbackApi": "en",
+        "short": "AT",
+        "group": "country",
+        "search": "Áo Austria AT Tiếng Đức de"
+    },
+    "country-DK": {
+        "label": "Đan Mạch · Tiếng Đan Mạch",
+        "countryName": "Đan Mạch",
+        "country": "dk",
+        "api": "da",
+        "fallbackApi": "en",
+        "short": "DK",
+        "group": "country",
+        "search": "Đan Mạch Denmark DK Tiếng Đan Mạch da"
+    },
+    "country-TW": {
+        "label": "Đài Loan · Tiếng Trung (phồn thể)",
+        "countryName": "Đài Loan",
+        "country": "tw",
+        "api": "zh-TW",
+        "fallbackApi": "en",
+        "short": "TW",
+        "group": "country",
+        "search": "Đài Loan Taiwan, Province of China TW Tiếng Trung (phồn thể) zh-TW"
+    },
+    "country-BV": {
+        "label": "Đảo Bouvet · Tiếng Na Uy",
+        "countryName": "Đảo Bouvet",
+        "country": "bv",
+        "api": "no",
+        "fallbackApi": "en",
+        "short": "BV",
+        "group": "country",
+        "search": "Đảo Bouvet Bouvet Island BV Tiếng Na Uy no"
+    },
+    "country-CX": {
+        "label": "Đảo Giáng Sinh · Tiếng Anh",
+        "countryName": "Đảo Giáng Sinh",
+        "country": "cx",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "CX",
+        "group": "country",
+        "search": "Đảo Giáng Sinh Christmas Island CX Tiếng Anh en"
+    },
+    "country-IM": {
+        "label": "Đảo Man · Tiếng Anh",
+        "countryName": "Đảo Man",
+        "country": "im",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "IM",
+        "group": "country",
+        "search": "Đảo Man Isle of Man IM Tiếng Anh en"
+    },
+    "country-NF": {
+        "label": "Đảo Norfolk · Tiếng Anh",
+        "countryName": "Đảo Norfolk",
+        "country": "nf",
+        "api": "en",
+        "fallbackApi": "",
+        "short": "NF",
+        "group": "country",
+        "search": "Đảo Norfolk Norfolk Island NF Tiếng Anh en"
+    },
+    "country-HK": {
+        "label": "Đặc khu Hành chính Hồng Kông, Trung Quốc · Tiếng Trung (phồn thể)",
+        "countryName": "Đặc khu Hành chính Hồng Kông, Trung Quốc",
+        "country": "hk",
+        "api": "zh-TW",
+        "fallbackApi": "en",
+        "short": "HK",
+        "group": "country",
+        "search": "Đặc khu Hành chính Hồng Kông, Trung Quốc Hong Kong HK Tiếng Trung (phồn thể) zh-TW"
+    },
+    "country-MO": {
+        "label": "Đặc khu Hành chính Macao, Trung Quốc · Tiếng Trung (phồn thể)",
+        "countryName": "Đặc khu Hành chính Macao, Trung Quốc",
+        "country": "mo",
+        "api": "zh-TW",
+        "fallbackApi": "en",
+        "short": "MO",
+        "group": "country",
+        "search": "Đặc khu Hành chính Macao, Trung Quốc Macao MO Tiếng Trung (phồn thể) zh-TW"
+    },
+    "country-DE": {
+        "label": "Đức · Tiếng Đức",
+        "countryName": "Đức",
+        "country": "de",
+        "api": "de",
+        "fallbackApi": "en",
+        "short": "DE",
+        "group": "country",
+        "search": "Đức Germany DE Tiếng Đức de"
+    },
+    "country-SA": {
+        "label": "Ả Rập Xê-út · Tiếng Ả Rập",
+        "countryName": "Ả Rập Xê-út",
+        "country": "sa",
+        "api": "ar",
+        "fallbackApi": "en",
+        "short": "SA",
+        "group": "country",
+        "search": "Ả Rập Xê-út Saudi Arabia SA Tiếng Ả Rập ar"
+    },
+    "country-IN": {
+        "label": "Ấn Độ · Tiếng Hindi",
+        "countryName": "Ấn Độ",
+        "country": "in",
+        "api": "hi",
+        "fallbackApi": "en",
+        "short": "IN",
+        "group": "country",
+        "search": "Ấn Độ India IN Tiếng Hindi hi"
+    }
+};
+
+    const languages = { ...popularLanguages, ...countryLanguages };
 
     const flagData = {
         'vn': 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGlkPSJmbGFnLWljb25zLXZuIiB2aWV3Qm94PSIwIDAgNjQwIDQ4MCI+PGRlZnM+PGNsaXBQYXRoIGlkPSJ2bi1hIj48cGF0aCBmaWxsLW9wYWNpdHk9Ii43IiBkPSJNLTg1LjMgMGg2ODIuNnY1MTJILTg1LjN6Ii8+PC9jbGlwUGF0aD48L2RlZnM+PGcgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXBhdGg9InVybCgjdm4tYSkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDgwKXNjYWxlKC45Mzc1KSI+PHBhdGggZmlsbD0iI2RhMjUxZCIgZD0iTS0xMjggMGg3Njh2NTEyaC03Njh6Ii8+PHBhdGggZmlsbD0iI2ZmMCIgZD0iTTM0OS42IDM4MSAyNjAgMzE0LjNsLTg5IDY3LjNMMjA0IDI3MmwtODktNjcuNyAxMTAuMS0xIDM0LjItMTA5LjRMMjk0IDIwM2wxMTAuMS4xLTg4LjUgNjguNCAzMy45IDEwOS42eiIvPjwvZz48L3N2Zz4=',
@@ -1378,10 +4102,33 @@ body{-webkit-tap-highlight-color:transparent}
     const menuToggleUse = document.getElementById('menuToggleUse');
     const mobileNav = document.getElementById('mobileNav');
 
+    function escapeHTML(value) {
+        return String(value ?? '').replace(/[&<>'"]/g, character => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+        })[character]);
+    }
+
+    function countryFlagEmoji(countryCode) {
+        const code = String(countryCode || '').toUpperCase();
+        if (!/^[A-Z]{2}$/.test(code)) return '🌐';
+        return String.fromCodePoint(...[...code].map(character => 127397 + character.charCodeAt(0)));
+    }
+
     function flagSVG(languageCode) {
-        const country = languages[languageCode]?.country || 'vn';
-        const source = flagData[country] || flagData.vn;
-        return `<img class="flag-icon" src="${source}" width="22" height="17" alt="" decoding="async">`;
+        const item = languages[languageCode] || languages.vi;
+        const country = String(item.country || 'vn').toLowerCase();
+        const source = flagData[country];
+        if (source) {
+            return `<img class="flag-icon" src="${source}" width="22" height="17" alt="" decoding="async">`;
+        }
+        return `<span class="flag-emoji" aria-hidden="true">${countryFlagEmoji(country)}</span>`;
+    }
+
+    function normalizeLanguageSearch(value) {
+        return String(value || '')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLocaleLowerCase('vi');
     }
 
     function captureOriginalTexts() {
@@ -1397,11 +4144,64 @@ body{-webkit-tap-highlight-color:transparent}
 
     function buildLanguageMenu() {
         if (!langMenu) return;
-        langMenu.innerHTML = Object.entries(languages).map(([code, item]) => `
-            <button type="button" class="language-option ${code === currentLang ? 'active' : ''}" data-language="${code}">
-                <span class="flag" aria-hidden="true">${flagSVG(code)}</span>
-                <span class="label">${item.label}</span>
-            </button>`).join('');
+        const entries = Object.entries(languages);
+        const popularEntries = entries.filter(([, item]) => item.group !== 'country');
+        const countryEntries = entries.filter(([, item]) => item.group === 'country');
+
+        const renderOption = ([code, item]) => {
+            const searchValue = normalizeLanguageSearch(`${item.label} ${item.search || ''} ${item.api || ''} ${item.country || ''}`);
+            return `
+                <button type="button" class="language-option ${code === currentLang ? 'active' : ''}" data-language="${escapeHTML(code)}" data-group="${escapeHTML(item.group || 'popular')}" data-search="${escapeHTML(searchValue)}">
+                    <span class="flag" aria-hidden="true">${flagSVG(code)}</span>
+                    <span class="label">${escapeHTML(item.label)}</span>
+                </button>`;
+        };
+
+        langMenu.innerHTML = `
+            <div class="language-menu-tools">
+                <div class="language-search-row">
+                    <input id="languageSearch" class="language-search" type="search" inputmode="search" autocomplete="off" spellcheck="false" aria-label="Tìm quốc gia hoặc ngôn ngữ" placeholder="Tìm quốc gia hoặc ngôn ngữ...">
+                    <span id="languageResultCount" class="language-result-count">${countryEntries.length}</span>
+                </div>
+            </div>
+            <div class="language-section-title" data-language-heading="popular">Ngôn ngữ phổ biến</div>
+            ${popularEntries.map(renderOption).join('')}
+            <div class="language-section-title" data-language-heading="country">Tất cả quốc gia & vùng lãnh thổ</div>
+            ${countryEntries.map(renderOption).join('')}
+            <div id="languageEmpty" class="language-empty" hidden>Không tìm thấy quốc gia hoặc ngôn ngữ phù hợp.</div>`;
+
+        const searchInput = document.getElementById('languageSearch');
+        const resultCount = document.getElementById('languageResultCount');
+        const emptyState = document.getElementById('languageEmpty');
+        const optionElements = [...langMenu.querySelectorAll('.language-option')];
+        const headings = [...langMenu.querySelectorAll('[data-language-heading]')];
+
+        const filterOptions = () => {
+            const query = normalizeLanguageSearch(searchInput?.value || '');
+            const visibleByGroup = { popular: 0, country: 0 };
+            optionElements.forEach(option => {
+                const visible = !query || option.dataset.search.includes(query);
+                option.hidden = !visible;
+                if (visible) visibleByGroup[option.dataset.group === 'country' ? 'country' : 'popular'] += 1;
+            });
+            headings.forEach(heading => {
+                const group = heading.dataset.languageHeading;
+                heading.hidden = visibleByGroup[group] === 0;
+            });
+            const totalVisible = visibleByGroup.popular + visibleByGroup.country;
+            if (resultCount) resultCount.textContent = String(totalVisible);
+            if (emptyState) emptyState.hidden = totalVisible !== 0;
+        };
+
+        searchInput?.addEventListener('input', filterOptions, { passive: true });
+        searchInput?.addEventListener('keydown', event => {
+            if (event.key === 'Escape') {
+                event.stopPropagation();
+                searchInput.value = '';
+                filterOptions();
+                closeDropdown();
+            }
+        });
 
         langMenu.addEventListener('click', event => {
             const button = event.target.closest('[data-language]');
@@ -1412,36 +4212,40 @@ body{-webkit-tap-highlight-color:transparent}
     }
 
     function builtInText(entry, languageCode) {
-        if (languageCode === 'vi') return entry.vi;
-        if (languageCode === 'en' || languageCode === 'en-CA' || languageCode === 'en-AU') return entry.en || null;
-        if (languageCode === 'zh') return entry.zh || null;
-        if (languageCode === 'zh-TW') return null;
+        const target = languages[languageCode]?.api || 'en';
+        if (target === 'vi') return entry.vi;
+        if (target === 'en') return entry.en || null;
+        if (target === 'zh-CN') return entry.zh || null;
         return null;
     }
 
     async function apiTranslate(text, languageCode) {
-        if (!text || languageCode === 'vi') return text;
-        const target = languages[languageCode]?.api || 'en';
-        const cacheKey = `${target}|${text}`;
-        if (translationCache[cacheKey]) return translationCache[cacheKey];
+        if (!text || languages[languageCode]?.api === 'vi') return text;
+        const item = languages[languageCode] || languages.en;
+        const targets = [...new Set([item.api || 'en', item.fallbackApi || ''].filter(Boolean))];
 
-        try {
-            const endpoint = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=vi|${encodeURIComponent(target)}`;
-            const response = await fetch(endpoint, {
-                headers: { Accept: 'application/json' },
-                cache: 'force-cache'
-            });
-            if (!response.ok) throw new Error(`Translation API ${response.status}`);
-            const data = await response.json();
-            const translated = data?.responseData?.translatedText;
-            if (!translated) throw new Error('Empty translation');
-            translationCache[cacheKey] = translated;
-            cacheDirty = true;
-            return translated;
-        } catch (error) {
-            console.warn('Translation fallback:', error);
-            return text;
+        for (const target of targets) {
+            const cacheKey = `${target}|${text}`;
+            if (translationCache[cacheKey]) return translationCache[cacheKey];
+            try {
+                const endpoint = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=vi|${encodeURIComponent(target)}`;
+                const response = await fetch(endpoint, {
+                    headers: { Accept: 'application/json' },
+                    cache: 'force-cache'
+                });
+                if (!response.ok) throw new Error(`Translation API ${response.status}`);
+                const data = await response.json();
+                const translated = data?.responseData?.translatedText;
+                const match = Number(data?.responseData?.match ?? 1);
+                if (!translated || match === 0) throw new Error('Empty or unsupported translation');
+                translationCache[cacheKey] = translated;
+                cacheDirty = true;
+                return translated;
+            } catch (error) {
+                console.warn(`Translation fallback for ${target}:`, error);
+            }
         }
+        return text;
     }
 
     async function mapLimit(items, limit, worker) {
@@ -1584,6 +4388,50 @@ body{-webkit-tap-highlight-color:transparent}
         updateActiveNav();
     }
 
+
+    function initSourceGuard() {
+        let toastTimer = 0;
+        const showNotice = () => {
+            let toast = document.getElementById('sourceGuardToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'sourceGuardToast';
+                toast.className = 'source-guard-toast';
+                toast.setAttribute('role', 'status');
+                toast.setAttribute('aria-live', 'polite');
+                toast.textContent = 'Thao tác xem mã nguồn hoặc công cụ nhà phát triển đã bị hạn chế trên trang này.';
+                document.body.appendChild(toast);
+            }
+            clearTimeout(toastTimer);
+            toast.classList.add('show');
+            toastTimer = window.setTimeout(() => toast.classList.remove('show'), 2200);
+        };
+
+        document.addEventListener('contextmenu', event => {
+            event.preventDefault();
+            showNotice();
+        }, { capture: true });
+
+        document.addEventListener('keydown', event => {
+            const key = String(event.key || '').toLowerCase();
+            const ctrlOrMeta = event.ctrlKey || event.metaKey;
+            const directSourceShortcut = ctrlOrMeta && !event.shiftKey && ['u', 's'].includes(key);
+            const chromiumDevtoolsShortcut = event.ctrlKey && event.shiftKey && ['i', 'j', 'c', 'k'].includes(key);
+            const macDevtoolsShortcut = event.metaKey && event.altKey && ['i', 'j', 'c', 'u'].includes(key);
+            const blocked = event.key === 'F12' || directSourceShortcut || chromiumDevtoolsShortcut || macDevtoolsShortcut;
+            if (!blocked) return;
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            showNotice();
+        }, { capture: true });
+
+        document.addEventListener('dragstart', event => {
+            if (event.target instanceof Element && event.target.closest('img, svg')) {
+                event.preventDefault();
+            }
+        }, { capture: true });
+    }
+
     function initRevealAnimations() {
         const elements = [...document.querySelectorAll('[data-aos]')];
         elements.forEach(element => {
@@ -1625,7 +4473,9 @@ body{-webkit-tap-highlight-color:transparent}
         const statusText = document.getElementById('loader-status');
         if (!preloader || preloader.classList.contains('preloader-finish')) return;
         if (percentText) percentText.textContent = '100%';
-        const pool = loadingTranslations[currentLang] || loadingTranslations[currentLang === 'zh-TW' ? 'zh' : 'en'];
+        const targetLanguage = languages[currentLang]?.api || 'en';
+        const loadingKey = targetLanguage === 'vi' ? 'vi' : (targetLanguage.startsWith('zh') ? 'zh' : 'en');
+        const pool = loadingTranslations[loadingKey];
         if (statusText) statusText.textContent = pool[3];
         requestAnimationFrame(() => requestAnimationFrame(() => preloader.classList.add('preloader-finish')));
     }
@@ -1717,6 +4567,7 @@ body{-webkit-tap-highlight-color:transparent}
     captureOriginalTexts();
     buildLanguageMenu();
     initNavigation();
+    initSourceGuard();
     initRevealAnimations();
     initLogoFallbacks();
     initPointerEffects();
