@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Quay Tên Ngẫu Nhiên - NTS</title>
+    <title id="pageTitle">Quay Tên Ngẫu Nhiên</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -320,76 +320,883 @@
             button { padding: 14px 20px; font-size: 0.95em; }
             .winner { font-size: 2.4em; }
         }
+
+
+        /* --- LANGUAGE SYNC / RTL SUPPORT --- */
+        html[dir="rtl"] body,
+        html[dir="rtl"] .modal-content,
+        html[dir="rtl"] .main-card {
+            direction: rtl;
+        }
+        html[dir="rtl"] textarea {
+            direction: rtl;
+            text-align: right;
+        }
+        html[dir="rtl"] .footer {
+            flex-direction: row-reverse;
+        }
+        html[dir="rtl"] .modal-content ul {
+            text-align: right;
+            padding-left: 0;
+            padding-right: 20px;
+        }
     </style>
+
+
+    <style id="layout-stability-and-source-guard">
+        /* Keep the interface in the same position when translated text becomes longer. */
+        html {
+            width: 100%;
+            min-height: 100%;
+            overflow-x: hidden;
+            background: var(--dark-bg);
+        }
+
+        html, body {
+            height: auto;
+            min-height: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+            min-height: 100dvh;
+            max-width: 100vw;
+            overflow-x: clip !important;
+            padding:
+                max(16px, env(safe-area-inset-top, 0px))
+                max(12px, env(safe-area-inset-right, 0px))
+                max(16px, env(safe-area-inset-bottom, 0px))
+                max(12px, env(safe-area-inset-left, 0px));
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+        }
+
+        /* Rotate an oversized pseudo-element inside a viewport-sized clipped layer.
+           This preserves the aurora effect without creating horizontal overflow on small phones. */
+        .background-anim {
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            height: 100dvh !important;
+            overflow: hidden;
+            background: none !important;
+            animation: none !important;
+            transform: none !important;
+            contain: strict;
+        }
+
+        .background-anim::before {
+            content: '';
+            position: absolute;
+            inset: -55%;
+            background:
+                radial-gradient(circle at center, transparent 0%, var(--dark-bg) 70%),
+                conic-gradient(from 0deg at 50% 50%, #000000, #1a0b2e, #001e2b, #000000);
+            transform-origin: 50% 50%;
+            animation: rotateBG 60s linear infinite;
+        }
+
+        @keyframes stableFloatCard {
+            0%, 100% { transform: translate3d(0, 0, 0); }
+            50% { transform: translate3d(0, -8px, 0); }
+        }
+
+        .main-card {
+            width: min(92vw, 550px);
+            max-width: 550px;
+            min-width: 0;
+            display: grid;
+            grid-template-rows: 68px 120px 140px 58px 50px;
+            row-gap: 18px;
+            padding: clamp(24px, 4vw, 40px);
+            overflow: hidden;
+            top: auto !important;
+            animation: stableFloatCard 6s ease-in-out infinite;
+            contain: layout paint;
+        }
+
+        .main-card > h2 {
+            width: 100%;
+            height: 68px;
+            min-width: 0;
+            margin: 0;
+            padding: 0 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(1.85rem, 7vw, 3rem);
+            line-height: 1.05;
+            letter-spacing: clamp(1px, .6vw, 3px);
+            text-align: center;
+            white-space: normal;
+            overflow: hidden;
+            overflow-wrap: anywhere;
+            word-break: normal;
+            text-wrap: balance;
+        }
+
+        .input-wrapper,
+        .result-box,
+        .btn-group,
+        .footer {
+            min-width: 0;
+            margin: 0;
+        }
+
+        .input-wrapper { height: 120px; }
+
+        textarea {
+            width: 100%;
+            height: 100%;
+            min-width: 0;
+            overflow: auto;
+            font-size: clamp(.92rem, 3vw, 1.05rem);
+            unicode-bidi: plaintext;
+        }
+
+        .result-box {
+            width: 100%;
+            height: 140px;
+            min-height: 0;
+        }
+
+        .result-text {
+            max-width: 100%;
+            max-height: 100%;
+            padding: 12px 16px;
+            font-size: clamp(1.75rem, 7vw, 2.5rem);
+            line-height: 1.08;
+            overflow: hidden;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            text-wrap: balance;
+        }
+
+        .winner { font-size: clamp(2rem, 8vw, 3.2rem); }
+
+        .btn-group {
+            width: 100%;
+            height: 58px;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+            gap: 15px;
+        }
+
+        button {
+            min-width: 0;
+            height: 58px;
+            padding: 0 clamp(10px, 2vw, 22px);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: .5rem;
+            font-size: clamp(.75rem, 2.6vw, 1.05rem);
+            line-height: 1.1;
+            white-space: normal;
+        }
+
+        button i { flex: 0 0 auto; }
+        button span {
+            min-width: 0;
+            max-width: 100%;
+            overflow-wrap: anywhere;
+            text-wrap: balance;
+        }
+
+        #refreshButton,
+        #spinButton { flex: none; }
+
+        .footer {
+            width: 100%;
+            height: 50px;
+            min-height: 50px;
+            display: grid;
+            grid-template-columns: minmax(86px, .7fr) minmax(0, 1.55fr);
+            gap: 12px;
+            align-items: center;
+            font-size: clamp(.68rem, 2.2vw, .85rem);
+            line-height: 1.25;
+        }
+
+        #backLink {
+            min-width: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-self: start;
+            gap: .4rem;
+            white-space: nowrap;
+        }
+
+        .footer > span {
+            min-width: 0;
+            text-align: right;
+            overflow-wrap: anywhere;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+        }
+
+        #guideModal {
+            padding:
+                max(16px, env(safe-area-inset-top, 0px))
+                max(12px, env(safe-area-inset-right, 0px))
+                max(16px, env(safe-area-inset-bottom, 0px))
+                max(12px, env(safe-area-inset-left, 0px));
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            width: min(92vw, 520px);
+            max-width: 520px;
+            min-width: 0;
+            min-height: min(560px, calc(100dvh - 32px));
+            max-height: calc(100dvh - 32px);
+            display: grid;
+            grid-template-rows: minmax(58px, auto) auto minmax(0, 1fr) 54px;
+            gap: 16px;
+            padding: clamp(24px, 5vw, 35px);
+            overflow: hidden;
+        }
+
+        .modal-content h2 {
+            min-width: 0;
+            min-height: 58px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .55rem;
+            font-size: clamp(1.55rem, 5vw, 2.2rem);
+            line-height: 1.08;
+            white-space: normal;
+            overflow-wrap: anywhere;
+            text-wrap: balance;
+        }
+
+        .modal-content p {
+            min-width: 0;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .modal-content ul {
+            min-width: 0;
+            min-height: 0;
+            margin: 0;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+        }
+
+        .close-guide {
+            width: 100%;
+            min-width: 0;
+            min-height: 54px;
+            margin: 0;
+            padding: 8px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.15;
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+
+        /* Keep structural columns fixed. Only the text itself changes direction for RTL languages. */
+        html[dir="rtl"] body,
+        html[dir="rtl"] .main-card,
+        html[dir="rtl"] .modal-content {
+            direction: ltr;
+        }
+
+        html[dir="rtl"] [data-i18n],
+        html[dir="rtl"] #spinButtonLabel,
+        html[dir="rtl"] #backLink span,
+        html[dir="rtl"] .footer > span {
+            direction: rtl;
+            unicode-bidi: plaintext;
+        }
+
+        html[dir="rtl"] textarea {
+            direction: rtl;
+            text-align: right;
+        }
+
+        html[dir="rtl"] .modal-content ul {
+            direction: rtl;
+            text-align: right;
+            padding-left: 0;
+            padding-right: 20px;
+        }
+
+        html[dir="rtl"] .footer {
+            flex-direction: initial;
+        }
+
+        html[dir="rtl"] .footer > span { text-align: left; }
+
+        /* A single, soft transition prevents the page from visibly jumping while a translation loads. */
+        [data-i18n],
+        [data-i18n-placeholder],
+        #spinButtonLabel {
+            transition: opacity .16s ease;
+        }
+
+        html.language-updating [data-i18n],
+        html.language-updating [data-i18n-placeholder],
+        html.language-updating #spinButtonLabel {
+            opacity: .55;
+        }
+
+        html.language-updating .main-card {
+            animation-play-state: paused;
+            transform: translate3d(0, 0, 0);
+        }
+
+        /* Source/devtools shortcut notification. */
+        .source-guard-toast {
+            position: fixed;
+            left: 50%;
+            bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+            z-index: 20000;
+            width: min(92vw, 460px);
+            padding: .9rem 1rem;
+            border: 1px solid rgba(0, 243, 255, .34);
+            border-radius: 14px;
+            color: #eaffff;
+            background: linear-gradient(135deg, rgba(3, 10, 24, .97), rgba(25, 7, 34, .97));
+            box-shadow: 0 18px 55px rgba(0, 0, 0, .58), 0 0 28px rgba(0, 243, 255, .12);
+            font-size: clamp(.72rem, 2.7vw, .82rem);
+            font-weight: 700;
+            line-height: 1.45;
+            letter-spacing: .01em;
+            text-align: center;
+            overflow-wrap: anywhere;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: translate(-50%, 18px) scale(.97);
+            transition: opacity .2s ease, transform .2s ease, visibility 0s linear .2s;
+        }
+
+        .source-guard-toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, 0) scale(1);
+            transition-delay: 0s;
+        }
+
+        @media (max-width: 600px) {
+            .main-card {
+                width: min(94vw, 550px);
+                grid-template-rows: 58px 110px 120px 54px 52px;
+                row-gap: 14px;
+                padding: 22px;
+            }
+
+            .main-card > h2 { height: 58px; }
+            .input-wrapper { height: 110px; }
+            .result-box { height: 120px; }
+            .btn-group { height: 54px; gap: 10px; }
+            button { height: 54px; padding-inline: 9px; }
+            .footer {
+                height: 52px;
+                min-height: 52px;
+                grid-template-columns: minmax(78px, .75fr) minmax(0, 1.6fr);
+                gap: 8px;
+            }
+
+            .modal-content {
+                min-height: 0;
+                max-height: calc(100dvh - 28px);
+                grid-template-rows: minmax(52px, auto) auto minmax(0, 1fr) 52px;
+                gap: 12px;
+            }
+        }
+
+        @media (max-height: 660px) {
+            body { justify-content: flex-start; }
+
+            .main-card {
+                margin: auto 0;
+                grid-template-rows: 50px 90px 100px 48px 42px;
+                row-gap: 10px;
+                padding: 18px 22px;
+            }
+
+            .main-card > h2 { height: 50px; }
+            .input-wrapper { height: 90px; }
+            .result-box { height: 100px; }
+            .btn-group { height: 48px; }
+            button { height: 48px; }
+            .footer { height: 42px; min-height: 42px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .main-card { animation: none !important; }
+            .source-guard-toast { transition-duration: .01ms !important; }
+        }
+    </style>
+
 </head>
 <body>
    
     <div class="background-anim"></div>
     <div class="floating-lights"></div>
 
-    <div id="guideModal">
+    <div id="guideModal" role="dialog" aria-modal="true" aria-labelledby="guideHeading">
         <div class="modal-content">
-            <h2><i class="fas fa-gamepad"></i> HƯỚNG DẪN</h2>
-            <p><strong>Chào mừng bạn đến với Quay Tên Ngẫu Nhiên!</strong></p>
+            <h2 id="guideHeading"><i class="fas fa-gamepad" aria-hidden="true"></i> <span data-i18n="guideTitle">HƯỚNG DẪN</span></h2>
+            <p><strong data-i18n="welcome">Chào mừng bạn đến với Quay Tên Ngẫu Nhiên!</strong></p>
             <ul>
-                <li>Nhập danh sách tên vào ô bên dưới, <strong>mỗi tên một dòng</strong>.</li>
-                <li>Nhấn nút <strong>"Bắt Đầu Quay"</strong> để bắt đầu quay ngẫu nhiên.</li>
-                <li>Kết quả sẽ hiện với hiệu ứng neon + pháo giấy.</li>
-                <li>Dùng nút <strong>"Xóa"</strong> để xóa toàn bộ danh sách.</li>
+                <li data-i18n="guideStep1">Nhập danh sách tên vào ô bên dưới, mỗi tên một dòng.</li>
+                <li data-i18n="guideStep2">Nhấn nút “Bắt Đầu Quay” để bắt đầu quay ngẫu nhiên.</li>
+                <li data-i18n="guideStep3">Kết quả sẽ hiện với hiệu ứng neon và pháo giấy.</li>
+                <li data-i18n="guideStep4">Dùng nút “Xóa” để xóa toàn bộ danh sách.</li>
             </ul>
-            <button class="close-guide" onclick="closeGuide()">ĐÃ HIỂU, BẮT ĐẦU!</button>
+            <button class="close-guide" type="button" onclick="closeGuide()" data-i18n="guideClose">ĐÃ HIỂU, BẮT ĐẦU!</button>
         </div>
     </div>
 
     <audio id="resultSound" src="kếtqua.mp3" preload="auto"></audio>
     <div class="main-card">
-        <h2>Quay Tên</h2>
+        <h2 data-i18n="mainTitle">Quay Tên</h2>
        
         <div class="input-wrapper">
-            <textarea id="nameList" placeholder=">> NHẬP DỮ LIỆU ỨNG VIÊN...&#10;>> ENTER ĐỂ XUỐNG DÒNG"></textarea>
+            <textarea id="nameList" data-i18n-placeholder="placeholder" placeholder=">> NHẬP DỮ LIỆU ỨNG VIÊN...&#10;>> ENTER ĐỂ XUỐNG DÒNG"></textarea>
         </div>
         <div class="result-box">
-            <div class="result-text" id="result">Kết Quả</div>
+            <div class="result-text" id="result" aria-live="polite">Kết Quả</div>
         </div>
         <div class="btn-group">
-            <button id="refreshButton" onclick="refreshList()">
-                <i class="fas fa-trash"></i> Xóa
+            <button id="refreshButton" type="button" onclick="refreshList()">
+                <i class="fas fa-trash" aria-hidden="true"></i> <span data-i18n="clear">Xóa</span>
             </button>
-            <button id="spinButton" onclick="startSpin()">
-                <i class="fas fa-play"></i> Bắt Đầu Quay
+            <button id="spinButton" type="button" onclick="startSpin()">
+                <i id="spinButtonIcon" class="fas fa-play" aria-hidden="true"></i> <span id="spinButtonLabel">Bắt Đầu Quay</span>
             </button>
         </div>
         <div class="footer">
-            <a href="game.html"><i class="fas fa-arrow-left"></i> Quay lại</a>
-            <span>Design by <a href="profile.html">Nguyễn Thanh Sang (阮清尚)</a></span>
+            <a id="backLink" href="game.html"><i class="fas fa-arrow-left" aria-hidden="true"></i> <span data-i18n="back">Quay lại</span></a>
+            <span><span data-i18n="designedBy">Thiết kế bởi</span> <a href="profile.html">Nguyễn Thanh Sang (阮清尚)</a></span>
         </div>
     </div>
 
     <script>
-        let isSpinning = false;
-        let audioCtx;
+        'use strict';
 
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        // The home page stores the selected language in localStorage under "siteLang".
+        // This compact map mirrors every language/country option currently available there.
+        const LANGUAGE_MAP = {"vi":["vi",""],"zh":["zh-CN","en"],"zh-TW":["zh-TW","en"],"en":["en",""],"fr":["fr","en"],"ko":["ko","en"],"ja":["ja","en"],"hi":["hi","en"],"en-CA":["en",""],"en-AU":["en",""],"ru":["ru","en"],"km":["km","en"],"es":["es","en"],"lo":["lo","en"],"country-AF":["fa","en"],"country-EG":["ar","en"],"country-AL":["sq","en"],"country-DZ":["ar","en"],"country-AD":["ca","en"],"country-AO":["pt","en"],"country-AI":["en",""],"country-AG":["en",""],"country-AR":["es","en"],"country-AM":["hy","en"],"country-AW":["nl","en"],"country-AU":["en",""],"country-AZ":["az","en"],"country-PL":["pl","en"],"country-BS":["en",""],"country-BH":["ar","en"],"country-BD":["bn","en"],"country-BB":["en",""],"country-BY":["be","en"],"country-BZ":["en",""],"country-BJ":["fr","en"],"country-BM":["en",""],"country-BT":["dz","en"],"country-BO":["es","en"],"country-BA":["bs","en"],"country-BW":["en",""],"country-BR":["pt","en"],"country-BN":["ms","en"],"country-BG":["bg","en"],"country-BF":["fr","en"],"country-BI":["rn","en"],"country-MK":["mk","en"],"country-BE":["nl","en"],"country-PT":["pt","en"],"country-BQ":["nl","en"],"country-CM":["fr","en"],"country-KH":["km","en"],"country-CA":["en",""],"country-CV":["pt","en"],"country-TD":["ar","en"],"country-CL":["es","en"],"country-CO":["es","en"],"country-KM":["ar","en"],"country-CG":["fr","en"],"country-CD":["fr","en"],"country-CR":["es","en"],"country-HR":["hr","en"],"country-CU":["es","en"],"country-CW":["nl","en"],"country-AE":["ar","en"],"country-UM":["en",""],"country-CI":["fr","en"],"country-DO":["es","en"],"country-CF":["sg","en"],"country-DJ":["fr","en"],"country-DM":["en",""],"country-EC":["es","en"],"country-SV":["es","en"],"country-ER":["en",""],"country-EE":["et","en"],"country-SZ":["en",""],"country-ET":["am","en"],"country-FJ":["en",""],"country-GA":["fr","en"],"country-GM":["en",""],"country-GE":["ka","en"],"country-GH":["en",""],"country-GI":["en",""],"country-GL":["kl","en"],"country-GD":["en",""],"country-GP":["fr","en"],"country-GU":["ch","en"],"country-GT":["es","en"],"country-GG":["en",""],"country-GF":["fr","en"],"country-GN":["fr","en"],"country-GQ":["es","en"],"country-GW":["pt","en"],"country-GY":["en",""],"country-HT":["ht","en"],"country-US":["en",""],"country-HN":["es","en"],"country-HU":["hu","en"],"country-GR":["el","en"],"country-NL":["nl","en"],"country-KR":["ko","en"],"country-IS":["is","en"],"country-ID":["id","en"],"country-IR":["fa","en"],"country-IQ":["ar","en"],"country-IE":["en",""],"country-IL":["he","en"],"country-IT":["it","en"],"country-JM":["en",""],"country-JE":["en",""],"country-JO":["ar","en"],"country-KZ":["ru","en"],"country-KE":["sw","en"],"country-KI":["en",""],"country-XK":["sq","en"],"country-KW":["ar","en"],"country-KG":["ky","en"],"country-LV":["lv","en"],"country-LS":["st","en"],"country-LB":["ar","en"],"country-LR":["en",""],"country-LY":["ar","en"],"country-LI":["de","en"],"country-LT":["lt","en"],"country-LU":["fr","en"],"country-LA":["lo","en"],"country-PS":["ar","en"],"country-TF":["fr","en"],"country-IO":["en",""],"country-MA":["ar","en"],"country-MG":["mg","en"],"country-MW":["ny","en"],"country-MY":["ms","en"],"country-MV":["dv","en"],"country-ML":["fr","en"],"country-MT":["mt","en"],"country-MQ":["fr","en"],"country-MR":["ar","en"],"country-MU":["fr","en"],"country-YT":["fr","en"],"country-MX":["es","en"],"country-FM":["en",""],"country-MD":["ro","en"],"country-MC":["fr","en"],"country-ME":["sr","en"],"country-MS":["en",""],"country-MZ":["pt","en"],"country-MM":["my","en"],"country-MN":["mn","en"],"country-NO":["no","en"],"country-AQ":["en",""],"country-GS":["en",""],"country-ZA":["en",""],"country-SS":["en",""],"country-NA":["en",""],"country-NR":["en",""],"country-NP":["ne","en"],"country-NC":["fr","en"],"country-NZ":["mi","en"],"country-RU":["ru","en"],"country-JP":["ja","en"],"country-NI":["es","en"],"country-NE":["fr","en"],"country-NG":["en",""],"country-NU":["en",""],"country-OM":["ar","en"],"country-PK":["ur","en"],"country-PW":["en",""],"country-PA":["es","en"],"country-PG":["en",""],"country-PY":["gn","en"],"country-PE":["es","en"],"country-PH":["en",""],"country-FR":["fr","en"],"country-FI":["fi","en"],"country-PF":["fr","en"],"country-PR":["es","en"],"country-QA":["ar","en"],"country-MP":["en",""],"country-KY":["en",""],"country-CC":["en",""],"country-CK":["en",""],"country-FK":["en",""],"country-FO":["fo","en"],"country-HM":["en",""],"country-MH":["en",""],"country-PN":["en",""],"country-SB":["en",""],"country-TC":["en",""],"country-VG":["en",""],"country-VI":["en",""],"country-AX":["sv","en"],"country-RO":["ro","en"],"country-RW":["rw","en"],"country-RE":["fr","en"],"country-PM":["fr","en"],"country-WS":["sm","en"],"country-AS":["sm","en"],"country-SM":["it","en"],"country-SN":["fr","en"],"country-RS":["sr","en"],"country-SC":["fr","en"],"country-SL":["en",""],"country-SG":["en",""],"country-SX":["en",""],"country-SK":["sk","en"],"country-SI":["sl","en"],"country-SO":["so","en"],"country-LK":["si","en"],"country-BL":["fr","en"],"country-SH":["en",""],"country-KN":["en",""],"country-LC":["en",""],"country-MF":["fr","en"],"country-VC":["en",""],"country-SD":["en",""],"country-SR":["nl","en"],"country-SJ":["no","en"],"country-SY":["ar","en"],"country-ST":["pt","en"],"country-CZ":["cs","en"],"country-CY":["el","en"],"country-TJ":["tg","en"],"country-TZ":["sw","en"],"country-VA":["it","en"],"country-TH":["th","en"],"country-TR":["tr","en"],"country-CH":["de","en"],"country-SE":["sv","en"],"country-TL":["pt","en"],"country-TG":["fr","en"],"country-TK":["en",""],"country-TO":["to","en"],"country-TT":["en",""],"country-KP":["ko","en"],"country-CN":["zh-CN","en"],"country-TN":["ar","en"],"country-TM":["tk","en"],"country-TV":["en",""],"country-ES":["es","en"],"country-EH":["ar","en"],"country-UG":["sw","en"],"country-UA":["uk","en"],"country-UY":["es","en"],"country-UZ":["uz","en"],"country-VU":["bi","en"],"country-VE":["es","en"],"country-VN":["vi","en"],"country-GB":["en",""],"country-WF":["fr","en"],"country-YE":["ar","en"],"country-ZM":["en",""],"country-ZW":["sn","en"],"country-AT":["de","en"],"country-DK":["da","en"],"country-TW":["zh-TW","en"],"country-BV":["no","en"],"country-CX":["en",""],"country-IM":["en",""],"country-NF":["en",""],"country-HK":["zh-TW","en"],"country-MO":["zh-TW","en"],"country-DE":["de","en"],"country-SA":["ar","en"],"country-IN":["hi","en"]};
+
+        const BASE_MESSAGES = Object.freeze({
+            pageTitle: 'Quay Tên Ngẫu Nhiên',
+            guideTitle: 'HƯỚNG DẪN',
+            welcome: 'Chào mừng bạn đến với Quay Tên Ngẫu Nhiên!',
+            guideStep1: 'Nhập danh sách tên vào ô bên dưới, mỗi tên một dòng.',
+            guideStep2: 'Nhấn nút “Bắt Đầu Quay” để bắt đầu quay ngẫu nhiên.',
+            guideStep3: 'Kết quả sẽ hiện với hiệu ứng neon và pháo giấy.',
+            guideStep4: 'Dùng nút “Xóa” để xóa toàn bộ danh sách.',
+            guideClose: 'ĐÃ HIỂU, BẮT ĐẦU!',
+            mainTitle: 'Quay Tên',
+            placeholder: '>> NHẬP DỮ LIỆU ỨNG VIÊN...\n>> ENTER ĐỂ XUỐNG DÒNG',
+            resultInitial: 'Kết Quả',
+            clear: 'Xóa',
+            start: 'Bắt Đầu Quay',
+            back: 'Quay lại',
+            designedBy: 'Thiết kế bởi',
+            emptyAlert: '⚠️ CẢNH BÁO: Dữ liệu trống!',
+            minimumAlert: '⚠️ CẢNH BÁO: Cần ít nhất 2 tên!',
+            spinning: 'Đang Quay...',
+            spinAgain: 'Quay Lại',
+            clearConfirm: 'Bạn có chắc muốn xóa toàn bộ danh sách?',
+            systemReady: 'HỆ THỐNG SẴN SÀNG',
+            sourceGuardNotice: 'Thao tác xem mã nguồn hoặc công cụ nhà phát triển đã bị hạn chế trên trang này.'
+        });
+
+        const BUILTIN_MESSAGES = Object.freeze({
+            vi: BASE_MESSAGES,
+            en: Object.freeze({
+                pageTitle: 'Random Name Picker',
+                guideTitle: 'HOW TO USE',
+                welcome: 'Welcome to the Random Name Picker!',
+                guideStep1: 'Enter the names below, one name per line.',
+                guideStep2: 'Press “Start Spinning” to randomly select a name.',
+                guideStep3: 'The result will appear with neon effects and confetti.',
+                guideStep4: 'Use “Clear” to remove the entire list.',
+                guideClose: 'GOT IT, START!',
+                mainTitle: 'Name Spinner',
+                placeholder: '>> ENTER CANDIDATE NAMES...\n>> PRESS ENTER FOR A NEW LINE',
+                resultInitial: 'Result',
+                clear: 'Clear',
+                start: 'Start Spinning',
+                back: 'Back',
+                designedBy: 'Designed by',
+                emptyAlert: '⚠️ WARNING: The list is empty!',
+                minimumAlert: '⚠️ WARNING: Enter at least 2 names!',
+                spinning: 'Spinning...',
+                spinAgain: 'Spin Again',
+                clearConfirm: 'Clear the entire name list?',
+                systemReady: 'SYSTEM READY',
+                sourceGuardNotice: 'Viewing page source or developer tools is restricted on this page.'
+            }),
+            'zh-CN': Object.freeze({
+                pageTitle: '随机姓名抽取器',
+                guideTitle: '使用说明',
+                welcome: '欢迎使用随机姓名抽取器！',
+                guideStep1: '请在下方输入姓名，每行一个姓名。',
+                guideStep2: '点击“开始抽取”按钮随机选出一个姓名。',
+                guideStep3: '结果将伴随霓虹特效和纸屑动画显示。',
+                guideStep4: '点击“清空”可删除全部名单。',
+                guideClose: '明白了，开始！',
+                mainTitle: '随机抽取',
+                placeholder: '>> 输入候选人姓名...\n>> 按回车键换行',
+                resultInitial: '结果',
+                clear: '清空',
+                start: '开始抽取',
+                back: '返回',
+                designedBy: '设计者',
+                emptyAlert: '⚠️ 警告：名单为空！',
+                minimumAlert: '⚠️ 警告：至少需要输入 2 个姓名！',
+                spinning: '抽取中...',
+                spinAgain: '再抽一次',
+                clearConfirm: '确定要清空全部名单吗？',
+                systemReady: '系统就绪',
+                sourceGuardNotice: '此页面已限制查看源代码或打开开发者工具。'
+            }),
+            'zh-TW': Object.freeze({
+                pageTitle: '隨機姓名抽取器',
+                guideTitle: '使用說明',
+                welcome: '歡迎使用隨機姓名抽取器！',
+                guideStep1: '請在下方輸入姓名，每行一個姓名。',
+                guideStep2: '點擊「開始抽取」按鈕隨機選出一個姓名。',
+                guideStep3: '結果將搭配霓虹特效與彩紙動畫顯示。',
+                guideStep4: '點擊「清空」可刪除全部名單。',
+                guideClose: '明白了，開始！',
+                mainTitle: '隨機抽取',
+                placeholder: '>> 輸入候選人姓名...\n>> 按 Enter 鍵換行',
+                resultInitial: '結果',
+                clear: '清空',
+                start: '開始抽取',
+                back: '返回',
+                designedBy: '設計者',
+                emptyAlert: '⚠️ 警告：名單為空！',
+                minimumAlert: '⚠️ 警告：至少需要輸入 2 個姓名！',
+                spinning: '抽取中...',
+                spinAgain: '再抽一次',
+                clearConfirm: '確定要清空全部名單嗎？',
+                systemReady: '系統就緒',
+                sourceGuardNotice: '此頁面已限制檢視原始碼或開啟開發者工具。'
+            })
+        });
+
+        const RTL_LANGUAGES = new Set(['ar', 'arc', 'dv', 'fa', 'ha', 'he', 'khw', 'ks', 'ku', 'ps', 'sd', 'ug', 'ur', 'yi']);
+        const storage = {
+            get(key) {
+                try { return localStorage.getItem(key); } catch { return null; }
+            },
+            set(key, value) {
+                try { localStorage.setItem(key, value); return true; } catch { return false; }
+            }
+        };
+
+        function readJSON(key, fallback) {
+            try {
+                const value = JSON.parse(storage.get(key) || 'null');
+                return value && typeof value === 'object' ? value : fallback;
+            } catch {
+                return fallback;
             }
         }
 
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
+        function normalizeBuiltinLanguage(languageCode) {
+            const code = String(languageCode || 'vi').toLowerCase();
+            if (code === 'vi' || code.startsWith('vi-')) return 'vi';
+            if (code === 'en' || code.startsWith('en-')) return 'en';
+            if (code === 'zh-tw' || code === 'zh-hk' || code === 'zh-hant') return 'zh-TW';
+            if (code === 'zh' || code === 'zh-cn' || code === 'zh-sg' || code === 'zh-hans') return 'zh-CN';
+            return '';
+        }
 
-        document.addEventListener('keydown', function(e) {
-            if (e.keyCode === 123) { e.preventDefault(); return false; }
-            if (e.ctrlKey && e.shiftKey && e.keyCode === 73) { e.preventDefault(); return false; }
-            if (e.ctrlKey && e.shiftKey && e.keyCode === 74) { e.preventDefault(); return false; }
-            if (e.ctrlKey && e.keyCode === 85) { e.preventDefault(); return false; }
-            if (e.ctrlKey && e.shiftKey && e.keyCode === 67) { e.preventDefault(); return false; }
-            if (e.ctrlKey && e.keyCode === 83) { e.preventDefault(); return false; }
-        });
+        function isRTL(languageCode) {
+            const primary = String(languageCode || '').toLowerCase().split('-')[0];
+            return RTL_LANGUAGES.has(primary);
+        }
+
+        function selectedLanguageFromHome() {
+            const queryLanguage = new URLSearchParams(window.location.search).get('lang');
+            let key = queryLanguage || storage.get('siteLang') || 'vi';
+            let item = LANGUAGE_MAP[key];
+
+            // Also accept a direct ISO language code in ?lang=xx.
+            if (!item && /^[a-z]{2,3}(?:-[a-z0-9]{2,8})?$/i.test(key)) {
+                item = [key, key.toLowerCase().startsWith('en') ? '' : 'en'];
+            }
+            if (!item) {
+                key = 'vi';
+                item = LANGUAGE_MAP.vi || ['vi', ''];
+            }
+
+            if (queryLanguage && LANGUAGE_MAP[key]) storage.set('siteLang', key);
+            return { key, api: item[0] || 'vi', fallbackApi: item[1] || '' };
+        }
+
+        const translationCache = readJSON('ntsTranslationCache', {});
+        let cacheDirty = false;
+        let languageRequestId = 0;
+        let messages = { ...BASE_MESSAGES };
+        let currentLanguage = 'vi';
+        let isSpinning = false;
+        let hasSpun = false;
+        let resultState = 'initial';
+        let audioCtx;
+
+        function t(key) {
+            return messages[key] || BASE_MESSAGES[key] || key;
+        }
+
+        function decodeEntities(value) {
+            const textarea = document.createElement('textarea');
+            textarea.innerHTML = String(value ?? '');
+            return textarea.value;
+        }
+
+        async function translateText(text, targetLanguage, fallbackLanguage) {
+            if (!text || targetLanguage === 'vi') return text;
+            const targets = [...new Set([targetLanguage, fallbackLanguage].filter(Boolean))];
+
+            for (const target of targets) {
+                const cacheKey = `${target}|${text}`;
+                if (translationCache[cacheKey]) return translationCache[cacheKey];
+                try {
+                    const endpoint = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=vi|${encodeURIComponent(target)}`;
+                    const response = await fetch(endpoint, {
+                        headers: { Accept: 'application/json' },
+                        cache: 'force-cache'
+                    });
+                    if (!response.ok) throw new Error(`Translation API ${response.status}`);
+                    const data = await response.json();
+                    const translated = decodeEntities(data?.responseData?.translatedText || '');
+                    const match = Number(data?.responseData?.match ?? 1);
+                    if (!translated || match === 0) throw new Error('Empty or unsupported translation');
+                    translationCache[cacheKey] = translated;
+                    cacheDirty = true;
+                    return translated;
+                } catch (error) {
+                    console.warn(`Translation fallback for ${target}:`, error);
+                }
+            }
+            return text;
+        }
+
+        async function mapLimit(items, limit, worker) {
+            let cursor = 0;
+            const runners = Array.from({ length: Math.min(limit, items.length) }, async () => {
+                while (cursor < items.length) {
+                    const index = cursor++;
+                    await worker(items[index], index);
+                }
+            });
+            await Promise.all(runners);
+        }
+
+        function persistTranslationCache() {
+            if (!cacheDirty) return;
+            try {
+                const keys = Object.keys(translationCache);
+                if (keys.length > 500) {
+                    keys.slice(0, keys.length - 400).forEach(key => delete translationCache[key]);
+                }
+                storage.set('ntsTranslationCache', JSON.stringify(translationCache));
+                cacheDirty = false;
+            } catch (error) {
+                console.warn('Cannot persist translation cache:', error);
+            }
+        }
+
+        function renderSpinButton() {
+            const button = document.getElementById('spinButton');
+            const icon = document.getElementById('spinButtonIcon');
+            const label = document.getElementById('spinButtonLabel');
+            if (!button || !icon || !label) return;
+
+            if (isSpinning) {
+                icon.className = 'fas fa-spinner fa-spin';
+                label.textContent = t('spinning');
+            } else {
+                icon.className = 'fas fa-play';
+                label.textContent = hasSpun ? t('spinAgain') : t('start');
+            }
+        }
+
+        function renderDynamicText() {
+            const result = document.getElementById('result');
+            if (result) {
+                if (resultState === 'initial') result.textContent = t('resultInitial');
+                if (resultState === 'ready') result.textContent = t('systemReady');
+            }
+            renderSpinButton();
+        }
+
+        let layoutFrame = 0;
+
+        function fitTextInBox(element, minimumFontSize = 11) {
+            if (!element || element.clientWidth <= 0 || element.clientHeight <= 0) return;
+
+            element.style.removeProperty('font-size');
+            let size = Number.parseFloat(getComputedStyle(element).fontSize) || 16;
+            const minimum = Math.min(minimumFontSize, size);
+            element.style.fontSize = `${size}px`;
+
+            while (
+                size > minimum &&
+                (element.scrollWidth > element.clientWidth + 1 || element.scrollHeight > element.clientHeight + 1)
+            ) {
+                size -= 1;
+                element.style.fontSize = `${size}px`;
+            }
+        }
+
+        function stabilizeTranslatedLayout() {
+            cancelAnimationFrame(layoutFrame);
+            layoutFrame = requestAnimationFrame(() => {
+                fitTextInBox(document.querySelector('.main-card > h2'), 24);
+                fitTextInBox(document.getElementById('guideHeading'), 20);
+                fitTextInBox(document.getElementById('refreshButton'), 11);
+                fitTextInBox(document.getElementById('spinButton'), 11);
+                fitTextInBox(document.querySelector('.close-guide'), 11);
+            });
+        }
+
+        function applyMessages() {
+            document.documentElement.lang = currentLanguage;
+            document.documentElement.dir = isRTL(currentLanguage) ? 'rtl' : 'ltr';
+            document.title = t('pageTitle');
+
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.dataset.i18n;
+                if (key) element.textContent = t(key);
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+                const key = element.dataset.i18nPlaceholder;
+                if (key) element.setAttribute('placeholder', t(key));
+            });
+            renderDynamicText();
+
+            const sourceGuardToast = document.getElementById('sourceGuardToast');
+            if (sourceGuardToast) sourceGuardToast.textContent = t('sourceGuardNotice');
+            stabilizeTranslatedLayout();
+        }
+
+        async function applyLanguageFromHome() {
+            const requestId = ++languageRequestId;
+            const selected = selectedLanguageFromHome();
+            const root = document.documentElement;
+            currentLanguage = selected.api;
+            root.classList.add('language-updating');
+
+            try {
+                const builtinKey = normalizeBuiltinLanguage(selected.api);
+                if (builtinKey && BUILTIN_MESSAGES[builtinKey]) {
+                    messages = { ...BASE_MESSAGES, ...BUILTIN_MESSAGES[builtinKey] };
+                    applyMessages();
+                    return;
+                }
+
+                const entries = Object.entries(BASE_MESSAGES);
+                const cachedMessages = {};
+                const hasCompleteCache = entries.every(([key, source]) => {
+                    const cached = translationCache[`${selected.api}|${source}`];
+                    if (cached) cachedMessages[key] = cached;
+                    return Boolean(cached);
+                });
+
+                if (hasCompleteCache) {
+                    messages = { ...BASE_MESSAGES, ...cachedMessages };
+                    applyMessages();
+                    return;
+                }
+
+                const translatedMessages = {};
+                await mapLimit(entries, 3, async ([key, source]) => {
+                    translatedMessages[key] = await translateText(
+                        source,
+                        selected.api,
+                        selected.fallbackApi || 'en'
+                    );
+                });
+                if (requestId !== languageRequestId) return;
+
+                messages = { ...BASE_MESSAGES, ...translatedMessages };
+                applyMessages();
+                persistTranslationCache();
+            } finally {
+                if (requestId === languageRequestId) {
+                    requestAnimationFrame(() => {
+                        root.classList.remove('language-updating');
+                        stabilizeTranslatedLayout();
+                    });
+                }
+            }
+        }
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) audioCtx = new AudioContextClass();
+            }
+        }
+
+        let sourceGuardTimer = 0;
+
+        function showSourceGuardNotice() {
+            let toast = document.getElementById('sourceGuardToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'sourceGuardToast';
+                toast.className = 'source-guard-toast';
+                toast.setAttribute('role', 'status');
+                toast.setAttribute('aria-live', 'polite');
+                document.body.appendChild(toast);
+            }
+
+            toast.textContent = t('sourceGuardNotice');
+            clearTimeout(sourceGuardTimer);
+            toast.classList.add('show');
+            sourceGuardTimer = window.setTimeout(() => toast.classList.remove('show'), 2400);
+        }
+
+        function initSourceGuard() {
+            document.addEventListener('contextmenu', event => {
+                event.preventDefault();
+                showSourceGuardNotice();
+            }, { capture: true });
+
+            document.addEventListener('keydown', event => {
+                const key = String(event.key || '').toLowerCase();
+                const ctrlOrMeta = event.ctrlKey || event.metaKey;
+                const directSourceShortcut = ctrlOrMeta && !event.shiftKey && ['u', 's'].includes(key);
+                const chromiumDevtoolsShortcut = event.ctrlKey && event.shiftKey && ['i', 'j', 'c', 'k'].includes(key);
+                const macDevtoolsShortcut = event.metaKey && event.altKey && ['i', 'j', 'c', 'u'].includes(key);
+                const blocked = event.key === 'F12' || directSourceShortcut || chromiumDevtoolsShortcut || macDevtoolsShortcut;
+                if (!blocked) return;
+
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                showSourceGuardNotice();
+            }, { capture: true });
+
+            document.addEventListener('dragstart', event => {
+                if (event.target instanceof Element && event.target.closest('img, svg')) {
+                    event.preventDefault();
+                }
+            }, { capture: true });
+        }
 
         function playTickSound() {
             initAudio();
+            if (!audioCtx) return;
             if (audioCtx.state === 'suspended') audioCtx.resume();
             const osc = audioCtx.createOscillator();
             const gainNode = audioCtx.createGain();
@@ -409,37 +1216,49 @@
             osc.stop(audioCtx.currentTime + 0.04);
         }
 
-        window.onload = function() {
+        window.addEventListener('load', function() {
             window.scrollTo(0, 0);
-            document.getElementById("guideModal").classList.add("show");
-        };
+            document.getElementById('guideModal')?.classList.add('show');
+        }, { once: true });
+
+        window.addEventListener('resize', stabilizeTranslatedLayout, { passive: true });
+        if (document.fonts?.ready) document.fonts.ready.then(stabilizeTranslatedLayout).catch(() => {});
+
+        window.addEventListener('storage', event => {
+            if (event.key === 'siteLang') applyLanguageFromHome();
+        });
+
+        window.addEventListener('pageshow', event => {
+            if (event.persisted) applyLanguageFromHome();
+        });
 
         function closeGuide() {
-            document.getElementById("guideModal").classList.remove("show");
+            document.getElementById('guideModal')?.classList.remove('show');
             initAudio();
         }
 
         function startSpin() {
             initAudio();
-            const input = document.getElementById("nameList").value.trim();
-            if (!input) { alert("⚠️ CẢNH BÁO: Dữ liệu trống!"); return; }
-            const names = input.split("\n").filter(name => name.trim() !== "");
-            if (names.length < 2) { alert("⚠️ CẢNH BÁO: Cần ít nhất 2 tên!"); return; }
+            const input = document.getElementById('nameList').value.trim();
+            if (!input) { alert(t('emptyAlert')); return; }
+            const names = input.split('\n').map(name => name.trim()).filter(Boolean);
+            if (names.length < 2) { alert(t('minimumAlert')); return; }
             if (isSpinning) return;
 
             isSpinning = true;
-            const spinBtn = document.getElementById("spinButton");
-            const resultEl = document.getElementById("result");
+            resultState = 'spinning';
+            const spinBtn = document.getElementById('spinButton');
+            const resultEl = document.getElementById('result');
            
             spinBtn.disabled = true;
-            spinBtn.innerHTML = 'Đang Quay...';
+            renderSpinButton();
            
-            resultEl.classList.remove("winner");
-            resultEl.classList.add("spinning");
+            resultEl.classList.remove('winner');
+            resultEl.classList.add('spinning');
             resultEl.style.opacity = 1;
 
             let speed = 30;
-            let maxSpeed = 800;
+            const maxSpeed = 800;
             let steps = 0;
             let lastRandom = -1;
 
@@ -467,26 +1286,29 @@
         }
 
         function endSpin(names) {
-            const resultEl = document.getElementById("result");
-            const spinBtn = document.getElementById("spinButton");
-            const sound = document.getElementById("resultSound");
+            const resultEl = document.getElementById('result');
+            const spinBtn = document.getElementById('spinButton');
+            const sound = document.getElementById('resultSound');
             const winner = names[Math.floor(Math.random() * names.length)];
            
             resultEl.innerText = winner;
-            resultEl.classList.remove("spinning");
+            resultEl.classList.remove('spinning');
            
             void resultEl.offsetWidth;
-            resultEl.classList.add("winner");
+            resultEl.classList.add('winner');
 
-            sound.play().catch(e => console.log("Audio needs interaction"));
+            sound?.play().catch(() => console.log('Audio needs interaction'));
             shootConfetti();
 
             isSpinning = false;
+            hasSpun = true;
+            resultState = 'winner';
             spinBtn.disabled = false;
-            spinBtn.innerHTML = '<i class="fas fa-play"></i> Quay Lại';
+            renderSpinButton();
         }
 
         function shootConfetti() {
+            if (typeof confetti !== 'function') return;
             const colors = ['#00f3ff', '#bc13fe', '#f9e000'];
             const end = Date.now() + 2000;
             (function frame() {
@@ -506,20 +1328,25 @@
                     colors: colors,
                     shapes: ['square']
                 });
-                if (Date.now() < end) {
-                    requestAnimationFrame(frame);
-                }
+                if (Date.now() < end) requestAnimationFrame(frame);
             }());
         }
 
         function refreshList() {
-            if(confirm("Confirm: Clear Database?")) {
-                document.getElementById("nameList").value = "";
-                const resultEl = document.getElementById("result");
-                resultEl.innerText = "SYSTEM READY";
-                resultEl.classList.remove("winner", "spinning");
+            if (confirm(t('clearConfirm'))) {
+                document.getElementById('nameList').value = '';
+                const resultEl = document.getElementById('result');
+                resultEl.classList.remove('winner', 'spinning');
+                isSpinning = false;
+                hasSpun = false;
+                resultState = 'ready';
+                document.getElementById('spinButton').disabled = false;
+                renderDynamicText();
             }
         }
+
+        initSourceGuard();
+        applyLanguageFromHome();
     </script>
 </body>
 </html>
