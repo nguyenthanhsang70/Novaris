@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xúc Xắc - NTS</title>
+    <title>Xúc Xắc</title>
+    <!-- Tự động nhận ngôn ngữ từ localStorage.siteLang của trang chủ. -->
     <link rel="icon" type="image/png" href="logos3.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
@@ -180,7 +181,7 @@
     </div>
 
     <div class="container">
-        <h2>XÚC XẮC <span style="color:#e74c3c"></span></h2>
+        <h2 data-i18n="page.heading">XÚC XẮC</h2>
 
         <div class="controls">
             <div class="input-row">
@@ -370,24 +371,321 @@
       sv:{'page.title':'Tärning - NTS','guide.title':'HUR MAN SPELAR','guide.step1.label':'Steg 1:','guide.step1.text':'Ange ditt namn innan du börjar.','guide.step2.label':'Steg 2:','guide.step2.text':'Välj antal tärningar (1 eller 2).','guide.step3.label':'Steg 3:','guide.step3.text':'Tryck på "RULLA NU" för att snurra tärningarna.','guide.step4.label':'Steg 4:','guide.step4.text':'Resultatet visas i 3D och sparas i historiken.','guide.btn':'FÖRSTÅTT, SPELA NU','input.placeholder':'Ange ditt namn...','select.one':'1 Tärning','select.two':'2 Tärningar','btn.roll':'RULLA NU','btn.back':'Tillbaka','history.title':'TÄRNINGSHISTORIK','table.player':'Spelare','table.result':'Resultat','alert.name':'Vänligen ange ditt namn!'},
     };
 
-    function applyDiceTranslations(lang) {
-      var t = DICE_T[lang] || DICE_T['vi'];
-      if (t['page.title']) document.title = t['page.title'];
-      document.documentElement.lang = lang;
-      document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
-      document.querySelectorAll('[data-i18n]').forEach(function(el) {
-        var key = el.getAttribute('data-i18n');
-        if (t[key] !== undefined) el.textContent = t[key];
-      });
-      document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
-        var key = el.getAttribute('data-i18n-placeholder');
-        if (t[key] !== undefined) el.placeholder = t[key];
-      });
-      window._alertName = t['alert.name'] || 'Please enter your name!';
+    /* ============================================================
+       ĐỒNG BỘ NGÔN NGỮ TỪ TRANG CHỦ
+       - Trang chủ lưu lựa chọn vào localStorage.siteLang.
+       - Trang này chỉ đọc lựa chọn, không thêm bộ đổi ngôn ngữ riêng.
+       - Hỗ trợ cả mã phổ biến và mã country-XX của trang chủ.
+       - Các ngôn ngữ chưa có sẵn sẽ dùng cache/API dịch như trang chủ.
+    ============================================================ */
+    var SITE_LANGUAGE_KEY = 'siteLang';
+    var LEGACY_LANGUAGE_KEY = 'nts-lang';
+    var TRANSLATION_CACHE_KEY = 'ntsTranslationCache';
+    var TRANSLATION_TIMEOUT_MS = 8000;
+    var TRANSLATION_CONCURRENCY = 3;
+    var MAX_CACHE_ENTRIES = 700;
+    var RTL_LANGUAGE_BASES = new Set(['ar', 'fa', 'he', 'ur', 'ps', 'sd', 'dv', 'ku', 'yi', 'ug']);
+    var HOME_LANGUAGE_CONFIG = Object.freeze({"vi":{"api":"vi","fallbackApi":""},"zh":{"api":"zh-CN","fallbackApi":""},"zh-TW":{"api":"zh-TW","fallbackApi":""},"en":{"api":"en","fallbackApi":""},"fr":{"api":"fr","fallbackApi":""},"ko":{"api":"ko","fallbackApi":""},"ja":{"api":"ja","fallbackApi":""},"hi":{"api":"hi","fallbackApi":""},"en-CA":{"api":"en","fallbackApi":""},"en-AU":{"api":"en","fallbackApi":""},"ru":{"api":"ru","fallbackApi":""},"km":{"api":"km","fallbackApi":""},"es":{"api":"es","fallbackApi":""},"lo":{"api":"lo","fallbackApi":""},"country-AF":{"api":"fa","fallbackApi":"en"},"country-EG":{"api":"ar","fallbackApi":"en"},"country-AL":{"api":"sq","fallbackApi":"en"},"country-DZ":{"api":"ar","fallbackApi":"en"},"country-AD":{"api":"ca","fallbackApi":"en"},"country-AO":{"api":"pt","fallbackApi":"en"},"country-AI":{"api":"en","fallbackApi":""},"country-AG":{"api":"en","fallbackApi":""},"country-AR":{"api":"es","fallbackApi":"en"},"country-AM":{"api":"hy","fallbackApi":"en"},"country-AW":{"api":"nl","fallbackApi":"en"},"country-AU":{"api":"en","fallbackApi":""},"country-AZ":{"api":"az","fallbackApi":"en"},"country-PL":{"api":"pl","fallbackApi":"en"},"country-BS":{"api":"en","fallbackApi":""},"country-BH":{"api":"ar","fallbackApi":"en"},"country-BD":{"api":"bn","fallbackApi":"en"},"country-BB":{"api":"en","fallbackApi":""},"country-BY":{"api":"be","fallbackApi":"en"},"country-BZ":{"api":"en","fallbackApi":""},"country-BJ":{"api":"fr","fallbackApi":"en"},"country-BM":{"api":"en","fallbackApi":""},"country-BT":{"api":"dz","fallbackApi":"en"},"country-BO":{"api":"es","fallbackApi":"en"},"country-BA":{"api":"bs","fallbackApi":"en"},"country-BW":{"api":"en","fallbackApi":""},"country-BR":{"api":"pt","fallbackApi":"en"},"country-BN":{"api":"ms","fallbackApi":"en"},"country-BG":{"api":"bg","fallbackApi":"en"},"country-BF":{"api":"fr","fallbackApi":"en"},"country-BI":{"api":"rn","fallbackApi":"en"},"country-MK":{"api":"mk","fallbackApi":"en"},"country-BE":{"api":"nl","fallbackApi":"en"},"country-PT":{"api":"pt","fallbackApi":"en"},"country-BQ":{"api":"nl","fallbackApi":"en"},"country-CM":{"api":"fr","fallbackApi":"en"},"country-KH":{"api":"km","fallbackApi":"en"},"country-CA":{"api":"en","fallbackApi":""},"country-CV":{"api":"pt","fallbackApi":"en"},"country-TD":{"api":"ar","fallbackApi":"en"},"country-CL":{"api":"es","fallbackApi":"en"},"country-CO":{"api":"es","fallbackApi":"en"},"country-KM":{"api":"ar","fallbackApi":"en"},"country-CG":{"api":"fr","fallbackApi":"en"},"country-CD":{"api":"fr","fallbackApi":"en"},"country-CR":{"api":"es","fallbackApi":"en"},"country-HR":{"api":"hr","fallbackApi":"en"},"country-CU":{"api":"es","fallbackApi":"en"},"country-CW":{"api":"nl","fallbackApi":"en"},"country-AE":{"api":"ar","fallbackApi":"en"},"country-UM":{"api":"en","fallbackApi":""},"country-CI":{"api":"fr","fallbackApi":"en"},"country-DO":{"api":"es","fallbackApi":"en"},"country-CF":{"api":"sg","fallbackApi":"en"},"country-DJ":{"api":"fr","fallbackApi":"en"},"country-DM":{"api":"en","fallbackApi":""},"country-EC":{"api":"es","fallbackApi":"en"},"country-SV":{"api":"es","fallbackApi":"en"},"country-ER":{"api":"en","fallbackApi":""},"country-EE":{"api":"et","fallbackApi":"en"},"country-SZ":{"api":"en","fallbackApi":""},"country-ET":{"api":"am","fallbackApi":"en"},"country-FJ":{"api":"en","fallbackApi":""},"country-GA":{"api":"fr","fallbackApi":"en"},"country-GM":{"api":"en","fallbackApi":""},"country-GE":{"api":"ka","fallbackApi":"en"},"country-GH":{"api":"en","fallbackApi":""},"country-GI":{"api":"en","fallbackApi":""},"country-GL":{"api":"kl","fallbackApi":"en"},"country-GD":{"api":"en","fallbackApi":""},"country-GP":{"api":"fr","fallbackApi":"en"},"country-GU":{"api":"ch","fallbackApi":"en"},"country-GT":{"api":"es","fallbackApi":"en"},"country-GG":{"api":"en","fallbackApi":""},"country-GF":{"api":"fr","fallbackApi":"en"},"country-GN":{"api":"fr","fallbackApi":"en"},"country-GQ":{"api":"es","fallbackApi":"en"},"country-GW":{"api":"pt","fallbackApi":"en"},"country-GY":{"api":"en","fallbackApi":""},"country-HT":{"api":"ht","fallbackApi":"en"},"country-US":{"api":"en","fallbackApi":""},"country-HN":{"api":"es","fallbackApi":"en"},"country-HU":{"api":"hu","fallbackApi":"en"},"country-GR":{"api":"el","fallbackApi":"en"},"country-NL":{"api":"nl","fallbackApi":"en"},"country-KR":{"api":"ko","fallbackApi":"en"},"country-IS":{"api":"is","fallbackApi":"en"},"country-ID":{"api":"id","fallbackApi":"en"},"country-IR":{"api":"fa","fallbackApi":"en"},"country-IQ":{"api":"ar","fallbackApi":"en"},"country-IE":{"api":"en","fallbackApi":""},"country-IL":{"api":"he","fallbackApi":"en"},"country-IT":{"api":"it","fallbackApi":"en"},"country-JM":{"api":"en","fallbackApi":""},"country-JE":{"api":"en","fallbackApi":""},"country-JO":{"api":"ar","fallbackApi":"en"},"country-KZ":{"api":"ru","fallbackApi":"en"},"country-KE":{"api":"sw","fallbackApi":"en"},"country-KI":{"api":"en","fallbackApi":""},"country-XK":{"api":"sq","fallbackApi":"en"},"country-KW":{"api":"ar","fallbackApi":"en"},"country-KG":{"api":"ky","fallbackApi":"en"},"country-LV":{"api":"lv","fallbackApi":"en"},"country-LS":{"api":"st","fallbackApi":"en"},"country-LB":{"api":"ar","fallbackApi":"en"},"country-LR":{"api":"en","fallbackApi":""},"country-LY":{"api":"ar","fallbackApi":"en"},"country-LI":{"api":"de","fallbackApi":"en"},"country-LT":{"api":"lt","fallbackApi":"en"},"country-LU":{"api":"fr","fallbackApi":"en"},"country-LA":{"api":"lo","fallbackApi":"en"},"country-PS":{"api":"ar","fallbackApi":"en"},"country-TF":{"api":"fr","fallbackApi":"en"},"country-IO":{"api":"en","fallbackApi":""},"country-MA":{"api":"ar","fallbackApi":"en"},"country-MG":{"api":"mg","fallbackApi":"en"},"country-MW":{"api":"ny","fallbackApi":"en"},"country-MY":{"api":"ms","fallbackApi":"en"},"country-MV":{"api":"dv","fallbackApi":"en"},"country-ML":{"api":"fr","fallbackApi":"en"},"country-MT":{"api":"mt","fallbackApi":"en"},"country-MQ":{"api":"fr","fallbackApi":"en"},"country-MR":{"api":"ar","fallbackApi":"en"},"country-MU":{"api":"fr","fallbackApi":"en"},"country-YT":{"api":"fr","fallbackApi":"en"},"country-MX":{"api":"es","fallbackApi":"en"},"country-FM":{"api":"en","fallbackApi":""},"country-MD":{"api":"ro","fallbackApi":"en"},"country-MC":{"api":"fr","fallbackApi":"en"},"country-ME":{"api":"sr","fallbackApi":"en"},"country-MS":{"api":"en","fallbackApi":""},"country-MZ":{"api":"pt","fallbackApi":"en"},"country-MM":{"api":"my","fallbackApi":"en"},"country-MN":{"api":"mn","fallbackApi":"en"},"country-NO":{"api":"no","fallbackApi":"en"},"country-AQ":{"api":"en","fallbackApi":""},"country-GS":{"api":"en","fallbackApi":""},"country-ZA":{"api":"en","fallbackApi":""},"country-SS":{"api":"en","fallbackApi":""},"country-NA":{"api":"en","fallbackApi":""},"country-NR":{"api":"en","fallbackApi":""},"country-NP":{"api":"ne","fallbackApi":"en"},"country-NC":{"api":"fr","fallbackApi":"en"},"country-NZ":{"api":"mi","fallbackApi":"en"},"country-RU":{"api":"ru","fallbackApi":"en"},"country-JP":{"api":"ja","fallbackApi":"en"},"country-NI":{"api":"es","fallbackApi":"en"},"country-NE":{"api":"fr","fallbackApi":"en"},"country-NG":{"api":"en","fallbackApi":""},"country-NU":{"api":"en","fallbackApi":""},"country-OM":{"api":"ar","fallbackApi":"en"},"country-PK":{"api":"ur","fallbackApi":"en"},"country-PW":{"api":"en","fallbackApi":""},"country-PA":{"api":"es","fallbackApi":"en"},"country-PG":{"api":"en","fallbackApi":""},"country-PY":{"api":"gn","fallbackApi":"en"},"country-PE":{"api":"es","fallbackApi":"en"},"country-PH":{"api":"en","fallbackApi":""},"country-FR":{"api":"fr","fallbackApi":"en"},"country-FI":{"api":"fi","fallbackApi":"en"},"country-PF":{"api":"fr","fallbackApi":"en"},"country-PR":{"api":"es","fallbackApi":"en"},"country-QA":{"api":"ar","fallbackApi":"en"},"country-MP":{"api":"en","fallbackApi":""},"country-KY":{"api":"en","fallbackApi":""},"country-CC":{"api":"en","fallbackApi":""},"country-CK":{"api":"en","fallbackApi":""},"country-FK":{"api":"en","fallbackApi":""},"country-FO":{"api":"fo","fallbackApi":"en"},"country-HM":{"api":"en","fallbackApi":""},"country-MH":{"api":"en","fallbackApi":""},"country-PN":{"api":"en","fallbackApi":""},"country-SB":{"api":"en","fallbackApi":""},"country-TC":{"api":"en","fallbackApi":""},"country-VG":{"api":"en","fallbackApi":""},"country-VI":{"api":"en","fallbackApi":""},"country-AX":{"api":"sv","fallbackApi":"en"},"country-RO":{"api":"ro","fallbackApi":"en"},"country-RW":{"api":"rw","fallbackApi":"en"},"country-RE":{"api":"fr","fallbackApi":"en"},"country-PM":{"api":"fr","fallbackApi":"en"},"country-WS":{"api":"sm","fallbackApi":"en"},"country-AS":{"api":"sm","fallbackApi":"en"},"country-SM":{"api":"it","fallbackApi":"en"},"country-SN":{"api":"fr","fallbackApi":"en"},"country-RS":{"api":"sr","fallbackApi":"en"},"country-SC":{"api":"fr","fallbackApi":"en"},"country-SL":{"api":"en","fallbackApi":""},"country-SG":{"api":"en","fallbackApi":""},"country-SX":{"api":"en","fallbackApi":""},"country-SK":{"api":"sk","fallbackApi":"en"},"country-SI":{"api":"sl","fallbackApi":"en"},"country-SO":{"api":"so","fallbackApi":"en"},"country-LK":{"api":"si","fallbackApi":"en"},"country-BL":{"api":"fr","fallbackApi":"en"},"country-SH":{"api":"en","fallbackApi":""},"country-KN":{"api":"en","fallbackApi":""},"country-LC":{"api":"en","fallbackApi":""},"country-MF":{"api":"fr","fallbackApi":"en"},"country-VC":{"api":"en","fallbackApi":""},"country-SD":{"api":"en","fallbackApi":""},"country-SR":{"api":"nl","fallbackApi":"en"},"country-SJ":{"api":"no","fallbackApi":"en"},"country-SY":{"api":"ar","fallbackApi":"en"},"country-ST":{"api":"pt","fallbackApi":"en"},"country-CZ":{"api":"cs","fallbackApi":"en"},"country-CY":{"api":"el","fallbackApi":"en"},"country-TJ":{"api":"tg","fallbackApi":"en"},"country-TZ":{"api":"sw","fallbackApi":"en"},"country-VA":{"api":"it","fallbackApi":"en"},"country-TH":{"api":"th","fallbackApi":"en"},"country-TR":{"api":"tr","fallbackApi":"en"},"country-CH":{"api":"de","fallbackApi":"en"},"country-SE":{"api":"sv","fallbackApi":"en"},"country-TL":{"api":"pt","fallbackApi":"en"},"country-TG":{"api":"fr","fallbackApi":"en"},"country-TK":{"api":"en","fallbackApi":""},"country-TO":{"api":"to","fallbackApi":"en"},"country-TT":{"api":"en","fallbackApi":""},"country-KP":{"api":"ko","fallbackApi":"en"},"country-CN":{"api":"zh-CN","fallbackApi":"en"},"country-TN":{"api":"ar","fallbackApi":"en"},"country-TM":{"api":"tk","fallbackApi":"en"},"country-TV":{"api":"en","fallbackApi":""},"country-ES":{"api":"es","fallbackApi":"en"},"country-EH":{"api":"ar","fallbackApi":"en"},"country-UG":{"api":"sw","fallbackApi":"en"},"country-UA":{"api":"uk","fallbackApi":"en"},"country-UY":{"api":"es","fallbackApi":"en"},"country-UZ":{"api":"uz","fallbackApi":"en"},"country-VU":{"api":"bi","fallbackApi":"en"},"country-VE":{"api":"es","fallbackApi":"en"},"country-VN":{"api":"vi","fallbackApi":"en"},"country-GB":{"api":"en","fallbackApi":""},"country-WF":{"api":"fr","fallbackApi":"en"},"country-YE":{"api":"ar","fallbackApi":"en"},"country-ZM":{"api":"en","fallbackApi":""},"country-ZW":{"api":"sn","fallbackApi":"en"},"country-AT":{"api":"de","fallbackApi":"en"},"country-DK":{"api":"da","fallbackApi":"en"},"country-TW":{"api":"zh-TW","fallbackApi":"en"},"country-BV":{"api":"no","fallbackApi":"en"},"country-CX":{"api":"en","fallbackApi":""},"country-IM":{"api":"en","fallbackApi":""},"country-NF":{"api":"en","fallbackApi":""},"country-HK":{"api":"zh-TW","fallbackApi":"en"},"country-MO":{"api":"zh-TW","fallbackApi":"en"},"country-DE":{"api":"de","fallbackApi":"en"},"country-SA":{"api":"ar","fallbackApi":"en"},"country-IN":{"api":"hi","fallbackApi":"en"}});
+    var currentLanguageSelection = '';
+    var translationRunId = 0;
+    var translationCache = loadTranslationCache();
+    var cacheSaveTimer = 0;
+
+    Object.keys(DICE_T).forEach(function addHeadingTranslation(languageCode) {
+      var dictionary = DICE_T[languageCode];
+      if (!dictionary['page.heading']) {
+        dictionary['page.heading'] = String(dictionary['page.title'] || DICE_T.vi['page.title'])
+          .replace(/\s*-\s*NTS\s*$/i, '')
+          .trim();
+      }
+    });
+    DICE_T.vi['page.heading'] = 'XÚC XẮC';
+
+    function safeStorageGet(key) {
+      try { return window.localStorage.getItem(key); }
+      catch (error) { return null; }
     }
 
-    var savedLang = localStorage.getItem('nts-lang') || 'vi';
-    applyDiceTranslations(savedLang);
+    function loadTranslationCache() {
+      try {
+        var raw = safeStorageGet(TRANSLATION_CACHE_KEY);
+        var parsed = raw ? JSON.parse(raw) : {};
+        return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function saveTranslationCacheSoon() {
+      window.clearTimeout(cacheSaveTimer);
+      cacheSaveTimer = window.setTimeout(function saveCache() {
+        try {
+          var entries = Object.entries(translationCache);
+          if (entries.length > MAX_CACHE_ENTRIES) {
+            translationCache = Object.fromEntries(entries.slice(entries.length - MAX_CACHE_ENTRIES));
+          }
+          window.localStorage.setItem(TRANSLATION_CACHE_KEY, JSON.stringify(translationCache));
+        } catch (error) {}
+      }, 200);
+    }
+
+    function findHomeSelection(value) {
+      var lowerValue = String(value || '').toLowerCase();
+      return Object.keys(HOME_LANGUAGE_CONFIG).find(function findKey(key) {
+        return key.toLowerCase() === lowerValue;
+      }) || '';
+    }
+
+    function normalizeLanguageSelection(value) {
+      var normalized = String(value || 'vi').trim().replace(/_/g, '-');
+      if (!normalized) return 'vi';
+      if (HOME_LANGUAGE_CONFIG[normalized]) return normalized;
+
+      var homeKey = findHomeSelection(normalized);
+      if (homeKey) return homeKey;
+
+      var countryMatch = normalized.match(/^country-([a-z]{2})$/i);
+      if (countryMatch) {
+        homeKey = findHomeSelection('country-' + countryMatch[1].toUpperCase());
+        if (homeKey) return homeKey;
+      }
+
+      return normalized;
+    }
+
+    function getLanguageConfig(selection) {
+      var normalized = normalizeLanguageSelection(selection);
+      var homeConfig = HOME_LANGUAGE_CONFIG[normalized];
+      if (homeConfig) {
+        return {
+          selection: normalized,
+          api: homeConfig.api || 'en',
+          fallbackApi: homeConfig.fallbackApi || ''
+        };
+      }
+      return {
+        selection: normalized,
+        api: normalized || 'vi',
+        fallbackApi: normalized === 'vi' ? '' : 'en'
+      };
+    }
+
+    function getSavedLanguageSelection() {
+      var selectedAtHome = safeStorageGet(SITE_LANGUAGE_KEY);
+      if (selectedAtHome) return normalizeLanguageSelection(selectedAtHome);
+
+      /* Chỉ dùng khóa cũ khi trang chủ chưa lưu siteLang. */
+      var legacy = safeStorageGet(LEGACY_LANGUAGE_KEY);
+      return legacy ? normalizeLanguageSelection(legacy) : 'vi';
+    }
+
+    function findDictionaryKey(languageCode) {
+      var normalized = String(languageCode || '').replace(/_/g, '-');
+      if (!normalized) return '';
+      if (DICE_T[normalized]) return normalized;
+
+      var exactKey = Object.keys(DICE_T).find(function findExact(key) {
+        return key.toLowerCase() === normalized.toLowerCase();
+      });
+      if (exactKey) return exactKey;
+
+      var lower = normalized.toLowerCase();
+      var aliases = {
+        'zh-cn': 'zh', 'zh-sg': 'zh', 'zh-hans': 'zh',
+        'zh-tw': 'zh-TW', 'zh-hk': 'zh-HK', 'zh-mo': 'zh-MO', 'zh-hant': 'zh-TW',
+        'en-us': 'en-US', 'en-nz': 'en-NZ', 'en-gb': 'en', 'en-ca': 'en', 'en-au': 'en',
+        'de-ch': 'de-CH', 'es-mx': 'es-MX', 'pt-br': 'pt', 'pt-pt': 'pt',
+        'ko-kp': 'kp', 'ko-kr': 'ko'
+      };
+      if (aliases[lower] && DICE_T[aliases[lower]]) return aliases[lower];
+
+      var base = normalized.split('-')[0].toLowerCase();
+      exactKey = Object.keys(DICE_T).find(function findBase(key) {
+        return key.toLowerCase() === base;
+      });
+      return exactKey || '';
+    }
+
+    function getBuiltInDictionary(languageCode) {
+      var key = findDictionaryKey(languageCode);
+      return key ? DICE_T[key] : null;
+    }
+
+    function getImmediateDictionary(config) {
+      var builtIn = getBuiltInDictionary(config.selection) || getBuiltInDictionary(config.api);
+      if (builtIn) return builtIn;
+
+      var fallbackDictionary = getBuiltInDictionary(config.fallbackApi) || DICE_T.en || DICE_T.vi;
+      var dictionary = {};
+      Object.keys(DICE_T.vi).forEach(function buildEntry(key) {
+        var sourceText = DICE_T.vi[key];
+        dictionary[key] = translationCache[config.api + '|' + sourceText]
+          || (config.fallbackApi ? translationCache[config.fallbackApi + '|' + sourceText] : '')
+          || fallbackDictionary[key]
+          || sourceText;
+      });
+      return dictionary;
+    }
+
+    function applyTranslationValue(key, value) {
+      if (typeof value !== 'string' || !value) return;
+      if (key === 'page.title') document.title = value;
+
+      document.querySelectorAll('[data-i18n]').forEach(function updateText(element) {
+        if (element.getAttribute('data-i18n') === key) element.textContent = value;
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(function updatePlaceholder(element) {
+        if (element.getAttribute('data-i18n-placeholder') === key) element.placeholder = value;
+      });
+      if (key === 'alert.name') window._alertName = value;
+    }
+
+    function applyDictionary(dictionary) {
+      Object.keys(dictionary || {}).forEach(function applyEntry(key) {
+        applyTranslationValue(key, dictionary[key]);
+      });
+      window._alertName = (dictionary && dictionary['alert.name']) || DICE_T.vi['alert.name'];
+    }
+
+    function decodeHtmlEntities(value) {
+      var textarea = document.createElement('textarea');
+      textarea.innerHTML = String(value || '');
+      return textarea.value;
+    }
+
+    async function requestTranslation(sourceText, targetLanguage) {
+      if (!sourceText || !targetLanguage || targetLanguage === 'vi') return sourceText;
+      var cacheKey = targetLanguage + '|' + sourceText;
+      if (translationCache[cacheKey]) return translationCache[cacheKey];
+      if (navigator.onLine === false) throw new Error('offline');
+
+      var controller = new AbortController();
+      var timeoutId = window.setTimeout(function abortTranslation() {
+        controller.abort();
+      }, TRANSLATION_TIMEOUT_MS);
+
+      try {
+        var endpoint = new URL('https://api.mymemory.translated.net/get');
+        endpoint.searchParams.set('q', sourceText);
+        endpoint.searchParams.set('langpair', 'vi|' + targetLanguage);
+        var response = await fetch(endpoint.toString(), {
+          headers: { Accept: 'application/json' },
+          credentials: 'omit',
+          cache: 'force-cache',
+          referrerPolicy: 'no-referrer',
+          signal: controller.signal
+        });
+        if (!response.ok) throw new Error('Translation API ' + response.status);
+
+        var payload = await response.json();
+        var translated = payload && payload.responseData && payload.responseData.translatedText;
+        var match = Number(payload && payload.responseData && payload.responseData.match !== undefined
+          ? payload.responseData.match
+          : 1);
+        if (!translated || match === 0) throw new Error('unsupported translation');
+
+        var decoded = decodeHtmlEntities(translated);
+        translationCache[cacheKey] = decoded;
+        saveTranslationCacheSoon();
+        return decoded;
+      } finally {
+        window.clearTimeout(timeoutId);
+      }
+    }
+
+    async function mapWithConcurrency(items, concurrency, worker) {
+      var cursor = 0;
+      async function runner() {
+        while (cursor < items.length) {
+          var index = cursor++;
+          await worker(items[index], index);
+        }
+      }
+      var workerCount = Math.min(concurrency, items.length);
+      await Promise.all(Array.from({ length: workerCount }, runner));
+    }
+
+    async function translateMissingDictionary(config, runId) {
+      if (getBuiltInDictionary(config.selection) || getBuiltInDictionary(config.api)) return;
+
+      var fallbackDictionary = getBuiltInDictionary(config.fallbackApi) || DICE_T.en || DICE_T.vi;
+      var keys = Object.keys(DICE_T.vi);
+      await mapWithConcurrency(keys, TRANSLATION_CONCURRENCY, async function translateKey(key) {
+        var sourceText = DICE_T.vi[key];
+        var translatedText;
+        try {
+          translatedText = await requestTranslation(sourceText, config.api);
+        } catch (primaryError) {
+          if (config.fallbackApi && config.fallbackApi !== config.api) {
+            try {
+              translatedText = await requestTranslation(sourceText, config.fallbackApi);
+            } catch (fallbackError) {
+              translatedText = fallbackDictionary[key] || sourceText;
+            }
+          } else {
+            translatedText = fallbackDictionary[key] || sourceText;
+          }
+        }
+        if (runId === translationRunId) applyTranslationValue(key, translatedText);
+      });
+    }
+
+    async function applyDiceLanguage(languageSelection) {
+      var config = getLanguageConfig(languageSelection);
+      var runId = ++translationRunId;
+      currentLanguageSelection = config.selection;
+
+      var apiBase = String(config.api).split('-')[0].toLowerCase();
+      document.documentElement.lang = config.api;
+      document.documentElement.dir = RTL_LANGUAGE_BASES.has(apiBase) ? 'rtl' : 'ltr';
+      document.documentElement.dataset.languageSelection = config.selection;
+      document.documentElement.dataset.language = config.api;
+      document.documentElement.setAttribute('aria-busy', 'true');
+
+      applyDictionary(getImmediateDictionary(config));
+      await translateMissingDictionary(config, runId);
+      if (runId !== translationRunId) return;
+
+      document.documentElement.removeAttribute('aria-busy');
+      window.dispatchEvent(new CustomEvent('nts:languagechange', {
+        detail: { selection: config.selection, language: config.api }
+      }));
+    }
+
+    function syncLanguageFromHome() {
+      var savedLanguage = getSavedLanguageSelection();
+      if (savedLanguage !== currentLanguageSelection) applyDiceLanguage(savedLanguage);
+    }
+
+    /* Mở trang: dùng ngay ngôn ngữ mà trang chủ đang lưu. */
+    applyDiceLanguage(getSavedLanguageSelection());
+
+    /* Đồng bộ khi trang chủ đổi ngôn ngữ ở tab khác. */
+    window.addEventListener('storage', function handleStorageChange(event) {
+      if (event.key === SITE_LANGUAGE_KEY) {
+        applyDiceLanguage(event.newValue || 'vi');
+        return;
+      }
+      if (event.key === TRANSLATION_CACHE_KEY && event.newValue) {
+        try {
+          var updatedCache = JSON.parse(event.newValue);
+          if (updatedCache && typeof updatedCache === 'object') Object.assign(translationCache, updatedCache);
+        } catch (error) {}
+      }
+    });
+
+    /* Đồng bộ khi quay lại bằng Back/Forward, đổi tab hoặc lấy lại focus. */
+    window.addEventListener('pageshow', syncLanguageFromHome);
+    window.addEventListener('focus', syncLanguageFromHome);
+    document.addEventListener('visibilitychange', function syncWhenVisible() {
+      if (!document.hidden) syncLanguageFromHome();
+    });
+
+    window.NTSDiceLanguage = Object.freeze({
+      sync: syncLanguageFromHome,
+      getCurrentSelection: function() { return currentLanguageSelection; },
+      getCurrentLanguage: function() { return getLanguageConfig(currentLanguageSelection).api; }
+    });
 
     /* ---- Dice logic (unchanged) ---- */
     var currentRotations = { cube1: { x: 0, y: 0 }, cube2: { x: 0, y: 0 } };
