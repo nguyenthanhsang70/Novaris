@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Danh Sách Game - NTS</title>
+    <!-- Ngôn ngữ của trang này được tự động lấy từ localStorage.siteLang do trang chủ lưu. -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -71,22 +72,145 @@
             transform: translateY(-2px);
         }
 
-        .music-control {
-            position:fixed; bottom:30px; right:30px; z-index:1000;
-            background:rgba(15,23,42,.8); border:1px solid rgba(255,255,255,.2);
-            backdrop-filter:blur(5px); border-radius:50%;
-            width:60px; height:60px; display:flex; align-items:center; justify-content:center;
-            cursor:pointer; box-shadow:0 0 20px rgba(79,70,229,.3);
-            transition:all .3s ease; color:white;
+
+        /* Thanh tìm kiếm game */
+        .game-search-panel {
+            max-width: 860px;
+            margin: 0 auto 2.25rem;
+            padding: 1rem;
+            border: 1px solid rgba(255,255,255,.12);
+            border-radius: 1.25rem;
+            background: rgba(15,23,42,.72);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            box-shadow: 0 18px 45px rgba(0,0,0,.28), 0 0 25px rgba(99,102,241,.12);
         }
-        .music-control:hover { transform:scale(1.1) rotate(10deg); background:#4f46e5; box-shadow:0 0 30px rgba(79,70,229,.6); }
-        .tooltip {
-            position:absolute; right:70px; background:rgba(0,0,0,.8); color:#fff;
-            padding:6px 12px; border-radius:6px; font-size:12px; white-space:nowrap;
-            opacity:0; transform:translateX(10px); transition:all .3s; pointer-events:none;
-            border:1px solid rgba(255,255,255,.1);
+        .game-search-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: .75rem;
+            color: #dbeafe;
+            font-size: .82rem;
+            font-weight: 600;
+            letter-spacing: .08em;
+            text-transform: uppercase;
         }
-        .music-control:hover .tooltip { opacity:1; transform:translateX(0); }
+        .game-search-count {
+            color: #a5b4fc;
+            font-size: .75rem;
+            letter-spacing: .03em;
+            text-transform: none;
+            white-space: nowrap;
+        }
+        .game-search-box {
+            display: flex;
+            align-items: center;
+            gap: .8rem;
+            min-height: 54px;
+            padding: 0 .9rem 0 1rem;
+            border: 1px solid rgba(129,140,248,.26);
+            border-radius: 1rem;
+            background: rgba(2,6,23,.78);
+            transition: border-color .25s ease, box-shadow .25s ease, transform .25s ease;
+        }
+        .game-search-box:focus-within {
+            border-color: rgba(129,140,248,.72);
+            box-shadow: 0 0 0 4px rgba(99,102,241,.12), 0 0 30px rgba(139,92,246,.18);
+            transform: translateY(-1px);
+        }
+        .game-search-box > i {
+            flex: 0 0 auto;
+            color: #a78bfa;
+            font-size: 1rem;
+        }
+        .game-search-input {
+            width: 100%;
+            min-width: 0;
+            border: 0;
+            outline: 0;
+            color: #f8fafc;
+            background: transparent;
+            font: inherit;
+        }
+        .game-search-input::placeholder { color: #64748b; }
+        .game-search-clear {
+            flex: 0 0 auto;
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: .8rem;
+            color: #cbd5e1;
+            background: rgba(255,255,255,.06);
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(.88);
+            transition: opacity .2s ease, visibility .2s ease, transform .2s ease, background .2s ease;
+        }
+        .game-search-clear.is-visible {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+        .game-search-clear:hover { color: white; background: rgba(239,68,68,.72); }
+        .game-card.search-hidden { display: none !important; }
+        .game-no-results {
+            display: none;
+            max-width: 720px;
+            margin: 0 auto 2rem;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px dashed rgba(167,139,250,.38);
+            border-radius: 1.25rem;
+            color: #cbd5e1;
+            background: rgba(15,23,42,.64);
+        }
+        .game-no-results.is-visible { display: block; }
+        .game-no-results i {
+            display: block;
+            margin-bottom: .75rem;
+            color: #a78bfa;
+            font-size: 2rem;
+        }
+
+        /* Thông báo khi người dùng thử mở mã nguồn / DevTools */
+        .source-guard-toast {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            z-index: 99999;
+            width: min(720px, calc(100% - 20px));
+            transform: translate(-50%, calc(-100% - 16px));
+            opacity: 0;
+            pointer-events: none;
+            transition: transform .32s cubic-bezier(.22,1,.36,1), opacity .25s ease;
+        }
+        .source-guard-toast.is-visible {
+            transform: translate(-50%, 0);
+            opacity: 1;
+        }
+        .source-guard-toast__message {
+            padding: 15px 20px;
+            text-align: center;
+            color: #f8fafc;
+            font-size: clamp(.82rem, 2.7vw, 1rem);
+            font-weight: 700;
+            line-height: 1.45;
+            border: 1px solid rgba(255,255,255,.1);
+            border-top: 0;
+            border-radius: 0 0 14px 14px;
+            background: linear-gradient(100deg, #020617 0%, #07152e 55%, #13071f 100%);
+            box-shadow: 0 16px 38px rgba(0,0,0,.45), 0 0 24px rgba(79,70,229,.13);
+        }
+
+        @media (max-width: 640px) {
+            .game-search-panel { margin-bottom: 1.5rem; padding: .8rem; }
+            .game-search-label { align-items: flex-start; flex-direction: column; gap: .3rem; }
+            .source-guard-toast__message { padding: 13px 14px; }
+        }
 
         ::-webkit-scrollbar { width:8px; }
         ::-webkit-scrollbar-track { background:#0f172a; }
@@ -95,19 +219,15 @@
     </style>
 </head>
 <body>
+
+    <div id="sourceGuardToast" class="source-guard-toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="source-guard-toast__message" data-i18n="security.notice">
+            Thao tác xem mã nguồn hoặc công cụ nhà phát triển đã bị hạn chế trên trang này.
+        </div>
+    </div>
     <div class="bg-animated"></div>
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
-
-    <audio id="backgroundMusic" loop>
-        <source src="nhacnen2.mp3" type="audio/mpeg">
-    </audio>
-
-    <div class="music-control" id="musicControl">
-        <i class="fas fa-music text-xl"></i>
-        <span class="tooltip" data-i18n="music.tooltip">Bật/Tắt nhạc nền</span>
-    </div>
-
     <header class="fixed top-0 w-full z-50 bg-slate-900/80 backdrop-blur-md border-b border-white/10 transition-all duration-300 shadow-lg">
         <div class="container mx-auto px-4 py-4 relative flex justify-center items-center">
             <a href="index.html" class="absolute left-4 bg-white/10 hover:bg-red-500/80 text-white w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 border border-white/10 hover:border-red-500 group">
@@ -120,7 +240,36 @@
     </header>
 
     <main class="flex-grow container mx-auto px-4 py-24 mt-8">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+
+        <section class="game-search-panel" aria-labelledby="gameSearchLabel">
+            <div class="game-search-label">
+                <label id="gameSearchLabel" for="gameSearch" data-i18n="search.label">Tìm kiếm game</label>
+                <span class="game-search-count"><strong id="visibleGameCount">18</strong>/<span id="totalGameCount">18</span> <span data-i18n="search.results">game</span></span>
+            </div>
+            <div class="game-search-box">
+                <i class="fas fa-search" aria-hidden="true"></i>
+                <input
+                    id="gameSearch"
+                    class="game-search-input"
+                    type="search"
+                    inputmode="search"
+                    autocomplete="off"
+                    spellcheck="false"
+                    data-i18n-placeholder="search.placeholder"
+                    placeholder="Nhập tên game hoặc từ khóa..."
+                >
+                <button id="clearGameSearch" class="game-search-clear" type="button" data-i18n-aria-label="search.clear" aria-label="Xóa nội dung tìm kiếm">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+        </section>
+
+        <div id="gameNoResults" class="game-no-results" role="status" aria-live="polite">
+            <i class="fas fa-gamepad" aria-hidden="true"></i>
+            <span data-i18n="search.empty">Không tìm thấy game phù hợp.</span>
+        </div>
+
+        <div id="gameGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
 
             <div class="game-card rounded-2xl overflow-hidden flex flex-col h-full">
                 <div class="relative overflow-hidden group h-48">
@@ -396,7 +545,6 @@
         'page.title':            'Danh Sách Game - NTS',
         'page.heading':          'DANH SÁCH GAME',
         'btn.play':              'CHƠI NGAY',
-        'music.tooltip':         'Bật/Tắt nhạc nền',
         'game.dice.title':       'Xúc Xắc',
         'game.dice.desc':        'Trò chơi may rủi đầy kịch tính. Nơi người chơi chờ đợi kết quả bất ngờ.',
         'game.spin.title':       'Quay Tên',
@@ -440,7 +588,6 @@
         'page.title':            'Game List - NTS',
         'page.heading':          'GAME LIST',
         'btn.play':              'PLAY NOW',
-        'music.tooltip':         'Toggle music',
         'game.dice.title':       'Dice',
         'game.dice.desc':        'A thrilling game of chance where players await unexpected results.',
         'game.spin.title':       'Name Spinner',
@@ -484,7 +631,6 @@
         'page.title':            'ゲーム一覧 - NTS',
         'page.heading':          'ゲーム一覧',
         'btn.play':              '今すぐプレイ',
-        'music.tooltip':         '音楽のオン/オフ',
         'game.dice.title':       'サイコロ',
         'game.dice.desc':        'スリル満点の運試しゲーム。予想外の結果を待て！',
         'game.spin.title':       '名前ルーレット',
@@ -528,7 +674,6 @@
         'page.title':            '游戏列表 - NTS',
         'page.heading':          '游戏列表',
         'btn.play':              '立即游玩',
-        'music.tooltip':         '开/关背景音乐',
         'game.dice.title':       '骰子',
         'game.dice.desc':        '充满戏剧性的运气游戏，等待意想不到的结果。',
         'game.spin.title':       '随机点名',
@@ -572,7 +717,6 @@
         'page.title':            '게임 목록 - NTS',
         'page.heading':          '게임 목록',
         'btn.play':              '지금 플레이',
-        'music.tooltip':         '음악 켜기/끄기',
         'game.dice.title':       '주사위',
         'game.dice.desc':        '스릴 넘치는 운 게임. 예상치 못한 결과를 기다려라!',
         'game.spin.title':       '이름 뽑기',
@@ -616,7 +760,6 @@
         'page.title':            'รายการเกม - NTS',
         'page.heading':          'รายการเกม',
         'btn.play':              'เล่นเลย',
-        'music.tooltip':         'เปิด/ปิดเพลง',
         'game.dice.title':       'ลูกเต๋า',
         'game.dice.desc':        'เกมแห่งโชคชะตา รอดูผลที่ไม่คาดคิด!',
         'game.spin.title':       'วงล้อจับสลาก',
@@ -660,7 +803,6 @@
         'page.title':            'Liste des Jeux - NTS',
         'page.heading':          'LISTE DES JEUX',
         'btn.play':              'JOUER',
-        'music.tooltip':         'Activer/Désactiver la musique',
         'game.dice.title':       'Dés',
         'game.dice.desc':        'Un jeu de chance palpitant avec des résultats inattendus.',
         'game.spin.title':       'Roue des Noms',
@@ -704,7 +846,6 @@
         'page.title':            'Spielliste - NTS',
         'page.heading':          'SPIELLISTE',
         'btn.play':              'JETZT SPIELEN',
-        'music.tooltip':         'Musik an/aus',
         'game.dice.title':       'Würfel',
         'game.dice.desc':        'Ein spannendes Glücksspiel mit unerwarteten Ergebnissen.',
         'game.spin.title':       'Namensrad',
@@ -748,7 +889,6 @@
         'page.title':            'Lista de Juegos - NTS',
         'page.heading':          'LISTA DE JUEGOS',
         'btn.play':              'JUGAR',
-        'music.tooltip':         'Activar/Desactivar música',
         'game.dice.title':       'Dados',
         'game.dice.desc':        'Un emocionante juego de azar con resultados inesperados.',
         'game.spin.title':       'Ruleta de Nombres',
@@ -792,7 +932,6 @@
         'page.title':            'Список Игр - NTS',
         'page.heading':          'СПИСОК ИГР',
         'btn.play':              'ИГРАТЬ',
-        'music.tooltip':         'Вкл/Выкл музыку',
         'game.dice.title':       'Кости',
         'game.dice.desc':        'Захватывающая игра удачи с неожиданными результатами.',
         'game.spin.title':       'Колесо Имён',
@@ -836,7 +975,6 @@
         'page.title':            'قائمة الألعاب - NTS',
         'page.heading':          'قائمة الألعاب',
         'btn.play':              'العب الآن',
-        'music.tooltip':         'تشغيل/إيقاف الموسيقى',
         'game.dice.title':       'النرد',
         'game.dice.desc':        'لعبة حظ مثيرة بنتائج غير متوقعة.',
         'game.spin.title':       'عجلة الأسماء',
@@ -878,54 +1016,199 @@
       },
     };
 
+
+
+    const UI_TRANSLATIONS = {
+      vi: {
+        'search.label':       'Tìm kiếm game',
+        'search.placeholder': 'Nhập tên game hoặc từ khóa...',
+        'search.results':     'game',
+        'search.clear':       'Xóa nội dung tìm kiếm',
+        'search.empty':       'Không tìm thấy game phù hợp.',
+        'security.notice':    'Thao tác xem mã nguồn hoặc công cụ nhà phát triển đã bị hạn chế trên trang này.'
+      },
+      en: {
+        'search.label':       'Search games',
+        'search.placeholder': 'Enter a game name or keyword...',
+        'search.results':     'games',
+        'search.clear':       'Clear search',
+        'search.empty':       'No matching games were found.',
+        'security.notice':    'Viewing source code or developer tools has been restricted on this page.'
+      },
+      ja: {
+        'search.label':       'ゲームを検索',
+        'search.placeholder': 'ゲーム名またはキーワードを入力...',
+        'search.results':     'ゲーム',
+        'search.clear':       '検索をクリア',
+        'search.empty':       '一致するゲームが見つかりません。',
+        'security.notice':    'このページではソース表示または開発者ツールの操作が制限されています。'
+      },
+      zh: {
+        'search.label':       '搜索游戏',
+        'search.placeholder': '输入游戏名称或关键词...',
+        'search.results':     '个游戏',
+        'search.clear':       '清除搜索',
+        'search.empty':       '未找到匹配的游戏。',
+        'security.notice':    '此页面已限制查看源代码或使用开发者工具。'
+      },
+      ko: {
+        'search.label':       '게임 검색',
+        'search.placeholder': '게임 이름 또는 키워드 입력...',
+        'search.results':     '게임',
+        'search.clear':       '검색 지우기',
+        'search.empty':       '일치하는 게임을 찾을 수 없습니다.',
+        'security.notice':    '이 페이지에서는 소스 보기 또는 개발자 도구 사용이 제한되어 있습니다.'
+      },
+      th: {
+        'search.label':       'ค้นหาเกม',
+        'search.placeholder': 'พิมพ์ชื่อเกมหรือคีย์เวิร์ด...',
+        'search.results':     'เกม',
+        'search.clear':       'ล้างการค้นหา',
+        'search.empty':       'ไม่พบเกมที่ตรงกับการค้นหา',
+        'security.notice':    'การดูซอร์สโค้ดหรือใช้เครื่องมือนักพัฒนาถูกจำกัดบนหน้านี้'
+      },
+      fr: {
+        'search.label':       'Rechercher un jeu',
+        'search.placeholder': 'Saisissez un nom de jeu ou un mot-clé...',
+        'search.results':     'jeux',
+        'search.clear':       'Effacer la recherche',
+        'search.empty':       'Aucun jeu correspondant n’a été trouvé.',
+        'security.notice':    'L’affichage du code source ou l’accès aux outils de développement est limité sur cette page.'
+      },
+      de: {
+        'search.label':       'Spiele suchen',
+        'search.placeholder': 'Spielname oder Stichwort eingeben...',
+        'search.results':     'Spiele',
+        'search.clear':       'Suche löschen',
+        'search.empty':       'Keine passenden Spiele gefunden.',
+        'security.notice':    'Das Anzeigen des Quellcodes oder der Entwicklertools ist auf dieser Seite eingeschränkt.'
+      },
+      es: {
+        'search.label':       'Buscar juegos',
+        'search.placeholder': 'Introduce un juego o una palabra clave...',
+        'search.results':     'juegos',
+        'search.clear':       'Borrar búsqueda',
+        'search.empty':       'No se encontraron juegos coincidentes.',
+        'security.notice':    'La visualización del código fuente o el uso de herramientas de desarrollo está restringido en esta página.'
+      },
+      ru: {
+        'search.label':       'Поиск игр',
+        'search.placeholder': 'Введите название игры или ключевое слово...',
+        'search.results':     'игр',
+        'search.clear':       'Очистить поиск',
+        'search.empty':       'Подходящие игры не найдены.',
+        'security.notice':    'Просмотр исходного кода и использование инструментов разработчика на этой странице ограничены.'
+      },
+      ar: {
+        'search.label':       'البحث عن لعبة',
+        'search.placeholder': 'أدخل اسم اللعبة أو كلمة مفتاحية...',
+        'search.results':     'ألعاب',
+        'search.clear':       'مسح البحث',
+        'search.empty':       'لم يتم العثور على ألعاب مطابقة.',
+        'security.notice':    'تم تقييد عرض مصدر الصفحة أو استخدام أدوات المطور في هذه الصفحة.'
+      }
+    };
+
+    Object.entries(UI_TRANSLATIONS).forEach(function mergeUiTranslations([languageCode, values]) {
+      if (!TRANSLATIONS[languageCode]) TRANSLATIONS[languageCode] = {};
+      Object.assign(TRANSLATIONS[languageCode], values);
+    });
+
     /* ================================================================
-       SHARED LANGUAGE SYSTEM — đồng bộ trực tiếp với trang chủ
-       - Khóa ngôn ngữ: siteLang
-       - Bộ nhớ đệm: ntsTranslationCache
-       - API: MyMemory (vi -> ngôn ngữ đích)
+       SHARED LANGUAGE SYSTEM — chỉ nhận ngôn ngữ từ trang chủ
+       - Trang chủ lưu lựa chọn vào localStorage với khóa: siteLang
+       - Trang này KHÔNG có bộ chọn ngôn ngữ và KHÔNG ghi đè siteLang
+       - Hỗ trợ cả mã phổ biến (vi, en, ja...) và mã quốc gia (country-DE...)
+       - Dùng chung bộ nhớ đệm dịch: ntsTranslationCache
        ================================================================ */
     const LANGUAGE_STORAGE_KEY = 'siteLang';
     const LEGACY_LANGUAGE_STORAGE_KEY = 'nts-lang';
     const TRANSLATION_CACHE_KEY = 'ntsTranslationCache';
     const API_TIMEOUT_MS = 8000;
-    const API_CONCURRENCY = 4;
-    const MAX_CACHE_ENTRIES = 600;
+    const API_CONCURRENCY = 3;
+    const MAX_CACHE_ENTRIES = 700;
     const API_FAILURE_THRESHOLD = 3;
     const API_RETRY_DELAY_MS = 30000;
 
-    const LANGUAGES = Object.freeze({
-      vi:      { label: 'Tiếng Việt',          api: 'vi' },
-      zh:      { label: '简体中文',             api: 'zh-CN' },
-      'zh-TW': { label: '繁體中文',             api: 'zh-TW' },
-      en:      { label: 'English',              api: 'en' },
-      fr:      { label: 'Français',             api: 'fr' },
-      ko:      { label: '한국어',                api: 'ko' },
-      ja:      { label: '日本語',                api: 'ja' },
-      hi:      { label: 'हिन्दी',                api: 'hi' },
-      'en-CA': { label: 'English (Canada)',     api: 'en' },
-      'en-AU': { label: 'English (Australia)',  api: 'en' },
-      ru:      { label: 'Русский',              api: 'ru' },
-      km:      { label: 'ភាសាខ្មែរ',             api: 'km' },
-      es:      { label: 'Español (Cuba)',       api: 'es' },
-      lo:      { label: 'ພາສາລາວ',             api: 'lo' }
+    /* Được lấy trực tiếp từ cấu hình ngôn ngữ của trang chủ. */
+    const POPULAR_LANGUAGE_TARGETS = Object.freeze({
+      "vi":["vi",""], "zh":["zh-CN",""], "zh-TW":["zh-TW",""],
+      "en":["en",""], "fr":["fr",""], "ko":["ko",""],
+      "ja":["ja",""], "hi":["hi",""], "en-CA":["en",""],
+      "en-AU":["en",""], "ru":["ru",""], "km":["km",""],
+      "es":["es",""], "lo":["lo",""]
     });
 
-    /* Các bản dịch có sẵn được ưu tiên để trang hiển thị ngay, không chờ mạng. */
-    const BUILT_IN_LANGUAGE_MAP = Object.freeze({
+    /* Khóa country-XX của trang chủ được rút gọn thành XX ở đây. */
+    const COUNTRY_LANGUAGE_TARGETS = Object.freeze({
+      "AF":["fa","en"], "EG":["ar","en"], "AL":["sq","en"], "DZ":["ar","en"], "AD":["ca","en"],
+      "AO":["pt","en"], "AI":["en",""], "AG":["en",""], "AR":["es","en"], "AM":["hy","en"],
+      "AW":["nl","en"], "AU":["en",""], "AZ":["az","en"], "PL":["pl","en"], "BS":["en",""],
+      "BH":["ar","en"], "BD":["bn","en"], "BB":["en",""], "BY":["be","en"], "BZ":["en",""],
+      "BJ":["fr","en"], "BM":["en",""], "BT":["dz","en"], "BO":["es","en"], "BA":["bs","en"],
+      "BW":["en",""], "BR":["pt","en"], "BN":["ms","en"], "BG":["bg","en"], "BF":["fr","en"],
+      "BI":["rn","en"], "MK":["mk","en"], "BE":["nl","en"], "PT":["pt","en"], "BQ":["nl","en"],
+      "CM":["fr","en"], "KH":["km","en"], "CA":["en",""], "CV":["pt","en"], "TD":["ar","en"],
+      "CL":["es","en"], "CO":["es","en"], "KM":["ar","en"], "CG":["fr","en"], "CD":["fr","en"],
+      "CR":["es","en"], "HR":["hr","en"], "CU":["es","en"], "CW":["nl","en"], "AE":["ar","en"],
+      "UM":["en",""], "CI":["fr","en"], "DO":["es","en"], "CF":["sg","en"], "DJ":["fr","en"],
+      "DM":["en",""], "EC":["es","en"], "SV":["es","en"], "ER":["en",""], "EE":["et","en"],
+      "SZ":["en",""], "ET":["am","en"], "FJ":["en",""], "GA":["fr","en"], "GM":["en",""],
+      "GE":["ka","en"], "GH":["en",""], "GI":["en",""], "GL":["kl","en"], "GD":["en",""],
+      "GP":["fr","en"], "GU":["ch","en"], "GT":["es","en"], "GG":["en",""], "GF":["fr","en"],
+      "GN":["fr","en"], "GQ":["es","en"], "GW":["pt","en"], "GY":["en",""], "HT":["ht","en"],
+      "US":["en",""], "HN":["es","en"], "HU":["hu","en"], "GR":["el","en"], "NL":["nl","en"],
+      "KR":["ko","en"], "IS":["is","en"], "ID":["id","en"], "IR":["fa","en"], "IQ":["ar","en"],
+      "IE":["en",""], "IL":["he","en"], "IT":["it","en"], "JM":["en",""], "JE":["en",""],
+      "JO":["ar","en"], "KZ":["ru","en"], "KE":["sw","en"], "KI":["en",""], "XK":["sq","en"],
+      "KW":["ar","en"], "KG":["ky","en"], "LV":["lv","en"], "LS":["st","en"], "LB":["ar","en"],
+      "LR":["en",""], "LY":["ar","en"], "LI":["de","en"], "LT":["lt","en"], "LU":["fr","en"],
+      "LA":["lo","en"], "PS":["ar","en"], "TF":["fr","en"], "IO":["en",""], "MA":["ar","en"],
+      "MG":["mg","en"], "MW":["ny","en"], "MY":["ms","en"], "MV":["dv","en"], "ML":["fr","en"],
+      "MT":["mt","en"], "MQ":["fr","en"], "MR":["ar","en"], "MU":["fr","en"], "YT":["fr","en"],
+      "MX":["es","en"], "FM":["en",""], "MD":["ro","en"], "MC":["fr","en"], "ME":["sr","en"],
+      "MS":["en",""], "MZ":["pt","en"], "MM":["my","en"], "MN":["mn","en"], "NO":["no","en"],
+      "AQ":["en",""], "GS":["en",""], "ZA":["en",""], "SS":["en",""], "NA":["en",""],
+      "NR":["en",""], "NP":["ne","en"], "NC":["fr","en"], "NZ":["mi","en"], "RU":["ru","en"],
+      "JP":["ja","en"], "NI":["es","en"], "NE":["fr","en"], "NG":["en",""], "NU":["en",""],
+      "OM":["ar","en"], "PK":["ur","en"], "PW":["en",""], "PA":["es","en"], "PG":["en",""],
+      "PY":["gn","en"], "PE":["es","en"], "PH":["en",""], "FR":["fr","en"], "FI":["fi","en"],
+      "PF":["fr","en"], "PR":["es","en"], "QA":["ar","en"], "MP":["en",""], "KY":["en",""],
+      "CC":["en",""], "CK":["en",""], "FK":["en",""], "FO":["fo","en"], "HM":["en",""],
+      "MH":["en",""], "PN":["en",""], "SB":["en",""], "TC":["en",""], "VG":["en",""],
+      "VI":["en",""], "AX":["sv","en"], "RO":["ro","en"], "RW":["rw","en"], "RE":["fr","en"],
+      "PM":["fr","en"], "WS":["sm","en"], "AS":["sm","en"], "SM":["it","en"], "SN":["fr","en"],
+      "RS":["sr","en"], "SC":["fr","en"], "SL":["en",""], "SG":["en",""], "SX":["en",""],
+      "SK":["sk","en"], "SI":["sl","en"], "SO":["so","en"], "LK":["si","en"], "BL":["fr","en"],
+      "SH":["en",""], "KN":["en",""], "LC":["en",""], "MF":["fr","en"], "VC":["en",""],
+      "SD":["en",""], "SR":["nl","en"], "SJ":["no","en"], "SY":["ar","en"], "ST":["pt","en"],
+      "CZ":["cs","en"], "CY":["el","en"], "TJ":["tg","en"], "TZ":["sw","en"], "VA":["it","en"],
+      "TH":["th","en"], "TR":["tr","en"], "CH":["de","en"], "SE":["sv","en"], "TL":["pt","en"],
+      "TG":["fr","en"], "TK":["en",""], "TO":["to","en"], "TT":["en",""], "KP":["ko","en"],
+      "CN":["zh-CN","en"], "TN":["ar","en"], "TM":["tk","en"], "TV":["en",""], "ES":["es","en"],
+      "EH":["ar","en"], "UG":["sw","en"], "UA":["uk","en"], "UY":["es","en"], "UZ":["uz","en"],
+      "VU":["bi","en"], "VE":["es","en"], "VN":["vi","en"], "GB":["en",""], "WF":["fr","en"],
+      "YE":["ar","en"], "ZM":["en",""], "ZW":["sn","en"], "AT":["de","en"], "DK":["da","en"],
+      "TW":["zh-TW","en"], "BV":["no","en"], "CX":["en",""], "IM":["en",""], "NF":["en",""],
+      "HK":["zh-TW","en"], "MO":["zh-TW","en"], "DE":["de","en"], "SA":["ar","en"], "IN":["hi","en"]
+    });
+
+    const BUILT_IN_API_MAP = Object.freeze({
       vi: 'vi',
-      zh: 'zh',
       en: 'en',
-      'en-CA': 'en',
-      'en-AU': 'en',
+      'zh-CN': 'zh',
       fr: 'fr',
       ko: 'ko',
       ja: 'ja',
+      th: 'th',
+      de: 'de',
+      es: 'es',
       ru: 'ru',
-      es: 'es'
+      ar: 'ar'
     });
 
-    /* Trong lúc API đang tải, dùng bản gần nhất để tránh trang bị trống. */
-    const IMMEDIATE_FALLBACK_MAP = Object.freeze({
+    /* Bản hiển thị tức thời trong lúc chờ API cho các ngôn ngữ chưa có sẵn. */
+    const IMMEDIATE_API_FALLBACK_MAP = Object.freeze({
       'zh-TW': 'zh',
       hi: 'en',
       km: 'vi',
@@ -933,21 +1216,29 @@
     });
 
     const LANGUAGE_ALIASES = Object.freeze({
-      'zh-CN': 'zh',
-      'zh-Hans': 'zh',
-      'zh-Hant': 'zh-TW',
-      'en-US': 'en',
-      'en-GB': 'en',
-      'fr-FR': 'fr',
-      'ko-KR': 'ko',
-      'ja-JP': 'ja',
-      'hi-IN': 'hi',
-      'ru-RU': 'ru',
-      'km-KH': 'km',
-      'es-ES': 'es',
-      'es-CU': 'es',
-      'lo-LA': 'lo'
+      'zh-cn': 'zh',
+      'zh-hans': 'zh',
+      'zh-tw': 'zh-TW',
+      'zh-hant': 'zh-TW',
+      'en-us': 'en',
+      'en-gb': 'en',
+      'en-ca': 'en-CA',
+      'en-au': 'en-AU',
+      'fr-fr': 'api:fr',
+      'ko-kr': 'ko',
+      'ja-jp': 'ja',
+      'hi-in': 'hi',
+      'ru-ru': 'ru',
+      'km-kh': 'km',
+      'es-es': 'es',
+      'es-cu': 'es',
+      'lo-la': 'lo',
+      'de-de': 'api:de',
+      'th-th': 'api:th',
+      'ar-sa': 'api:ar'
     });
+
+    const RTL_API_BASES = new Set(['ar', 'fa', 'he', 'ur', 'dv']);
 
     const safeStorage = {
       get(key) {
@@ -963,7 +1254,7 @@
           window.localStorage.setItem(key, value);
           return true;
         } catch (error) {
-          console.warn('[NTS Language] Không thể ghi localStorage:', error);
+          console.warn('[NTS Language] Không thể ghi cache dịch:', error);
           return false;
         }
       }
@@ -981,53 +1272,78 @@
     }
 
     const translationCache = readTranslationCache();
+    const ALL_API_CODES = new Set([
+      ...Object.values(POPULAR_LANGUAGE_TARGETS).map(item => item[0]),
+      ...Object.values(COUNTRY_LANGUAGE_TARGETS).map(item => item[0])
+    ]);
+    const API_CODE_BY_LOWERCASE = Object.freeze(Object.fromEntries(
+      [...ALL_API_CODES].map(code => [String(code).toLowerCase(), code])
+    ));
+
     let cacheSaveTimer = 0;
-    let currentLanguage = 'vi';
+    let currentLanguageSelection = 'vi';
     let translationRunId = 0;
     let apiFailureCount = 0;
     let apiBlockedUntil = 0;
 
-    function normalizeLanguage(languageCode) {
+    function normalizeLanguageSelection(languageCode) {
       if (!languageCode || typeof languageCode !== 'string') return 'vi';
 
-      const normalized = languageCode.trim().replace('_', '-');
-      if (LANGUAGES[normalized]) return normalized;
-      if (LANGUAGE_ALIASES[normalized]) return LANGUAGE_ALIASES[normalized];
+      const normalized = languageCode.trim().replace(/_/g, '-');
+      if (POPULAR_LANGUAGE_TARGETS[normalized]) return normalized;
 
-      const baseCode = normalized.split('-')[0];
-      return LANGUAGES[baseCode] ? baseCode : 'vi';
+      const popularKey = Object.keys(POPULAR_LANGUAGE_TARGETS)
+        .find(key => key.toLowerCase() === normalized.toLowerCase());
+      if (popularKey) return popularKey;
+
+      const countryMatch = normalized.match(/^country-([a-z]{2})$/i);
+      if (countryMatch) {
+        const countryCode = countryMatch[1].toUpperCase();
+        if (COUNTRY_LANGUAGE_TARGETS[countryCode]) return `country-${countryCode}`;
+      }
+
+      const alias = LANGUAGE_ALIASES[normalized.toLowerCase()];
+      if (alias) return alias;
+
+      const canonicalApi = API_CODE_BY_LOWERCASE[normalized.toLowerCase()];
+      if (canonicalApi) return `api:${canonicalApi}`;
+
+      const baseApi = API_CODE_BY_LOWERCASE[normalized.split('-')[0].toLowerCase()];
+      if (baseApi) return `api:${baseApi}`;
+
+      return 'vi';
     }
 
-    function getLanguageFromUrl() {
-      try {
-        const value = new URL(window.location.href).searchParams.get('lang');
-        return value ? normalizeLanguage(value) : null;
-      } catch (error) {
-        return null;
+    function getLanguageConfig(languageSelection) {
+      const selection = normalizeLanguageSelection(languageSelection);
+
+      if (POPULAR_LANGUAGE_TARGETS[selection]) {
+        const [api, fallbackApi] = POPULAR_LANGUAGE_TARGETS[selection];
+        return { selection, api, fallbackApi };
       }
+
+      const countryMatch = selection.match(/^country-([A-Z]{2})$/);
+      if (countryMatch && COUNTRY_LANGUAGE_TARGETS[countryMatch[1]]) {
+        const [api, fallbackApi] = COUNTRY_LANGUAGE_TARGETS[countryMatch[1]];
+        return { selection, api, fallbackApi };
+      }
+
+      if (selection.startsWith('api:')) {
+        const api = selection.slice(4);
+        return { selection, api, fallbackApi: api === 'en' ? '' : 'en' };
+      }
+
+      return { selection: 'vi', api: 'vi', fallbackApi: '' };
     }
 
     function getSavedLanguage() {
-      /* Luôn ưu tiên ngôn ngữ mà trang chủ đã lưu. */
+      /* Luôn ưu tiên đúng lựa chọn mà trang chủ đã lưu. */
       const homeLanguage = safeStorage.get(LANGUAGE_STORAGE_KEY);
-      if (homeLanguage) return normalizeLanguage(homeLanguage);
+      if (homeLanguage) return normalizeLanguageSelection(homeLanguage);
 
-      /* Chỉ dùng ?lang= khi người dùng chưa từng chọn ngôn ngữ ở trang chủ. */
-      const urlLanguage = getLanguageFromUrl();
-      if (urlLanguage) {
-        safeStorage.set(LANGUAGE_STORAGE_KEY, urlLanguage);
-        return urlLanguage;
-      }
-
-      /* Tự chuyển dữ liệu từ phiên bản cũ sang khóa của trang chủ. */
+      /* Chỉ dùng khóa cũ khi siteLang chưa tồn tại; trang này không ghi ngược lại. */
       const legacyLanguage = safeStorage.get(LEGACY_LANGUAGE_STORAGE_KEY);
-      if (legacyLanguage) {
-        const migratedLanguage = normalizeLanguage(legacyLanguage);
-        safeStorage.set(LANGUAGE_STORAGE_KEY, migratedLanguage);
-        return migratedLanguage;
-      }
-
-      return 'vi';
+      return legacyLanguage ? normalizeLanguageSelection(legacyLanguage) : 'vi';
     }
 
     function scheduleCacheSave() {
@@ -1045,24 +1361,49 @@
       return textarea.value;
     }
 
-    function getImmediateDictionary(languageCode) {
-      const builtInCode = BUILT_IN_LANGUAGE_MAP[languageCode]
-        || IMMEDIATE_FALLBACK_MAP[languageCode]
-        || 'vi';
+    function getBuiltInDictionaryByApi(apiCode) {
+      const dictionaryKey = BUILT_IN_API_MAP[apiCode];
+      return dictionaryKey ? TRANSLATIONS[dictionaryKey] || null : null;
+    }
 
-      return TRANSLATIONS[builtInCode] || TRANSLATIONS.vi;
+    function getImmediateDictionary(languageSelection) {
+      const config = getLanguageConfig(languageSelection);
+      const targetDictionary = getBuiltInDictionaryByApi(config.api);
+      if (targetDictionary) return targetDictionary;
+
+      const immediateKey = IMMEDIATE_API_FALLBACK_MAP[config.api];
+      const immediateDictionary = immediateKey ? TRANSLATIONS[immediateKey] : null;
+      const fallbackDictionary = getBuiltInDictionaryByApi(config.fallbackApi);
+      const baseDictionary = immediateDictionary || fallbackDictionary || TRANSLATIONS.vi;
+      const dictionary = {};
+
+      Object.entries(TRANSLATIONS.vi).forEach(function useCacheOrFallback([key, sourceText]) {
+        dictionary[key] = translationCache[`${config.api}|${sourceText}`]
+          || (config.fallbackApi ? translationCache[`${config.fallbackApi}|${sourceText}`] : '')
+          || baseDictionary[key]
+          || sourceText;
+      });
+
+      return dictionary;
     }
 
     function applyTranslationValue(key, value) {
-      if (!value) return;
+      if (typeof value !== 'string' || !value) return;
 
       if (key === 'page.title') {
         document.title = value;
-        return;
       }
 
       document.querySelectorAll('[data-i18n]').forEach(function updateElement(element) {
         if (element.dataset.i18n === key) element.textContent = value;
+      });
+
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(function updatePlaceholder(element) {
+        if (element.dataset.i18nPlaceholder === key) element.setAttribute('placeholder', value);
+      });
+
+      document.querySelectorAll('[data-i18n-aria-label]').forEach(function updateAriaLabel(element) {
+        if (element.dataset.i18nAriaLabel === key) element.setAttribute('aria-label', value);
       });
     }
 
@@ -1078,31 +1419,25 @@
     }
 
     function applyDictionary(dictionary) {
-      Object.entries(dictionary).forEach(function applyEntry(entry) {
-        applyTranslationValue(entry[0], entry[1]);
+      Object.entries(dictionary).forEach(function applyEntry([key, value]) {
+        applyTranslationValue(key, value);
       });
       updateImageAlternativeText(dictionary);
     }
 
-    async function requestApiTranslation(sourceText, languageCode) {
-      const targetLanguage = LANGUAGES[languageCode]?.api || 'en';
-      if (!sourceText || languageCode === 'vi') return sourceText;
+    async function requestApiTranslation(sourceText, targetLanguage) {
+      if (!sourceText || targetLanguage === 'vi') return sourceText;
 
       const cacheKey = `${targetLanguage}|${sourceText}`;
       if (translationCache[cacheKey]) return translationCache[cacheKey];
 
-      if (navigator.onLine === false) {
-        throw new Error('Thiết bị đang ngoại tuyến');
-      }
-
+      if (navigator.onLine === false) throw new Error('Thiết bị đang ngoại tuyến');
       if (Date.now() < apiBlockedUntil) {
         throw new Error('Translation API tạm nghỉ sau nhiều lần kết nối thất bại');
       }
 
       const controller = new AbortController();
-      const timeoutId = window.setTimeout(function abortRequest() {
-        controller.abort();
-      }, API_TIMEOUT_MS);
+      const timeoutId = window.setTimeout(() => controller.abort(), API_TIMEOUT_MS);
 
       try {
         const endpoint = new URL('https://api.mymemory.translated.net/get');
@@ -1112,6 +1447,7 @@
         const response = await fetch(endpoint, {
           headers: { Accept: 'application/json' },
           credentials: 'omit',
+          cache: 'force-cache',
           referrerPolicy: 'no-referrer',
           signal: controller.signal
         });
@@ -1120,7 +1456,8 @@
 
         const payload = await response.json();
         const translatedText = payload?.responseData?.translatedText;
-        if (!translatedText) throw new Error('Translation API trả về nội dung rỗng');
+        const match = Number(payload?.responseData?.match ?? 1);
+        if (!translatedText || match === 0) throw new Error('Translation API không hỗ trợ ngôn ngữ này');
 
         const decodedText = decodeHtmlEntities(translatedText);
         translationCache[cacheKey] = decodedText;
@@ -1155,20 +1492,35 @@
       return results;
     }
 
-    async function translateMissingLanguage(languageCode, runId) {
-      if (BUILT_IN_LANGUAGE_MAP[languageCode]) return;
+    async function translateMissingLanguage(languageSelection, runId) {
+      const config = getLanguageConfig(languageSelection);
+      if (getBuiltInDictionaryByApi(config.api)) return;
 
       const sourceDictionary = TRANSLATIONS.vi;
-      const fallbackDictionary = getImmediateDictionary(languageCode);
+      const immediateDictionary = getImmediateDictionary(languageSelection);
+      const fallbackDictionary = getBuiltInDictionaryByApi(config.fallbackApi);
       const keys = Object.keys(sourceDictionary);
       const translatedDictionary = {};
 
       await mapWithConcurrency(keys, API_CONCURRENCY, async function translateKey(key) {
+        const sourceText = sourceDictionary[key];
         try {
-          translatedDictionary[key] = await requestApiTranslation(sourceDictionary[key], languageCode);
-        } catch (error) {
-          console.warn(`[NTS Language] Không thể dịch khóa "${key}":`, error);
-          translatedDictionary[key] = fallbackDictionary[key] || sourceDictionary[key];
+          translatedDictionary[key] = await requestApiTranslation(sourceText, config.api);
+        } catch (primaryError) {
+          const preferredImmediateKey = IMMEDIATE_API_FALLBACK_MAP[config.api];
+          if (preferredImmediateKey && immediateDictionary?.[key]) {
+            translatedDictionary[key] = immediateDictionary[key];
+          } else if (fallbackDictionary?.[key]) {
+            translatedDictionary[key] = fallbackDictionary[key];
+          } else if (config.fallbackApi && config.fallbackApi !== config.api) {
+            try {
+              translatedDictionary[key] = await requestApiTranslation(sourceText, config.fallbackApi);
+            } catch (fallbackError) {
+              translatedDictionary[key] = immediateDictionary[key] || sourceText;
+            }
+          } else {
+            translatedDictionary[key] = immediateDictionary[key] || sourceText;
+          }
         }
 
         if (runId === translationRunId) {
@@ -1176,60 +1528,49 @@
         }
       });
 
-      if (runId === translationRunId) {
-        updateImageAlternativeText(translatedDictionary);
-      }
+      if (runId === translationRunId) updateImageAlternativeText(translatedDictionary);
     }
 
-    async function applyLanguage(languageCode, options) {
-      const settings = Object.assign({ persist: false }, options);
-      const normalizedLanguage = normalizeLanguage(languageCode);
+    async function applyLanguage(languageSelection) {
+      const normalizedSelection = normalizeLanguageSelection(languageSelection);
+      const config = getLanguageConfig(normalizedSelection);
       const runId = ++translationRunId;
 
-      currentLanguage = normalizedLanguage;
-      if (settings.persist) safeStorage.set(LANGUAGE_STORAGE_KEY, normalizedLanguage);
-
-      const language = LANGUAGES[normalizedLanguage];
-      document.documentElement.lang = language.api;
-      document.documentElement.dir = 'ltr';
-      document.documentElement.dataset.language = normalizedLanguage;
+      currentLanguageSelection = config.selection;
+      document.documentElement.lang = config.api;
+      document.documentElement.dir = RTL_API_BASES.has(config.api.split('-')[0].toLowerCase()) ? 'rtl' : 'ltr';
+      document.documentElement.dataset.language = config.selection;
+      document.documentElement.dataset.languageApi = config.api;
       document.documentElement.setAttribute('aria-busy', 'true');
 
-      /* Hiển thị tức thì bằng bản có sẵn, sau đó API cập nhật ngôn ngữ còn thiếu. */
-      applyDictionary(getImmediateDictionary(normalizedLanguage));
-      await translateMissingLanguage(normalizedLanguage, runId);
+      /* Hiển thị tức thì bằng bản dịch có sẵn/cache, sau đó mới gọi API nếu cần. */
+      applyDictionary(getImmediateDictionary(config.selection));
+      await translateMissingLanguage(config.selection, runId);
 
       if (runId !== translationRunId) return;
       document.documentElement.removeAttribute('aria-busy');
 
       window.dispatchEvent(new CustomEvent('nts:languagechange', {
-        detail: { language: normalizedLanguage, api: language.api }
+        detail: { selection: config.selection, language: config.api }
       }));
     }
 
     function syncLanguageFromHome() {
       const savedLanguage = getSavedLanguage();
-      if (savedLanguage !== currentLanguage) {
-        applyLanguage(savedLanguage);
-      }
+      if (savedLanguage !== currentLanguageSelection) applyLanguage(savedLanguage);
     }
 
-    /* Cho các trang/component khác có thể gọi chung khi cần. */
+    /* Chỉ cho phép đọc/đồng bộ; trang game không cung cấp hàm đổi ngôn ngữ. */
     window.NTSLanguage = Object.freeze({
-      languages: LANGUAGES,
-      getCurrentLanguage: function getCurrentLanguage() {
-        return currentLanguage;
-      },
-      setLanguage: function setLanguage(languageCode) {
-        return applyLanguage(languageCode, { persist: true });
-      },
+      getCurrentSelection: () => currentLanguageSelection,
+      getCurrentLanguage: () => getLanguageConfig(currentLanguageSelection).api,
       sync: syncLanguageFromHome
     });
 
-    /* Lần đầu mở trang: đọc đúng khóa siteLang do trang chủ lưu. */
+    /* Lần đầu mở trang: đọc đúng siteLang mà trang chủ vừa lưu. */
     applyLanguage(getSavedLanguage());
 
-    /* Đồng bộ khi trang chủ đổi ngôn ngữ ở tab khác. */
+    /* Đồng bộ nếu trang chủ được đổi ngôn ngữ ở một tab khác. */
     window.addEventListener('storage', function handleStorageChange(event) {
       if (event.key === LANGUAGE_STORAGE_KEY) {
         applyLanguage(event.newValue || 'vi');
@@ -1239,16 +1580,14 @@
       if (event.key === TRANSLATION_CACHE_KEY && event.newValue) {
         try {
           const updatedCache = JSON.parse(event.newValue);
-          if (updatedCache && typeof updatedCache === 'object') {
-            Object.assign(translationCache, updatedCache);
-          }
+          if (updatedCache && typeof updatedCache === 'object') Object.assign(translationCache, updatedCache);
         } catch (error) {
           console.warn('[NTS Language] Không thể nhận cache từ trang chủ:', error);
         }
       }
     });
 
-    /* Đồng bộ khi quay lại bằng nút Back/Forward hoặc mở lại tab. */
+    /* Đồng bộ khi quay lại bằng Back/Forward, chuyển tab hoặc lấy lại focus. */
     window.addEventListener('pageshow', syncLanguageFromHome);
     window.addEventListener('focus', syncLanguageFromHome);
     document.addEventListener('visibilitychange', function handleVisibilityChange() {
@@ -1256,40 +1595,93 @@
     });
 
     /* ================================================================
-       MUSIC CONTROL
+       GAME SEARCH + SOURCE VIEW DETERRENCE
        ================================================================ */
-    document.addEventListener('DOMContentLoaded', function() {
-      const music        = document.getElementById('backgroundMusic');
-      const musicControl = document.getElementById('musicControl');
-      let isPlaying = false;
+    document.addEventListener('DOMContentLoaded', function initializeGameTools() {
+      const searchInput = document.getElementById('gameSearch');
+      const clearButton = document.getElementById('clearGameSearch');
+      const noResults = document.getElementById('gameNoResults');
+      const visibleCount = document.getElementById('visibleGameCount');
+      const totalCount = document.getElementById('totalGameCount');
+      const sourceGuardToast = document.getElementById('sourceGuardToast');
+      const gameCards = Array.from(document.querySelectorAll('#gameGrid .game-card'));
+      let toastTimer = 0;
 
-      music.volume = 0.3;
+      function normalizeSearchText(value) {
+        return String(value || '')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/[đĐ]/g, 'd')
+          .toLowerCase()
+          .trim();
+      }
 
-      const playPromise = music.play();
-      if (playPromise !== undefined) {
-        playPromise.then(function() {
-          isPlaying = true;
-          musicControl.querySelector('i').className = 'fas fa-pause text-xl';
-          musicControl.classList.add('animate-pulse');
-        }).catch(function() {
-          isPlaying = false;
-          musicControl.querySelector('i').className = 'fas fa-play text-xl';
+      function filterGames() {
+        const query = normalizeSearchText(searchInput ? searchInput.value : '');
+        let visibleGames = 0;
+
+        gameCards.forEach(function updateCard(card) {
+          const title = card.querySelector('h2')?.textContent || '';
+          const description = card.querySelector('p')?.textContent || '';
+          const imageAlternative = card.querySelector('img')?.alt || '';
+          const destination = card.querySelector('a[href]')?.getAttribute('href') || '';
+          const searchableText = normalizeSearchText(`${title} ${description} ${imageAlternative} ${destination}`);
+          const shouldShow = !query || searchableText.includes(query);
+
+          card.classList.toggle('search-hidden', !shouldShow);
+          if (shouldShow) visibleGames += 1;
+        });
+
+        if (visibleCount) visibleCount.textContent = String(visibleGames);
+        if (totalCount) totalCount.textContent = String(gameCards.length);
+        if (noResults) noResults.classList.toggle('is-visible', visibleGames === 0);
+        if (clearButton) clearButton.classList.toggle('is-visible', Boolean(searchInput && searchInput.value));
+      }
+
+      function showSourceGuardNotice() {
+        if (!sourceGuardToast) return;
+        sourceGuardToast.classList.add('is-visible');
+        window.clearTimeout(toastTimer);
+        toastTimer = window.setTimeout(function hideSourceGuardNotice() {
+          sourceGuardToast.classList.remove('is-visible');
+        }, 2800);
+      }
+
+      if (searchInput) searchInput.addEventListener('input', filterGames);
+
+      if (clearButton) {
+        clearButton.addEventListener('click', function clearSearch() {
+          if (!searchInput) return;
+          searchInput.value = '';
+          filterGames();
+          searchInput.focus();
         });
       }
 
-      musicControl.addEventListener('click', function() {
-        if (isPlaying) {
-          music.pause();
-          musicControl.querySelector('i').className = 'fas fa-play text-xl';
-          musicControl.classList.remove('animate-pulse');
-        } else {
-          music.play();
-          musicControl.querySelector('i').className = 'fas fa-pause text-xl';
-          musicControl.classList.add('animate-pulse');
-        }
-        isPlaying = !isPlaying;
+      document.addEventListener('contextmenu', function blockContextMenu(event) {
+        event.preventDefault();
+        showSourceGuardNotice();
       });
+
+      document.addEventListener('keydown', function blockCommonSourceShortcuts(event) {
+        const key = String(event.key || '').toLowerCase();
+        const ctrlOrMeta = event.ctrlKey || event.metaKey;
+        const windowsDevToolsShortcut = event.ctrlKey && event.shiftKey && ['i', 'j', 'c', 'k'].includes(key);
+        const macDevToolsShortcut = event.metaKey && event.altKey && ['i', 'j', 'c', 'u'].includes(key);
+        const viewSourceShortcut = ctrlOrMeta && key === 'u';
+        const savePageShortcut = ctrlOrMeta && key === 's';
+        const blocked = key === 'f12' || windowsDevToolsShortcut || macDevToolsShortcut || viewSourceShortcut || savePageShortcut;
+
+        if (!blocked) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        showSourceGuardNotice();
+      }, true);
+
+      window.addEventListener('nts:languagechange', filterGames);
+      filterGames();
     });
+
     </script>
 </body>
 </html>
