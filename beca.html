@@ -286,7 +286,7 @@
   </div>
 
   <canvas id="aquarium" aria-label="Đại dương tương tác với cá voi xanh, cá heo, cá mập, cá, cua và rong biển"></canvas>
-  <div class="hint">Chạm cá mập để nó nổi điên, chạm cá heo để nó bơi vòng tròn, chạm chỗ trống để thả thức ăn</div>
+  <div class="hint">Chạm vào màn hình để thả thức ăn</div>
 
   <script>
     "use strict";
@@ -1322,6 +1322,12 @@
         const length = this.length;
         const height = this.height;
         const species = this.species;
+        const mouthPulse = (Math.sin(time * 0.0044 + this.phase * 1.9) + 1) * 0.5;
+        const mouthOpen = clamp(
+          0.06 + mouthPulse * 0.26 + (this.targetFood ? 0.16 : 0),
+          0.04,
+          0.42
+        );
 
         ctx.save();
         ctx.translate(this.x, this.y);
@@ -1540,11 +1546,41 @@
         );
         ctx.fill();
 
-        // Miệng.
-        ctx.strokeStyle = "rgba(30, 25, 18, 0.54)";
-        ctx.lineWidth = 0.8;
+        // Miệng há khép nhẹ theo nhịp bơi để cá trông sống động hơn.
+        const mouthX = length * 0.50;
+        const mouthY = height * 0.03;
+        const mouthTipX = length * 0.56;
+        const jawDrop = height * (0.04 + mouthOpen * 0.18);
+
+        ctx.fillStyle = "rgba(38, 24, 18, 0.18)";
         ctx.beginPath();
-        ctx.arc(length * 0.53, height * 0.03, length * 0.055, -0.65, 0.65);
+        ctx.moveTo(mouthX - length * 0.018, mouthY - height * 0.010);
+        ctx.quadraticCurveTo(length * 0.55, mouthY + jawDrop * 0.18, mouthTipX, mouthY);
+        ctx.quadraticCurveTo(
+          length * 0.53,
+          mouthY + jawDrop * 0.64,
+          mouthX - length * 0.006,
+          mouthY + jawDrop * 0.58
+        );
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.strokeStyle = "rgba(42, 30, 22, 0.70)";
+        ctx.lineWidth = Math.max(0.75, length * 0.0065);
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(mouthX - length * 0.012, mouthY - height * 0.010);
+        ctx.quadraticCurveTo(length * 0.545, mouthY - height * 0.020, mouthTipX, mouthY);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(mouthX, mouthY + height * 0.012);
+        ctx.quadraticCurveTo(
+          length * 0.545,
+          mouthY + jawDrop * 0.92,
+          mouthTipX - length * 0.002,
+          mouthY + jawDrop * 0.68
+        );
         ctx.stroke();
 
         // Cá thần tiên có hai sợi vây dài.
@@ -2135,6 +2171,12 @@
         const height = this.height;
         const tailWave = Math.sin(time * 0.0048 + this.phase) * 0.14;
         const finWave = Math.sin(time * 0.0021 + this.phase) * 0.055;
+        const mouthPulse = (Math.sin(time * 0.0032 + this.phase * 1.5) + 1) * 0.5;
+        const mouthOpen = clamp(
+          0.02 + mouthPulse * 0.14 + (this.circleTimer > 0 ? 0.03 : 0),
+          0.02,
+          0.18
+        );
 
         ctx.save();
         ctx.translate(this.x, this.y);
@@ -2263,11 +2305,50 @@
         ctx.ellipse(length * 0.17, -height * 0.62, length * 0.017, height * 0.028, -0.06, 0, Math.PI * 2);
         ctx.fill();
 
+        const mouthStartX = length * 0.332;
+        const mouthTipX = length * 0.558;
+        const mouthBaseY = height * 0.048;
+        const jawDrop = height * (0.03 + mouthOpen * 0.55);
+
+        ctx.fillStyle = "rgba(12, 27, 35, 0.18)";
+        ctx.beginPath();
+        ctx.moveTo(mouthStartX, mouthBaseY);
+        ctx.quadraticCurveTo(
+          length * 0.46,
+          mouthBaseY + jawDrop * 0.24,
+          mouthTipX,
+          mouthBaseY + jawDrop * 0.06
+        );
+        ctx.quadraticCurveTo(
+          length * 0.47,
+          mouthBaseY + jawDrop * 0.78,
+          mouthStartX + length * 0.010,
+          mouthBaseY + jawDrop * 0.46
+        );
+        ctx.closePath();
+        ctx.fill();
+
         ctx.strokeStyle = "rgba(20, 42, 51, 0.82)";
         ctx.lineWidth = Math.max(0.65, length * 0.0026);
+        ctx.lineCap = "round";
         ctx.beginPath();
-        ctx.moveTo(length * 0.34, height * 0.055);
-        ctx.quadraticCurveTo(length * 0.45, height * 0.105, length * 0.558, height * 0.035);
+        ctx.moveTo(mouthStartX, mouthBaseY);
+        ctx.quadraticCurveTo(
+          length * 0.44,
+          mouthBaseY - height * 0.008,
+          mouthTipX,
+          mouthBaseY - height * 0.012
+        );
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(mouthStartX + length * 0.008, mouthBaseY + height * 0.016);
+        ctx.quadraticCurveTo(
+          length * 0.455,
+          mouthBaseY + jawDrop * 0.86,
+          mouthTipX,
+          mouthBaseY + jawDrop * 0.50
+        );
         ctx.stroke();
 
         // Fine crease separating melon and beak.
@@ -2402,6 +2483,12 @@
         const height = this.height;
         const tailWave = Math.sin(time * 0.0054 + this.phase) * (0.18 + (this.speedBoost > 0 ? 0.08 : 0));
         const finWave = Math.sin(time * 0.0027 + this.phase) * 0.035;
+        const mouthPulse = (Math.sin(time * 0.0036 + this.phase * 1.7) + 1) * 0.5;
+        const mouthOpen = clamp(
+          0.08 + mouthPulse * 0.20 + (this.rageTimer > 0 ? 0.18 : 0),
+          0.08,
+          0.42
+        );
 
         ctx.save();
         ctx.translate(this.x + cameraX * 6 * this.depth, this.y + cameraY * 4 * this.depth);
@@ -2544,13 +2631,70 @@
           ctx.stroke();
         }
 
-        // Miệng và đường bên.
-        ctx.strokeStyle = "rgba(24, 42, 47, 0.72)";
-        ctx.lineWidth = Math.max(0.8, length * 0.004);
+        // Miệng há khép có phần hàm dưới và răng nhỏ để nhìn thật hơn.
+        const mouthStartX = length * 0.37;
+        const mouthTipX = length * 0.55;
+        const mouthY = height * 0.18;
+        const jawDrop = height * (0.08 + mouthOpen * 0.75);
+
+        ctx.fillStyle = this.rageTimer > 0
+          ? "rgba(104, 17, 17, 0.34)"
+          : "rgba(32, 16, 14, 0.26)";
         ctx.beginPath();
-        ctx.moveTo(length * 0.38, height * 0.20);
-        ctx.quadraticCurveTo(length * 0.48, height * 0.32, length * 0.55, height * 0.13);
+        ctx.moveTo(mouthStartX, mouthY);
+        ctx.quadraticCurveTo(length * 0.46, mouthY + jawDrop * 0.15, mouthTipX, mouthY - height * 0.008);
+        ctx.quadraticCurveTo(
+          length * 0.47,
+          mouthY + jawDrop,
+          mouthStartX + length * 0.012,
+          mouthY + jawDrop * 0.68
+        );
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.strokeStyle = "rgba(24, 42, 47, 0.76)";
+        ctx.lineWidth = Math.max(0.8, length * 0.004);
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(mouthStartX, mouthY);
+        ctx.quadraticCurveTo(length * 0.47, mouthY + height * 0.04, mouthTipX, mouthY - height * 0.012);
         ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(mouthStartX + length * 0.008, mouthY + height * 0.02);
+        ctx.quadraticCurveTo(
+          length * 0.47,
+          mouthY + jawDrop * 1.02,
+          mouthTipX - length * 0.004,
+          mouthY + jawDrop * 0.62
+        );
+        ctx.stroke();
+
+        const teethCount = this.isBoss ? 8 : 6;
+        ctx.fillStyle = "rgba(246, 248, 245, 0.96)";
+        for (let toothIndex = 0; toothIndex < teethCount; toothIndex += 1) {
+          const t = teethCount === 1 ? 0.5 : toothIndex / (teethCount - 1);
+          const toothX = lerp(mouthStartX + length * 0.018, mouthTipX - length * 0.03, t);
+          const toothSpread = Math.sin(t * Math.PI);
+          const upperY = mouthY + height * (0.006 + toothSpread * 0.008);
+          const toothHeight = height * (0.028 + mouthOpen * 0.11) * (0.75 + toothSpread * 0.28);
+          const toothHalfWidth = Math.max(1.1, length * 0.0058 * (0.72 + toothSpread * 0.18));
+
+          ctx.beginPath();
+          ctx.moveTo(toothX - toothHalfWidth, upperY);
+          ctx.lineTo(toothX + toothHalfWidth, upperY);
+          ctx.lineTo(toothX, upperY + toothHeight);
+          ctx.closePath();
+          ctx.fill();
+
+          const lowerBaseY = mouthY + jawDrop * (0.60 + toothSpread * 0.10);
+          ctx.beginPath();
+          ctx.moveTo(toothX - toothHalfWidth * 0.84, lowerBaseY);
+          ctx.lineTo(toothX + toothHalfWidth * 0.84, lowerBaseY);
+          ctx.lineTo(toothX, lowerBaseY - toothHeight * 0.52);
+          ctx.closePath();
+          ctx.fill();
+        }
 
         ctx.strokeStyle = "rgba(42, 72, 80, 0.24)";
         ctx.lineWidth = Math.max(0.6, length * 0.003);
@@ -3667,8 +3811,7 @@
         nearby[index].targetFood = foods[foods.length - 1 - (index % amount)];
       }
 
-      // Sinh vật lớn không tranh thức ăn; chúng tránh cú chạm như ngoài tự nhiên.
-      for (const shark of sharks) shark.startle(safeX, safeY);
+      // Cua có thể phản ứng khi thức ăn rơi gần; cá mập và cá heo không có hiệu ứng khi nhấn.
       for (const crab of crabs) crab.startle(safeX, safeY);
     }
 
@@ -3678,25 +3821,6 @@
         x: event.clientX - rect.left,
         y: event.clientY - rect.top
       };
-    }
-
-    function handleCreatureTap(x, y) {
-      const bossFirst = [...sharks].sort((a, b) => Number(b.isBoss) - Number(a.isBoss));
-      for (const shark of bossFirst) {
-        if (!shark.containsPoint(x, y)) continue;
-        shark.enrage();
-        ripples.push(new Ripple(x, y));
-        return true;
-      }
-
-      for (const dolphin of dolphins) {
-        if (!dolphin.containsPoint(x, y)) continue;
-        dolphin.startCircleSwim();
-        ripples.push(new Ripple(x, y));
-        return true;
-      }
-
-      return false;
     }
 
     canvas.addEventListener("pointermove", event => {
@@ -3713,7 +3837,6 @@
 
     canvas.addEventListener("pointerdown", event => {
       const position = pointerPosition(event);
-      if (handleCreatureTap(position.x, position.y)) return;
       releaseFood(position.x, position.y);
     });
 
