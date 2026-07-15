@@ -269,7 +269,7 @@ button,input,select{font:inherit}
       <p><strong>7. Kết thúc trận</strong><br>Khi thắng, thua hoặc hòa, bạn có thể chọn Đấu lại hoặc Thoát.</p>
     </div>
     <div class="wizard-actions">
-      <a class="wizard-btn" href="game.html" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none"><i class="fa-solid fa-arrow-left"></i>&nbsp; Quay lại game</a>
+      <a class="wizard-btn" href="game.html" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none"><i class="fa-solid fa-arrow-left"></i>&nbsp; Quay lại</a>
       <button class="wizard-btn next" onclick="closeGuide()">Đã hiểu</button>
     </div>
   </div>
@@ -338,7 +338,7 @@ function showToast(text, type = 'warn'){
 function setupSourceProtection(){
   document.addEventListener('contextmenu', e => {
     e.preventDefault();
-    showToast('Không thể mở menu chuột phải. Chức năng xem mã nguồn đã bị chặn.');
+    showToast('Chức năng xem mã nguồn đã bị chặn.');
   });
   document.addEventListener('keydown', e => {
     const key = (e.key || '').toLowerCase();
