@@ -4,12 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#667eea" />
+  <meta name="qr-language-sync-version" content="2026-07-21-v3-fast" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="format-detection" content="telephone=no" />
-  <title>Trình tạo QR</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <title data-i18n="title">Trình tạo QR</title>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
   <style>
     * {
       margin: 0;
@@ -71,6 +72,7 @@
       background-clip: text;
       color: transparent;
     }
+
 
     .note {
       margin-bottom: 20px;
@@ -464,18 +466,18 @@
 </head>
 <body>
   <main class="container">
-    <h1>Trình tạo QR</h1>
+    <h1 data-i18n="heading">Trình tạo QR</h1>
   
     <div class="form-group">
-      <label for="linkInput">🔗 Đường link cần tạo QR</label>
-      <input type="url" id="linkInput" placeholder="https://example.com" autocomplete="off" />
+      <label for="linkInput" data-i18n="linkLabel">🔗 Đường link cần tạo QR</label>
+      <input type="url" id="linkInput" placeholder="https://example.com" data-i18n-placeholder="linkPlaceholder" autocomplete="off" />
     </div>
 
     <div class="form-group">
-      <label for="imageInput">🖼️ Tải ảnh dùng làm nền</label>
+      <label for="imageInput" data-i18n="imageLabel">🖼️ Tải ảnh dùng làm nền</label>
       <input type="file" id="imageInput" accept="image/png,image/jpeg,image/webp,image/gif" />
       <div class="preview-wrap" id="previewWrap">
-        <img id="imagePreview" alt="Ảnh nền đã chọn" />
+        <img id="imagePreview" alt="Ảnh nền đã chọn" data-i18n-alt="imageAlt" />
       </div>
     </div>
 
@@ -483,10 +485,10 @@
       <div class="control-card">
         <div class="switch-row">
           <div>
-            <strong>Dùng ảnh nền</strong>
-            <div class="tech-note">Tắt để tạo QR đen trắng.</div>
+            <strong data-i18n="useBackground">Dùng ảnh nền</strong>
+            <div class="tech-note" data-i18n="useBackgroundNote">Tắt để tạo QR đen trắng.</div>
           </div>
-          <label class="switch" aria-label="Bật hoặc tắt ảnh nền">
+          <label class="switch" aria-label="Bật hoặc tắt ảnh nền" data-i18n-aria="backgroundAria">
             <input type="checkbox" id="backgroundToggle" checked />
             <span class="slider"></span>
           </label>
@@ -494,31 +496,31 @@
       </div>
 
       <div class="control-card">
-        <label for="visibilityRange">Độ nổi bật của ảnh</label>
+        <label for="visibilityRange" data-i18n="visibilityLabel">Độ nổi bật của ảnh</label>
         <div class="range-row">
           <input type="range" id="visibilityRange" min="12" max="80" value="55" step="1" />
           <span id="visibilityValue">55%</span>
         </div>
-        <div class="tech-note">Ảnh mờ: tăng lên 35–45%. Nếu khó quét: giảm xuống 20–30%.</div>
+        <div class="tech-note" data-i18n="visibilityNote">Ảnh mờ: tăng lên 35–45%. Nếu khó quét: giảm xuống 20–30%.</div>
       </div>
 
       <div class="control-card">
-        <label for="fitMode">Cách đặt ảnh</label>
+        <label for="fitMode" data-i18n="fitLabel">Cách đặt ảnh</label>
         <select id="fitMode">
-          <option value="contain" selected>Hiện toàn bộ ảnh</option>
-          <option value="auto">Tự động theo tỷ lệ ảnh</option>
-          <option value="cover">Phủ kín khung vuông</option>
+          <option value="contain" selected data-i18n="fitContain">Hiện toàn bộ ảnh</option>
+          <option value="auto" data-i18n="fitAuto">Tự động theo tỷ lệ ảnh</option>
+          <option value="cover" data-i18n="fitCover">Phủ kín khung vuông</option>
         </select>
-        <div class="tech-note">“Hiện toàn bộ ảnh” tránh cắt mất người, chữ hoặc logo. Mặc định ưu tiên quét được: ảnh nổi bật 55%, hệ thống sẽ tự giảm nếu cần để quét ổn định hơn.</div>
+        <div class="tech-note" data-i18n="fitNote">“Hiện toàn bộ ảnh” tránh cắt mất người, chữ hoặc logo. Mặc định ưu tiên quét được: ảnh nổi bật 55%, hệ thống sẽ tự giảm nếu cần để quét ổn định hơn.</div>
       </div>
 
       <div class="control-card">
         <div class="switch-row">
           <div>
-            <strong>Tự tăng độ rõ</strong>
-            <div class="tech-note">Tự xử lý riêng cho ảnh tối, ảnh trắng và ảnh ít tương phản.</div>
+            <strong data-i18n="enhanceLabel">Tự tăng độ rõ</strong>
+            <div class="tech-note" data-i18n="enhanceNote">Tự xử lý riêng cho ảnh tối, ảnh trắng và ảnh ít tương phản.</div>
           </div>
-          <label class="switch" aria-label="Bật hoặc tắt tự tăng độ rõ">
+          <label class="switch" aria-label="Bật hoặc tắt tự tăng độ rõ" data-i18n-aria="enhanceAria">
             <input type="checkbox" id="enhanceToggle" checked />
             <span class="slider"></span>
           </label>
@@ -526,21 +528,281 @@
       </div>
     </div>
 
-    <div id="statusText" class="status">Chưa tạo mã QR.</div>
+    <div id="statusText" class="status" data-i18n="statusInitial">Chưa tạo mã QR.</div>
 
     <div class="action-grid">
-      <button type="button" class="generate-button" id="generateButton">✨ Tạo mã QR</button>
-      <button type="button" class="download-button" id="downloadButton">⬇ Tải mã QR PNG</button>
-      <a href="index.html" class="back-button">↩ Quay lại</a>
+      <button type="button" class="generate-button" id="generateButton" data-i18n="generateButton">✨ Tạo mã QR</button>
+      <button type="button" class="download-button" id="downloadButton" data-i18n="downloadButton">⬇ Tải mã QR PNG</button>
+      <a href="index.html" class="back-button" data-i18n="backButton">↩ Quay lại</a>
     </div>
 
     <section class="qr-container" id="qrContainer">
-      <div class="placeholder">Mã QR sẽ xuất hiện ở đây</div>
+      <div class="placeholder" data-i18n="qrPlaceholder">Mã QR sẽ xuất hiện ở đây</div>
     </section>
   </main>
 
   <script>
     "use strict";
+
+
+    // Đồng bộ ngôn ngữ từ trang chủ qua localStorage, không cần sửa trang chủ.
+    const LANGUAGE_TARGETS = {"vi":{"api":"vi","fallback":""},"zh":{"api":"zh-CN","fallback":""},"zh-TW":{"api":"zh-TW","fallback":""},"en":{"api":"en","fallback":""},"fr":{"api":"fr","fallback":""},"ko":{"api":"ko","fallback":""},"ja":{"api":"ja","fallback":""},"hi":{"api":"hi","fallback":""},"en-CA":{"api":"en","fallback":""},"en-AU":{"api":"en","fallback":""},"ru":{"api":"ru","fallback":""},"km":{"api":"km","fallback":""},"es":{"api":"es","fallback":""},"lo":{"api":"lo","fallback":""},"country-AF":{"api":"fa","fallback":"en"},"country-EG":{"api":"ar","fallback":"en"},"country-AL":{"api":"sq","fallback":"en"},"country-DZ":{"api":"ar","fallback":"en"},"country-AD":{"api":"ca","fallback":"en"},"country-AO":{"api":"pt","fallback":"en"},"country-AI":{"api":"en","fallback":""},"country-AG":{"api":"en","fallback":""},"country-AR":{"api":"es","fallback":"en"},"country-AM":{"api":"hy","fallback":"en"},"country-AW":{"api":"nl","fallback":"en"},"country-AU":{"api":"en","fallback":""},"country-AZ":{"api":"az","fallback":"en"},"country-PL":{"api":"pl","fallback":"en"},"country-BS":{"api":"en","fallback":""},"country-BH":{"api":"ar","fallback":"en"},"country-BD":{"api":"bn","fallback":"en"},"country-BB":{"api":"en","fallback":""},"country-BY":{"api":"be","fallback":"en"},"country-BZ":{"api":"en","fallback":""},"country-BJ":{"api":"fr","fallback":"en"},"country-BM":{"api":"en","fallback":""},"country-BT":{"api":"dz","fallback":"en"},"country-BO":{"api":"es","fallback":"en"},"country-BA":{"api":"bs","fallback":"en"},"country-BW":{"api":"en","fallback":""},"country-BR":{"api":"pt","fallback":"en"},"country-BN":{"api":"ms","fallback":"en"},"country-BG":{"api":"bg","fallback":"en"},"country-BF":{"api":"fr","fallback":"en"},"country-BI":{"api":"rn","fallback":"en"},"country-MK":{"api":"mk","fallback":"en"},"country-BE":{"api":"nl","fallback":"en"},"country-PT":{"api":"pt","fallback":"en"},"country-BQ":{"api":"nl","fallback":"en"},"country-CM":{"api":"fr","fallback":"en"},"country-KH":{"api":"km","fallback":"en"},"country-CA":{"api":"en","fallback":""},"country-CV":{"api":"pt","fallback":"en"},"country-TD":{"api":"ar","fallback":"en"},"country-CL":{"api":"es","fallback":"en"},"country-CO":{"api":"es","fallback":"en"},"country-KM":{"api":"ar","fallback":"en"},"country-CG":{"api":"fr","fallback":"en"},"country-CD":{"api":"fr","fallback":"en"},"country-CR":{"api":"es","fallback":"en"},"country-HR":{"api":"hr","fallback":"en"},"country-CU":{"api":"es","fallback":"en"},"country-CW":{"api":"nl","fallback":"en"},"country-AE":{"api":"ar","fallback":"en"},"country-UM":{"api":"en","fallback":""},"country-CI":{"api":"fr","fallback":"en"},"country-DO":{"api":"es","fallback":"en"},"country-CF":{"api":"sg","fallback":"en"},"country-DJ":{"api":"fr","fallback":"en"},"country-DM":{"api":"en","fallback":""},"country-EC":{"api":"es","fallback":"en"},"country-SV":{"api":"es","fallback":"en"},"country-ER":{"api":"en","fallback":""},"country-EE":{"api":"et","fallback":"en"},"country-SZ":{"api":"en","fallback":""},"country-ET":{"api":"am","fallback":"en"},"country-FJ":{"api":"en","fallback":""},"country-GA":{"api":"fr","fallback":"en"},"country-GM":{"api":"en","fallback":""},"country-GE":{"api":"ka","fallback":"en"},"country-GH":{"api":"en","fallback":""},"country-GI":{"api":"en","fallback":""},"country-GL":{"api":"kl","fallback":"en"},"country-GD":{"api":"en","fallback":""},"country-GP":{"api":"fr","fallback":"en"},"country-GU":{"api":"ch","fallback":"en"},"country-GT":{"api":"es","fallback":"en"},"country-GG":{"api":"en","fallback":""},"country-GF":{"api":"fr","fallback":"en"},"country-GN":{"api":"fr","fallback":"en"},"country-GQ":{"api":"es","fallback":"en"},"country-GW":{"api":"pt","fallback":"en"},"country-GY":{"api":"en","fallback":""},"country-HT":{"api":"ht","fallback":"en"},"country-US":{"api":"en","fallback":""},"country-HN":{"api":"es","fallback":"en"},"country-HU":{"api":"hu","fallback":"en"},"country-GR":{"api":"el","fallback":"en"},"country-NL":{"api":"nl","fallback":"en"},"country-KR":{"api":"ko","fallback":"en"},"country-IS":{"api":"is","fallback":"en"},"country-ID":{"api":"id","fallback":"en"},"country-IR":{"api":"fa","fallback":"en"},"country-IQ":{"api":"ar","fallback":"en"},"country-IE":{"api":"en","fallback":""},"country-IL":{"api":"he","fallback":"en"},"country-IT":{"api":"it","fallback":"en"},"country-JM":{"api":"en","fallback":""},"country-JE":{"api":"en","fallback":""},"country-JO":{"api":"ar","fallback":"en"},"country-KZ":{"api":"ru","fallback":"en"},"country-KE":{"api":"sw","fallback":"en"},"country-KI":{"api":"en","fallback":""},"country-XK":{"api":"sq","fallback":"en"},"country-KW":{"api":"ar","fallback":"en"},"country-KG":{"api":"ky","fallback":"en"},"country-LV":{"api":"lv","fallback":"en"},"country-LS":{"api":"st","fallback":"en"},"country-LB":{"api":"ar","fallback":"en"},"country-LR":{"api":"en","fallback":""},"country-LY":{"api":"ar","fallback":"en"},"country-LI":{"api":"de","fallback":"en"},"country-LT":{"api":"lt","fallback":"en"},"country-LU":{"api":"fr","fallback":"en"},"country-LA":{"api":"lo","fallback":"en"},"country-PS":{"api":"ar","fallback":"en"},"country-TF":{"api":"fr","fallback":"en"},"country-IO":{"api":"en","fallback":""},"country-MA":{"api":"ar","fallback":"en"},"country-MG":{"api":"mg","fallback":"en"},"country-MW":{"api":"ny","fallback":"en"},"country-MY":{"api":"ms","fallback":"en"},"country-MV":{"api":"dv","fallback":"en"},"country-ML":{"api":"fr","fallback":"en"},"country-MT":{"api":"mt","fallback":"en"},"country-MQ":{"api":"fr","fallback":"en"},"country-MR":{"api":"ar","fallback":"en"},"country-MU":{"api":"fr","fallback":"en"},"country-YT":{"api":"fr","fallback":"en"},"country-MX":{"api":"es","fallback":"en"},"country-FM":{"api":"en","fallback":""},"country-MD":{"api":"ro","fallback":"en"},"country-MC":{"api":"fr","fallback":"en"},"country-ME":{"api":"sr","fallback":"en"},"country-MS":{"api":"en","fallback":""},"country-MZ":{"api":"pt","fallback":"en"},"country-MM":{"api":"my","fallback":"en"},"country-MN":{"api":"mn","fallback":"en"},"country-NO":{"api":"no","fallback":"en"},"country-AQ":{"api":"en","fallback":""},"country-GS":{"api":"en","fallback":""},"country-ZA":{"api":"en","fallback":""},"country-SS":{"api":"en","fallback":""},"country-NA":{"api":"en","fallback":""},"country-NR":{"api":"en","fallback":""},"country-NP":{"api":"ne","fallback":"en"},"country-NC":{"api":"fr","fallback":"en"},"country-NZ":{"api":"mi","fallback":"en"},"country-RU":{"api":"ru","fallback":"en"},"country-JP":{"api":"ja","fallback":"en"},"country-NI":{"api":"es","fallback":"en"},"country-NE":{"api":"fr","fallback":"en"},"country-NG":{"api":"en","fallback":""},"country-NU":{"api":"en","fallback":""},"country-OM":{"api":"ar","fallback":"en"},"country-PK":{"api":"ur","fallback":"en"},"country-PW":{"api":"en","fallback":""},"country-PA":{"api":"es","fallback":"en"},"country-PG":{"api":"en","fallback":""},"country-PY":{"api":"gn","fallback":"en"},"country-PE":{"api":"es","fallback":"en"},"country-PH":{"api":"en","fallback":""},"country-FR":{"api":"fr","fallback":"en"},"country-FI":{"api":"fi","fallback":"en"},"country-PF":{"api":"fr","fallback":"en"},"country-PR":{"api":"es","fallback":"en"},"country-QA":{"api":"ar","fallback":"en"},"country-MP":{"api":"en","fallback":""},"country-KY":{"api":"en","fallback":""},"country-CC":{"api":"en","fallback":""},"country-CK":{"api":"en","fallback":""},"country-FK":{"api":"en","fallback":""},"country-FO":{"api":"fo","fallback":"en"},"country-HM":{"api":"en","fallback":""},"country-MH":{"api":"en","fallback":""},"country-PN":{"api":"en","fallback":""},"country-SB":{"api":"en","fallback":""},"country-TC":{"api":"en","fallback":""},"country-VG":{"api":"en","fallback":""},"country-VI":{"api":"en","fallback":""},"country-AX":{"api":"sv","fallback":"en"},"country-RO":{"api":"ro","fallback":"en"},"country-RW":{"api":"rw","fallback":"en"},"country-RE":{"api":"fr","fallback":"en"},"country-PM":{"api":"fr","fallback":"en"},"country-WS":{"api":"sm","fallback":"en"},"country-AS":{"api":"sm","fallback":"en"},"country-SM":{"api":"it","fallback":"en"},"country-SN":{"api":"fr","fallback":"en"},"country-RS":{"api":"sr","fallback":"en"},"country-SC":{"api":"fr","fallback":"en"},"country-SL":{"api":"en","fallback":""},"country-SG":{"api":"en","fallback":""},"country-SX":{"api":"en","fallback":""},"country-SK":{"api":"sk","fallback":"en"},"country-SI":{"api":"sl","fallback":"en"},"country-SO":{"api":"so","fallback":"en"},"country-LK":{"api":"si","fallback":"en"},"country-BL":{"api":"fr","fallback":"en"},"country-SH":{"api":"en","fallback":""},"country-KN":{"api":"en","fallback":""},"country-LC":{"api":"en","fallback":""},"country-MF":{"api":"fr","fallback":"en"},"country-VC":{"api":"en","fallback":""},"country-SD":{"api":"en","fallback":""},"country-SR":{"api":"nl","fallback":"en"},"country-SJ":{"api":"no","fallback":"en"},"country-SY":{"api":"ar","fallback":"en"},"country-ST":{"api":"pt","fallback":"en"},"country-CZ":{"api":"cs","fallback":"en"},"country-CY":{"api":"el","fallback":"en"},"country-TJ":{"api":"tg","fallback":"en"},"country-TZ":{"api":"sw","fallback":"en"},"country-VA":{"api":"it","fallback":"en"},"country-TH":{"api":"th","fallback":"en"},"country-TR":{"api":"tr","fallback":"en"},"country-CH":{"api":"de","fallback":"en"},"country-SE":{"api":"sv","fallback":"en"},"country-TL":{"api":"pt","fallback":"en"},"country-TG":{"api":"fr","fallback":"en"},"country-TK":{"api":"en","fallback":""},"country-TO":{"api":"to","fallback":"en"},"country-TT":{"api":"en","fallback":""},"country-KP":{"api":"ko","fallback":"en"},"country-CN":{"api":"zh-CN","fallback":"en"},"country-TN":{"api":"ar","fallback":"en"},"country-TM":{"api":"tk","fallback":"en"},"country-TV":{"api":"en","fallback":""},"country-ES":{"api":"es","fallback":"en"},"country-EH":{"api":"ar","fallback":"en"},"country-UG":{"api":"sw","fallback":"en"},"country-UA":{"api":"uk","fallback":"en"},"country-UY":{"api":"es","fallback":"en"},"country-UZ":{"api":"uz","fallback":"en"},"country-VU":{"api":"bi","fallback":"en"},"country-VE":{"api":"es","fallback":"en"},"country-VN":{"api":"vi","fallback":"en"},"country-GB":{"api":"en","fallback":""},"country-WF":{"api":"fr","fallback":"en"},"country-YE":{"api":"ar","fallback":"en"},"country-ZM":{"api":"en","fallback":""},"country-ZW":{"api":"sn","fallback":"en"},"country-AT":{"api":"de","fallback":"en"},"country-DK":{"api":"da","fallback":"en"},"country-TW":{"api":"zh-TW","fallback":"en"},"country-BV":{"api":"no","fallback":"en"},"country-CX":{"api":"en","fallback":""},"country-IM":{"api":"en","fallback":""},"country-NF":{"api":"en","fallback":""},"country-HK":{"api":"zh-TW","fallback":"en"},"country-MO":{"api":"zh-TW","fallback":"en"},"country-DE":{"api":"de","fallback":"en"},"country-SA":{"api":"ar","fallback":"en"},"country-IN":{"api":"hi","fallback":"en"}};
+    const UI_TEXTS = {"title":{"vi":"Trình tạo QR","en":"QR Generator","zh-CN":"二维码生成器","zh-TW":"QR Code 產生器"},"heading":{"vi":"Trình tạo QR","en":"QR Generator","zh-CN":"二维码生成器","zh-TW":"QR Code 產生器"},"linkLabel":{"vi":"🔗 Đường link cần tạo QR","en":"🔗 Link to encode as QR","zh-CN":"🔗 需要生成二维码的链接","zh-TW":"🔗 要產生 QR Code 的連結"},"linkPlaceholder":{"vi":"https://example.com","en":"https://example.com","zh-CN":"https://example.com","zh-TW":"https://example.com"},"imageLabel":{"vi":"🖼️ Tải ảnh dùng làm nền","en":"🖼️ Upload a background image","zh-CN":"🖼️ 上传背景图片","zh-TW":"🖼️ 上傳背景圖片"},"imageAlt":{"vi":"Ảnh nền đã chọn","en":"Selected background image","zh-CN":"已选择的背景图片","zh-TW":"已選取的背景圖片"},"useBackground":{"vi":"Dùng ảnh nền","en":"Use background image","zh-CN":"使用背景图片","zh-TW":"使用背景圖片"},"useBackgroundNote":{"vi":"Tắt để tạo QR đen trắng.","en":"Turn off to create a black-and-white QR code.","zh-CN":"关闭后生成黑白二维码。","zh-TW":"關閉後產生黑白 QR Code。"},"backgroundAria":{"vi":"Bật hoặc tắt ảnh nền","en":"Enable or disable the background image","zh-CN":"启用或关闭背景图片","zh-TW":"開啟或關閉背景圖片"},"visibilityLabel":{"vi":"Độ nổi bật của ảnh","en":"Image visibility","zh-CN":"图片可见度","zh-TW":"圖片顯示強度"},"visibilityNote":{"vi":"Ảnh mờ: tăng lên 35–45%. Nếu khó quét: giảm xuống 20–30%.","en":"If the image is too faint, raise it to 35–45%. If scanning is difficult, lower it to 20–30%.","zh-CN":"图片太淡时可调到 35–45%；若难以扫描，请降到 20–30%。","zh-TW":"圖片太淡時可調到 35–45%；若難以掃描，請降到 20–30%。"},"fitLabel":{"vi":"Cách đặt ảnh","en":"Image fit","zh-CN":"图片适配方式","zh-TW":"圖片配置方式"},"fitContain":{"vi":"Hiện toàn bộ ảnh","en":"Show the full image","zh-CN":"显示完整图片","zh-TW":"顯示完整圖片"},"fitAuto":{"vi":"Tự động theo tỷ lệ ảnh","en":"Automatic by image ratio","zh-CN":"按图片比例自动调整","zh-TW":"依圖片比例自動調整"},"fitCover":{"vi":"Phủ kín khung vuông","en":"Fill the square frame","zh-CN":"铺满方形区域","zh-TW":"填滿方形區域"},"fitNote":{"vi":"“Hiện toàn bộ ảnh” tránh cắt mất người, chữ hoặc logo. Mặc định ưu tiên quét được: ảnh nổi bật 55%, hệ thống sẽ tự giảm nếu cần để quét ổn định hơn.","en":"“Show the full image” prevents people, text, or logos from being cropped. Scan reliability is prioritized by default: image visibility starts at 55% and is reduced automatically when needed.","zh-CN":"“显示完整图片”可避免裁掉人物、文字或标志。系统默认优先保证可扫描性：图片可见度为 55%，必要时会自动降低。","zh-TW":"「顯示完整圖片」可避免裁掉人物、文字或標誌。系統預設優先確保可掃描性：圖片顯示強度為 55%，必要時會自動降低。"},"enhanceLabel":{"vi":"Tự tăng độ rõ","en":"Auto enhance clarity","zh-CN":"自动增强清晰度","zh-TW":"自動增強清晰度"},"enhanceNote":{"vi":"Tự xử lý riêng cho ảnh tối, ảnh trắng và ảnh ít tương phản.","en":"Automatically adjusts dark, bright, and low-contrast images.","zh-CN":"自动针对暗图、亮图和低对比度图片进行处理。","zh-TW":"自動針對暗圖、亮圖與低對比圖片進行處理。"},"enhanceAria":{"vi":"Bật hoặc tắt tự tăng độ rõ","en":"Enable or disable automatic clarity enhancement","zh-CN":"启用或关闭自动清晰度增强","zh-TW":"開啟或關閉自動清晰度增強"},"statusInitial":{"vi":"Chưa tạo mã QR.","en":"No QR code has been generated yet.","zh-CN":"尚未生成二维码。","zh-TW":"尚未產生 QR Code。"},"generateButton":{"vi":"✨ Tạo mã QR","en":"✨ Generate QR code","zh-CN":"✨ 生成二维码","zh-TW":"✨ 產生 QR Code"},"downloadButton":{"vi":"⬇ Tải mã QR PNG","en":"⬇ Download QR PNG","zh-CN":"⬇ 下载二维码 PNG","zh-TW":"⬇ 下載 QR PNG"},"backButton":{"vi":"↩ Quay lại","en":"↩ Back","zh-CN":"↩ 返回","zh-TW":"↩ 返回"},"qrPlaceholder":{"vi":"Mã QR sẽ xuất hiện ở đây","en":"The QR code will appear here","zh-CN":"二维码将显示在这里","zh-TW":"QR Code 將顯示在這裡"},"sourceBlocked":{"vi":"Chức năng xem mã nguồn/kiểm tra trang đã được hạn chế.","en":"Viewing the source or inspecting the page has been restricted.","zh-CN":"查看源代码或检查页面的功能已受限。","zh-TW":"檢視原始碼或檢查頁面的功能已受限。"},"imageDark":{"vi":"ảnh tối","en":"dark image","zh-CN":"暗色图片","zh-TW":"暗色圖片","fr":"image sombre"},"imageBrightLowContrast":{"vi":"ảnh sáng, ít tương phản","en":"bright, low-contrast image","zh-CN":"明亮、低对比度图片","zh-TW":"明亮、低對比圖片","fr":"image claire à faible contraste"},"imageLowContrast":{"vi":"ảnh ít tương phản","en":"low-contrast image","zh-CN":"低对比度图片","zh-TW":"低對比圖片","fr":"image à faible contraste"},"imageColorful":{"vi":"ảnh nhiều màu","en":"colorful image","zh-CN":"多彩图片","zh-TW":"多彩圖片","fr":"image colorée"},"imageBalanced":{"vi":"ảnh cân bằng","en":"balanced image","zh-CN":"均衡图片","zh-TW":"均衡圖片","fr":"image équilibrée"},"selfTestUnsupported":{"vi":"Trình duyệt không hỗ trợ tự kiểm tra; hãy thử bằng camera điện thoại.","en":"This browser does not support automatic testing; please try with your phone camera.","zh-CN":"此浏览器不支持自动检测；请使用手机相机测试。","zh-TW":"此瀏覽器不支援自動檢測；請使用手機相機測試。","fr":"Ce navigateur ne prend pas en charge le test automatique ; veuillez essayer avec l’appareil photo de votre téléphone."},"selfTestUnsupportedQr":{"vi":"Trình duyệt không hỗ trợ tự kiểm tra QR; hãy thử bằng camera điện thoại.","en":"This browser does not support automatic QR testing; please try with your phone camera.","zh-CN":"此浏览器不支持二维码自动检测；请使用手机相机测试。","zh-TW":"此瀏覽器不支援 QR Code 自動檢測；請使用手機相機測試。","fr":"Ce navigateur ne prend pas en charge le test automatique du QR code ; veuillez essayer avec l’appareil photo de votre téléphone."},"selfTestSuccess":{"vi":"Đã tự kiểm tra: trình duyệt đọc được mã QR.","en":"Automatic test passed: the browser can read the QR code.","zh-CN":"自动检测通过：浏览器可以读取该二维码。","zh-TW":"自動檢測通過：瀏覽器可以讀取此 QR Code。","fr":"Test automatique réussi : le navigateur peut lire le QR code."},"selfTestFail":{"vi":"Chưa tự đọc được. Hãy giảm độ nổi bật của ảnh thêm hoặc dùng ảnh đơn giản hơn.","en":"The automatic test could not read it. Reduce image visibility further or use a simpler image.","zh-CN":"自动检测暂时无法读取。请进一步降低图片可见度或使用更简单的图片。","zh-TW":"自動檢測暫時無法讀取。請進一步降低圖片顯示強度或使用更簡單的圖片。","fr":"Le test automatique n’a pas pu lire le code. Réduisez davantage la visibilité de l’image ou utilisez une image plus simple."},"selfTestError":{"vi":"Không thể tự kiểm tra trên trình duyệt này; hãy thử bằng camera điện thoại.","en":"Automatic testing is unavailable in this browser; please try with your phone camera.","zh-CN":"此浏览器无法进行自动检测；请使用手机相机测试。","zh-TW":"此瀏覽器無法進行自動檢測；請使用手機相機測試。","fr":"Le test automatique n’est pas disponible dans ce navigateur ; veuillez essayer avec l’appareil photo de votre téléphone."},"canvasLabel":{"vi":"Mã QR đã tạo","en":"Generated QR code","zh-CN":"已生成的二维码","zh-TW":"已產生的 QR Code"},"enterLink":{"vi":"Vui lòng nhập đường link.","en":"Please enter a link.","zh-CN":"请输入链接。","zh-TW":"請輸入連結。"},"invalidLink":{"vi":"Đường link chưa hợp lệ. Link phải bắt đầu bằng http:// hoặc https://","en":"The link is invalid. It must start with http:// or https://","zh-CN":"链接无效。链接必须以 http:// 或 https:// 开头。","zh-TW":"連結無效。連結必須以 http:// 或 https:// 開頭。"},"fitContainShort":{"vi":"hiện toàn bộ ảnh","en":"showing the full image","zh-CN":"显示完整图片","zh-TW":"顯示完整圖片","fr":"image affichée en entier"},"fitCoverShort":{"vi":"phủ kín ảnh","en":"filling the frame","zh-CN":"铺满图片","zh-TW":"填滿圖片","fr":"image remplissant le cadre"},"modeBackground":{"vi":"{description}, độ nổi bật {strength}%, {fit}","en":"{description}, {strength}% image visibility, {fit}","zh-CN":"{description}，图片可见度 {strength}%，{fit}","zh-TW":"{description}，圖片顯示強度 {strength}%，{fit}","fr":"{description}, visibilité de l’image à {strength} %, {fit}"},"modeMono":{"vi":"QR đen trắng","en":"black-and-white QR code","zh-CN":"黑白二维码","zh-TW":"黑白 QR Code","fr":"QR code en noir et blanc"},"statusTesting":{"vi":"Đã tạo {mode}, đang tự kiểm tra để tối ưu quét...","en":"Created {mode}; running an automatic test to optimize scanning...","zh-CN":"已生成{mode}，正在自动检测以优化扫描效果……","zh-TW":"已產生{mode}，正在自動檢測以最佳化掃描效果……","fr":"Création terminée : {mode}. Test automatique en cours pour optimiser la lecture…"},"statusReduced":{"vi":"Đã tạo {mode}. Hệ thống đã tự giảm độ nổi bật ảnh để mã QR quét ổn định hơn. {test}","en":"Created {mode}. The system automatically reduced image visibility for more reliable scanning. {test}","zh-CN":"已生成{mode}。系统已自动降低图片可见度，使二维码扫描更稳定。{test}","zh-TW":"已產生{mode}。系統已自動降低圖片顯示強度，使 QR Code 掃描更穩定。{test}","fr":"Création terminée : {mode}. Le système a automatiquement réduit la visibilité de l’image pour améliorer la fiabilité de la lecture. {test}"},"statusDone":{"vi":"Đã tạo {mode}. {test}","en":"Created {mode}. {test}","zh-CN":"已生成{mode}。{test}","zh-TW":"已產生{mode}。{test}","fr":"Création terminée : {mode}. {test}"},"invalidImageFile":{"vi":"Tệp đã chọn không phải là ảnh.","en":"The selected file is not an image.","zh-CN":"所选文件不是图片。","zh-TW":"所選檔案不是圖片。","fr":"Le fichier sélectionné n’est pas une image."},"loadedImage":{"vi":"Đã tải {description}. Hệ thống sẽ ưu tiên tạo QR quét ổn định, nếu cần sẽ tự giảm độ nổi bật ảnh.","en":"Loaded {description}. The system will prioritize scan reliability and automatically reduce image visibility if needed.","zh-CN":"已加载{description}。系统将优先确保二维码稳定扫描，必要时会自动降低图片可见度。","zh-TW":"已載入{description}。系統將優先確保 QR Code 穩定掃描，必要時會自動降低圖片顯示強度。","fr":"Image chargée : {description}. Le système privilégiera une lecture fiable du QR code et réduira automatiquement la visibilité de l’image si nécessaire."},"imageReadError":{"vi":"Không thể đọc ảnh đã chọn.","en":"The selected image could not be read.","zh-CN":"无法读取所选图片。","zh-TW":"無法讀取所選圖片。","fr":"Impossible de lire l’image sélectionnée."},"noImage":{"vi":"Bạn chưa tải ảnh. QR sẽ tạm tạo ở chế độ đen trắng.","en":"No image has been uploaded. The QR code will temporarily use black-and-white mode.","zh-CN":"您尚未上传图片。二维码将暂时以黑白模式生成。","zh-TW":"您尚未上傳圖片。QR Code 將暫時以黑白模式產生。","fr":"Aucune image n’a été importée. Le QR code sera temporairement créé en noir et blanc."},"noQrDownload":{"vi":"Chưa có mã QR để tải.","en":"There is no QR code to download yet.","zh-CN":"尚无可下载的二维码。","zh-TW":"尚無可下載的 QR Code。","fr":"Aucun QR code n’est encore disponible au téléchargement."}};
+
+    function safeStorageGet(key) {
+      try { return localStorage.getItem(key); } catch (_) { return null; }
+    }
+
+    function safeStorageSet(key, value) {
+      try { localStorage.setItem(key, value); } catch (_) { /* Ignore private-mode/storage errors. */ }
+    }
+
+    function readStorageArea(storageArea, key) {
+      try { return storageArea ? storageArea.getItem(key) : null; }
+      catch (_) { return null; }
+    }
+
+    function normalizeLanguageKey(value) {
+      const candidate = String(value || "").trim();
+      if (!candidate) return "";
+      if (LANGUAGE_TARGETS[candidate]) return candidate;
+
+      const decoded = (() => {
+        try { return decodeURIComponent(candidate); }
+        catch (_) { return candidate; }
+      })();
+      if (LANGUAGE_TARGETS[decoded]) return decoded;
+
+      const apiMatch = Object.keys(LANGUAGE_TARGETS).find(key =>
+        String(LANGUAGE_TARGETS[key]?.api || "").toLowerCase() === decoded.toLowerCase()
+      );
+      return apiMatch || "";
+    }
+
+    function resolveSelectedLanguageKey() {
+      const url = new URL(window.location.href);
+      const hashParams = new URLSearchParams(url.hash.replace(/^#/, ""));
+      const candidates = [
+        url.searchParams.get("lang"),
+        url.searchParams.get("language"),
+        hashParams.get("lang"),
+        hashParams.get("language")
+      ];
+
+      try {
+        if (window.opener && !window.opener.closed) {
+          candidates.push(window.opener.localStorage.getItem("siteLang"));
+        }
+      } catch (_) { /* Cross-origin opener: ignore. */ }
+
+      try {
+        if (window.parent && window.parent !== window) {
+          candidates.push(window.parent.localStorage.getItem("siteLang"));
+        }
+      } catch (_) { /* Cross-origin parent: ignore. */ }
+
+      candidates.push(
+        safeStorageGet("siteLang"),
+        readStorageArea(window.sessionStorage, "siteLang"),
+        document.documentElement.getAttribute("data-site-lang")
+      );
+
+      for (const value of candidates) {
+        const normalized = normalizeLanguageKey(value);
+        if (normalized) return normalized;
+      }
+      return "vi";
+    }
+
+    let selectedLanguageKey = resolveSelectedLanguageKey();
+    let selectedLanguageInfo = LANGUAGE_TARGETS[selectedLanguageKey] || LANGUAGE_TARGETS.vi;
+    let targetLanguage = selectedLanguageInfo.api || "vi";
+    let fallbackLanguage = selectedLanguageInfo.fallback || "";
+    let languageUpdateToken = 0;
+
+    const translatedUi = Object.create(null);
+    let currentStatusState = { key: "statusInitial", vars: {}, type: "" };
+
+    let sharedTranslationCache = {};
+    let translationCacheSaveTimer = null;
+    try { sharedTranslationCache = JSON.parse(safeStorageGet("ntsTranslationCache") || "{}") || {}; }
+    catch (_) { sharedTranslationCache = {}; }
+
+    // Xóa các bản dịch lỗi cũ từng làm lộ ký hiệu ___QRPH0___ ra giao diện.
+    Object.keys(sharedTranslationCache).forEach(cacheKey => {
+      const cachedValue = String(sharedTranslationCache[cacheKey] || "");
+      if (/QRPH\s*\d+/i.test(cachedValue)) delete sharedTranslationCache[cacheKey];
+    });
+
+    function scheduleTranslationCacheSave() {
+      clearTimeout(translationCacheSaveTimer);
+      translationCacheSaveTimer = setTimeout(() => {
+        safeStorageSet("ntsTranslationCache", JSON.stringify(sharedTranslationCache));
+      }, 180);
+    }
+
+    function formatText(template, vars = {}) {
+      return String(template || "").replace(/\{([a-zA-Z0-9_]+)\}/g, (_, name) =>
+        Object.prototype.hasOwnProperty.call(vars, name) ? String(vars[name]) : `{${name}}`
+      );
+    }
+
+    function t(key, vars = {}) {
+      const entry = UI_TEXTS[key] || { vi: key };
+      const builtIn = entry[targetLanguage] ||
+        (targetLanguage === "zh" ? entry["zh-CN"] : null) ||
+        (targetLanguage.startsWith("zh-") ? entry[targetLanguage] || entry["zh-CN"] : null) ||
+        (fallbackLanguage ? entry[fallbackLanguage] : null) ||
+        (targetLanguage !== "vi" ? entry.en : null);
+      const translatedTemplate = translatedUi[key];
+      const safeTranslatedTemplate = translatedTemplate && !/QRPH\s*\d+/i.test(translatedTemplate)
+        ? translatedTemplate
+        : null;
+      const template = safeTranslatedTemplate || builtIn || entry.vi || key;
+      return formatText(template, vars);
+    }
+
+    function clearTranslatedUi() {
+      Object.keys(translatedUi).forEach(key => delete translatedUi[key]);
+    }
+
+    function preloadCachedTranslations() {
+      const targets = [...new Set([targetLanguage, fallbackLanguage].filter(Boolean))];
+      Object.entries(UI_TEXTS).forEach(([key, entry]) => {
+        for (const target of targets) {
+          const cached = sharedTranslationCache[`${target}|${entry.vi}`];
+          if (cached) {
+            translatedUi[key] = cached;
+            break;
+          }
+        }
+      });
+    }
+
+    function applyStaticLanguage() {
+      document.documentElement.lang = targetLanguage;
+      document.documentElement.dir = /^(ar|fa|he|ur)(-|$)/i.test(targetLanguage) ? "rtl" : "ltr";
+      document.title = t("title");
+      document.querySelectorAll("[data-i18n]").forEach(element => {
+        const key = element.getAttribute("data-i18n");
+        if (key) element.textContent = t(key);
+      });
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(element => {
+        const key = element.getAttribute("data-i18n-placeholder");
+        if (key) element.setAttribute("placeholder", t(key));
+      });
+      document.querySelectorAll("[data-i18n-alt]").forEach(element => {
+        const key = element.getAttribute("data-i18n-alt");
+        if (key) element.setAttribute("alt", t(key));
+      });
+      document.querySelectorAll("[data-i18n-aria]").forEach(element => {
+        const key = element.getAttribute("data-i18n-aria");
+        if (key) element.setAttribute("aria-label", t(key));
+      });
+      if (typeof statusText !== "undefined" && statusText) {
+        statusText.textContent = t(currentStatusState.key, currentStatusState.vars);
+      }
+      const canvas = document.getElementById("qrCanvas");
+      if (canvas) canvas.setAttribute("aria-label", t("canvasLabel"));
+    }
+
+    function protectTemplateTokens(text) {
+      const tokens = [];
+      const protectedText = String(text).replace(/\{[a-zA-Z0-9_]+\}/g, token => {
+        const index = tokens.length;
+        const marker = `ZXQRPARAM${index}ZX`;
+        tokens.push({ marker, token, index });
+        return marker;
+      });
+      return { protectedText, tokens };
+    }
+
+    function restoreTemplateTokens(translatedText, tokens) {
+      let restored = String(translatedText || "");
+
+      tokens.forEach(({ marker, token, index }) => {
+        // Khớp cả marker mới và marker cũ, kể cả khi dịch vụ chèn khoảng trắng/dấu gạch dưới.
+        const patterns = [
+          new RegExp(`Z\s*X\s*Q\s*R\s*P\s*A\s*R\s*A\s*M\s*${index}\s*Z\s*X`, "gi"),
+          new RegExp(`_{1,8}\s*Q\s*R\s*P\s*H\s*${index}\s*_{1,8}|Q\s*R\s*P\s*H\s*${index}`, "gi")
+        ];
+        patterns.forEach(pattern => { restored = restored.replace(pattern, token); });
+        restored = restored.split(marker).join(token);
+      });
+
+      // Không cho bản dịch lỗi lọt ra giao diện hoặc đi vào bộ nhớ đệm.
+      if (/QRPH\s*\d+|ZXQRPARAM\s*\d+ZX/i.test(restored)) return null;
+      const missingToken = tokens.some(({ token }) => !restored.includes(token));
+      return missingToken ? null : restored;
+    }
+
+    async function translateUiText(sourceText, requestedTarget, requestedFallback) {
+      if (!sourceText || requestedTarget === "vi") return sourceText;
+      const targets = [...new Set([requestedTarget, requestedFallback].filter(Boolean))];
+      const { protectedText, tokens } = protectTemplateTokens(sourceText);
+
+      for (const target of targets) {
+        const cacheKey = `${target}|${sourceText}`;
+        if (sharedTranslationCache[cacheKey]) return sharedTranslationCache[cacheKey];
+        try {
+          const endpoint = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(protectedText)}&langpair=vi|${encodeURIComponent(target)}`;
+          const response = await fetch(endpoint, { headers: { Accept: "application/json" }, cache: "force-cache" });
+          if (!response.ok) throw new Error(`Translation API ${response.status}`);
+          const data = await response.json();
+          let translated = data?.responseData?.translatedText;
+          const match = Number(data?.responseData?.match ?? 1);
+          if (!translated || match === 0) throw new Error("Unsupported translation");
+          translated = restoreTemplateTokens(translated, tokens);
+          if (!translated) throw new Error("Translation placeholder was changed");
+          sharedTranslationCache[cacheKey] = translated;
+          scheduleTranslationCacheSave();
+          return translated;
+        } catch (error) {
+          console.warn(`Translation fallback for ${target}:`, error);
+        }
+      }
+      return sourceText;
+    }
+
+    async function mapLimit(items, limit, worker) {
+      let cursor = 0;
+      const runners = Array.from({ length: Math.min(limit, items.length) }, async () => {
+        while (cursor < items.length) {
+          const index = cursor++;
+          await worker(items[index], index);
+        }
+      });
+      await Promise.all(runners);
+    }
+
+    async function initializeLanguage() {
+      const requestToken = ++languageUpdateToken;
+      const requestedTarget = targetLanguage;
+      const requestedFallback = fallbackLanguage;
+
+      preloadCachedTranslations();
+      applyStaticLanguage();
+
+      const hasBuiltIn = requestedTarget === "vi" || requestedTarget === "en" || requestedTarget === "zh-CN" || requestedTarget === "zh-TW";
+      if (hasBuiltIn) return;
+
+      const entries = Object.entries(UI_TEXTS).filter(([key, entry]) => {
+        if (translatedUi[key]) return false;
+        return !entry[requestedTarget];
+      });
+
+      // Dịch nền với nhiều yêu cầu song song hơn; giao diện đã đổi tức thì bằng bản có sẵn/cache.
+      await mapLimit(entries, 6, async ([key, entry]) => {
+        const translated = await translateUiText(entry.vi, requestedTarget, requestedFallback);
+        if (requestToken === languageUpdateToken && requestedTarget === targetLanguage) {
+          translatedUi[key] = translated;
+        }
+      });
+
+      if (requestToken === languageUpdateToken && requestedTarget === targetLanguage) {
+        applyStaticLanguage();
+      }
+    }
 
     // Nhận diện nền tảng để tinh chỉnh hiển thị Android, iOS và máy tính.
     (function detectPlatform() {
@@ -573,7 +835,7 @@
           setTimeout(() => {
             const status = document.getElementById("statusText");
             if (status) {
-              status.textContent = "Chức năng xem mã nguồn/kiểm tra trang đã được hạn chế.";
+              status.textContent = t("sourceBlocked");
               status.className = "status warning";
             }
           }, 0);
@@ -609,10 +871,38 @@
       return Math.min(max, Math.max(min, value));
     }
 
-    function setStatus(message, type = "") {
-      statusText.textContent = message;
+    function setStatusKey(key, vars = {}, type = "") {
+      currentStatusState = { key, vars, type };
+      statusText.textContent = t(key, vars);
       statusText.className = `status${type ? ` ${type}` : ""}`;
     }
+
+    let languageReady = initializeLanguage();
+
+    function refreshWhenLanguageChanges() {
+      const latestLanguageKey = resolveSelectedLanguageKey();
+      if (!latestLanguageKey || latestLanguageKey === selectedLanguageKey) return;
+
+      selectedLanguageKey = latestLanguageKey;
+      selectedLanguageInfo = LANGUAGE_TARGETS[selectedLanguageKey] || LANGUAGE_TARGETS.vi;
+      targetLanguage = selectedLanguageInfo.api || "vi";
+      fallbackLanguage = selectedLanguageInfo.fallback || "";
+
+      // Áp dụng ngay, không tải lại trang và không chờ API dịch.
+      languageUpdateToken += 1;
+      clearTranslatedUi();
+      preloadCachedTranslations();
+      applyStaticLanguage();
+      languageReady = initializeLanguage();
+    }
+
+    window.addEventListener("storage", event => {
+      if (event.key === "siteLang") refreshWhenLanguageChanges();
+    });
+    window.addEventListener("pageshow", refreshWhenLanguageChanges);
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) refreshWhenLanguageChanges();
+    });
 
     function isValidUrl(value) {
       try {
@@ -738,11 +1028,11 @@
 
     function describeImage(stats) {
       if (!stats) return "";
-      if (stats.mean < 85) return "ảnh tối";
-      if (stats.mean > 215 && stats.deviation < 34) return "ảnh sáng, ít tương phản";
-      if (stats.deviation < 28) return "ảnh ít tương phản";
-      if (stats.saturation > 0.38) return "ảnh nhiều màu";
-      return "ảnh cân bằng";
+      if (stats.mean < 85) return t("imageDark");
+      if (stats.mean > 215 && stats.deviation < 34) return t("imageBrightLowContrast");
+      if (stats.deviation < 28) return t("imageLowContrast");
+      if (stats.saturation > 0.38) return t("imageColorful");
+      return t("imageBalanced");
     }
 
     function createQrLayer(value) {
@@ -1089,7 +1379,7 @@
       if (!("BarcodeDetector" in window)) {
         return {
           success: null,
-          message: "Trình duyệt không hỗ trợ tự kiểm tra; hãy thử bằng camera điện thoại."
+          messageKey: "selfTestUnsupported"
         };
       }
 
@@ -1098,7 +1388,7 @@
         if (!formats.includes("qr_code")) {
           return {
             success: null,
-            message: "Trình duyệt không hỗ trợ tự kiểm tra QR; hãy thử bằng camera điện thoại."
+            messageKey: "selfTestUnsupportedQr"
           };
         }
 
@@ -1107,13 +1397,13 @@
         const matched = results.some(item => item.rawValue === expectedValue);
 
         return matched
-          ? { success: true, message: "Đã tự kiểm tra: trình duyệt đọc được mã QR." }
-          : { success: false, message: "Chưa tự đọc được. Hãy giảm độ nổi bật của ảnh thêm hoặc dùng ảnh đơn giản hơn." };
+          ? { success: true, messageKey: "selfTestSuccess" }
+          : { success: false, messageKey: "selfTestFail" };
       } catch (error) {
         console.warn("Không thể tự kiểm tra QR:", error);
         return {
           success: null,
-          message: "Không thể tự kiểm tra trên trình duyệt này; hãy thử bằng camera điện thoại."
+          messageKey: "selfTestError"
         };
       }
     }
@@ -1123,7 +1413,7 @@
       canvas.id = "qrCanvas";
       canvas.width = EXPORT_SIZE;
       canvas.height = EXPORT_SIZE;
-      canvas.setAttribute("aria-label", "Mã QR đã tạo");
+      canvas.setAttribute("aria-label", t("canvasLabel"));
 
       const ctx = canvas.getContext("2d", { alpha: false });
       ctx.imageSmoothingEnabled = true;
@@ -1151,15 +1441,15 @@
       const value = linkInput.value.trim();
 
       if (!value) {
-        qrContainer.innerHTML = '<div class="placeholder">Mã QR sẽ xuất hiện ở đây</div>';
+        qrContainer.innerHTML = `<div class="placeholder">${t("qrPlaceholder")}</div>`;
         downloadButton.style.display = "none";
-        setStatus("Vui lòng nhập đường link.", "error");
+        setStatusKey("enterLink", {}, "error");
         return;
       }
 
       if (!isValidUrl(value)) {
         downloadButton.style.display = "none";
-        setStatus("Đường link chưa hợp lệ. Link phải bắt đầu bằng http:// hoặc https://", "error");
+        setStatusKey("invalidLink", {}, "error");
         return;
       }
 
@@ -1170,13 +1460,17 @@
 
       const imageDescription = uploadedImageStats ? describeImage(uploadedImageStats) : "";
       let modeText = useBackground
-        ? `${imageDescription}, độ nổi bật ${finalStrength}%, ${resolveFitMode(uploadedImage) === "contain" ? "hiện toàn bộ ảnh" : "phủ kín ảnh"}`
-        : "QR đen trắng";
+        ? t("modeBackground", {
+            description: imageDescription,
+            strength: finalStrength,
+            fit: resolveFitMode(uploadedImage) === "contain" ? t("fitContainShort") : t("fitCoverShort")
+          })
+        : t("modeMono");
 
       qrContainer.innerHTML = "";
       qrContainer.appendChild(canvas);
       downloadButton.style.display = "block";
-      setStatus(`Đã tạo ${modeText}, đang tự kiểm tra để tối ưu quét...`, "success");
+      setStatusKey("statusTesting", { mode: modeText }, "success");
 
       let result = await selfTest(canvas, value);
 
@@ -1200,14 +1494,18 @@
       }
 
       modeText = useBackground
-        ? `${imageDescription}, độ nổi bật ${finalStrength}%, ${resolveFitMode(uploadedImage) === "contain" ? "hiện toàn bộ ảnh" : "phủ kín ảnh"}`
-        : "QR đen trắng";
+        ? t("modeBackground", {
+            description: imageDescription,
+            strength: finalStrength,
+            fit: resolveFitMode(uploadedImage) === "contain" ? t("fitContainShort") : t("fitCoverShort")
+          })
+        : t("modeMono");
 
       if (useBackground && finalStrength !== originalStrength && result.success !== false) {
-        setStatus(`Đã tạo ${modeText}. Hệ thống đã tự giảm độ nổi bật ảnh để mã QR quét ổn định hơn. ${result.message}`, result.success === false ? "warning" : "success");
+        setStatusKey("statusReduced", { mode: modeText, test: t(result.messageKey) }, result.success === false ? "warning" : "success");
       } else {
         const statusType = result.success === false ? "warning" : "success";
-        setStatus(`Đã tạo ${modeText}. ${result.message}`, statusType);
+        setStatusKey("statusDone", { mode: modeText, test: t(result.messageKey) }, statusType);
       }
     }
 
@@ -1225,7 +1523,7 @@
       if (!file) return;
 
       if (!file.type.startsWith("image/")) {
-        setStatus("Tệp đã chọn không phải là ảnh.", "error");
+        setStatusKey("invalidImageFile", {}, "error");
         return;
       }
 
@@ -1244,7 +1542,7 @@
         backgroundToggle.checked = true;
 
         const imageDescription = describeImage(uploadedImageStats);
-        setStatus(`Đã tải ${imageDescription}. Hệ thống sẽ ưu tiên tạo QR quét ổn định, nếu cần sẽ tự giảm độ nổi bật ảnh.`, "success");
+        setStatusKey("loadedImage", { description: imageDescription }, "success");
         scheduleRender();
       };
 
@@ -1252,7 +1550,7 @@
         uploadedImage = null;
         uploadedImageStats = null;
         previewWrap.style.display = "none";
-        setStatus("Không thể đọc ảnh đã chọn.", "error");
+        setStatusKey("imageReadError", {}, "error");
       };
 
       img.src = uploadedImageUrl;
@@ -1265,7 +1563,7 @@
 
     backgroundToggle.addEventListener("change", () => {
       if (backgroundToggle.checked && !uploadedImage) {
-        setStatus("Bạn chưa tải ảnh. QR sẽ tạm tạo ở chế độ đen trắng.");
+        setStatusKey("noImage");
       }
       scheduleRender();
     });
@@ -1278,7 +1576,7 @@
     downloadButton.addEventListener("click", () => {
       const canvas = document.getElementById("qrCanvas");
       if (!canvas) {
-        setStatus("Chưa có mã QR để tải.", "error");
+        setStatusKey("noQrDownload", {}, "error");
         return;
       }
 
