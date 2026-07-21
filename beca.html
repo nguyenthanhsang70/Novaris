@@ -230,11 +230,11 @@
   <div class="loading" id="loading" aria-live="polite">
     <div class="loading-inner">
       <div class="spinner" aria-hidden="true"></div>
-      <span>Đang dựng bể cá…</span>
+      <span id="loadingText">Đang dựng bể cá…</span>
     </div>
   </div>
 
-  <div class="controls" aria-label="Điều khiển đại dương">
+  <div class="controls" id="controls" aria-label="Điều khiển đại dương">
     <button
       class="control-button"
       id="backButton"
@@ -286,7 +286,7 @@
   </div>
 
   <canvas id="aquarium" aria-label="Đại dương tương tác với cá voi xanh, cá heo, cá mập, cá, cua và rong biển"></canvas>
-  <div class="hint">Chạm vào màn hình để thả thức ăn</div>
+  <div class="hint" id="hintText">Chạm vào màn hình để thả thức ăn</div>
 
   <script>
     "use strict";
@@ -339,6 +339,232 @@
     const soundButton = document.getElementById("soundButton");
     const themeIcon = document.getElementById("themeIcon");
     const soundIcon = document.getElementById("soundIcon");
+
+    // ============================================================
+    // ĐỒNG BỘ NGÔN NGỮ TỪ TRANG CHỦ
+    // Trang chủ lưu lựa chọn trong localStorage với khóa "siteLang".
+    // ============================================================
+    const loadingText = document.getElementById("loadingText");
+    const controls = document.getElementById("controls");
+    const hintText = document.getElementById("hintText");
+
+    const COUNTRY_LANGUAGE = Object.freeze({"AC":"en","AD":"ca","AE":"ar","AF":"fa","AG":"en","AI":"en","AL":"sq","AM":"hy","AO":"pt","AR":"es","AS":"sm","AT":"de","AU":"en","AW":"nl","AX":"sv","AZ":"az","BA":"bs","BB":"en","BD":"bn","BE":"nl","BF":"fr","BG":"bg","BH":"ar","BI":"rn","BJ":"fr","BL":"fr","BM":"en","BN":"ms","BO":"es","BQ":"nl","BR":"pt","BS":"en","BT":"dz","BV":"no","BW":"en","BY":"be","BZ":"en","CA":"en","CC":"en","CD":"fr","CF":"sg","CG":"fr","CH":"de","CI":"fr","CK":"en","CL":"es","CM":"fr","CN":"zh-CN","CO":"es","CQ":"en","CR":"es","CU":"es","CV":"pt","CW":"nl","CX":"en","CY":"el","CZ":"cs","DE":"de","DG":"en","DJ":"fr","DK":"da","DM":"en","DO":"es","DZ":"ar","EA":"es","EC":"es","EE":"et","EG":"ar","EH":"ar","ER":"en","ES":"es","ET":"am","FI":"fi","FJ":"en","FK":"en","FM":"en","FO":"fo","FR":"fr","GA":"fr","GB":"en","GD":"en","GE":"ka","GF":"fr","GG":"en","GH":"en","GI":"en","GL":"kl","GM":"en","GN":"fr","GP":"fr","GQ":"es","GR":"el","GS":"en","GT":"es","GU":"ch","GW":"pt","GY":"en","HK":"zh-TW","HN":"es","HR":"hr","HT":"ht","HU":"hu","IC":"es","ID":"id","IE":"en","IL":"he","IM":"en","IN":"hi","IO":"en","IQ":"ar","IR":"fa","IS":"is","IT":"it","JE":"en","JM":"en","JO":"ar","JP":"ja","KE":"sw","KG":"ky","KH":"km","KI":"en","KM":"ar","KN":"en","KP":"ko","KR":"ko","KW":"ar","KY":"en","KZ":"ru","LA":"lo","LB":"ar","LC":"en","LI":"de","LK":"si","LR":"en","LS":"st","LT":"lt","LU":"fr","LV":"lv","LY":"ar","MA":"ar","MC":"fr","MD":"ro","ME":"sr","MF":"fr","MG":"mg","MH":"en","MK":"mk","ML":"fr","MM":"my","MN":"mn","MO":"zh-TW","MP":"en","MQ":"fr","MR":"ar","MS":"en","MT":"mt","MU":"fr","MV":"dv","MW":"ny","MX":"es","MY":"ms","MZ":"pt","NA":"en","NC":"fr","NE":"fr","NF":"en","NG":"en","NI":"es","NL":"nl","NO":"no","NP":"ne","NR":"en","NU":"en","NZ":"mi","OM":"ar","PA":"es","PE":"es","PF":"fr","PG":"en","PH":"en","PK":"ur","PL":"pl","PM":"fr","PN":"en","PR":"es","PS":"ar","PT":"pt","PW":"en","PY":"gn","QA":"ar","RE":"fr","RO":"ro","RS":"sr","RU":"ru","RW":"rw","SA":"ar","SB":"en","SC":"fr","SD":"en","SE":"sv","SG":"en","SH":"en","SI":"sl","SJ":"no","SK":"sk","SL":"en","SM":"it","SN":"fr","SO":"so","SR":"nl","SS":"en","ST":"pt","SV":"es","SX":"en","SY":"ar","SZ":"en","TA":"en","TC":"en","TD":"ar","TF":"fr","TG":"fr","TH":"th","TJ":"tg","TK":"en","TL":"pt","TM":"tk","TN":"ar","TO":"to","TR":"tr","TT":"en","TV":"en","TW":"zh-TW","TZ":"sw","UA":"uk","UG":"sw","UM":"en","US":"en","UY":"es","UZ":"uz","VA":"it","VC":"en","VE":"es","VG":"en","VI":"en","VN":"vi","VU":"bi","WF":"fr","WS":"sm","XK":"sq","YE":"ar","YT":"fr","ZA":"en","ZM":"en","ZW":"sn"});
+
+    const AQUARIUM_I18N_SOURCE = Object.freeze({
+      title: "Bể cá",
+      loading: "Đang dựng bể cá…",
+      controls: "Điều khiển đại dương",
+      back: "Quay lại",
+      themeTooltip: "Chuyển ngày / đêm",
+      themeAria: "Chuyển ngày hoặc đêm",
+      soundTooltip: "Âm thanh nước",
+      soundAria: "Bật hoặc tắt âm thanh nước",
+      canvasAria: "Đại dương tương tác với cá voi xanh, cá heo, cá mập, cá, cua và rong biển",
+      hint: "Chạm vào màn hình để thả thức ăn"
+    });
+
+    const AQUARIUM_I18N = Object.freeze({
+      vi: {
+        title: "Bể cá", loading: "Đang dựng bể cá…", controls: "Điều khiển đại dương",
+        back: "Quay lại", themeTooltip: "Chuyển ngày / đêm", themeAria: "Chuyển ngày hoặc đêm",
+        soundTooltip: "Âm thanh nước", soundAria: "Bật hoặc tắt âm thanh nước",
+        canvasAria: "Đại dương tương tác với cá voi xanh, cá heo, cá mập, cá, cua và rong biển",
+        hint: "Chạm vào màn hình để thả thức ăn"
+      },
+      en: {
+        title: "Aquarium", loading: "Building the aquarium…", controls: "Ocean controls",
+        back: "Back", themeTooltip: "Switch day / night", themeAria: "Switch between day and night",
+        soundTooltip: "Water sound", soundAria: "Turn water sound on or off",
+        canvasAria: "Interactive ocean with a blue whale, dolphins, sharks, fish, crabs and seaweed",
+        hint: "Tap the screen to drop food"
+      },
+      "zh-CN": {
+        title: "水族箱", loading: "正在构建水族箱…", controls: "海洋控制",
+        back: "返回", themeTooltip: "切换白天 / 夜晚", themeAria: "切换白天或夜晚",
+        soundTooltip: "水声", soundAria: "开启或关闭水声",
+        canvasAria: "包含蓝鲸、海豚、鲨鱼、鱼、螃蟹和海草的互动海洋",
+        hint: "点击屏幕投放食物"
+      },
+      "zh-TW": {
+        title: "水族箱", loading: "正在建立水族箱…", controls: "海洋控制",
+        back: "返回", themeTooltip: "切換白天 / 夜晚", themeAria: "切換白天或夜晚",
+        soundTooltip: "水聲", soundAria: "開啟或關閉水聲",
+        canvasAria: "包含藍鯨、海豚、鯊魚、魚、螃蟹和海草的互動海洋",
+        hint: "點擊螢幕投放食物"
+      },
+      fr: {
+        title: "Aquarium", loading: "Création de l’aquarium…", controls: "Commandes de l’océan",
+        back: "Retour", themeTooltip: "Passer du jour à la nuit", themeAria: "Basculer entre le jour et la nuit",
+        soundTooltip: "Son de l’eau", soundAria: "Activer ou désactiver le son de l’eau",
+        canvasAria: "Océan interactif avec une baleine bleue, des dauphins, des requins, des poissons, des crabes et des algues",
+        hint: "Touchez l’écran pour déposer de la nourriture"
+      },
+      ko: {
+        title: "수족관", loading: "수족관을 만드는 중…", controls: "바다 제어",
+        back: "뒤로", themeTooltip: "낮 / 밤 전환", themeAria: "낮과 밤 전환",
+        soundTooltip: "물소리", soundAria: "물소리 켜기 또는 끄기",
+        canvasAria: "대왕고래, 돌고래, 상어, 물고기, 게와 해초가 있는 인터랙티브 바다",
+        hint: "화면을 눌러 먹이를 주세요"
+      },
+      ja: {
+        title: "水族館", loading: "水族館を構築中…", controls: "海のコントロール",
+        back: "戻る", themeTooltip: "昼 / 夜を切り替え", themeAria: "昼と夜を切り替える",
+        soundTooltip: "水の音", soundAria: "水の音をオンまたはオフにする",
+        canvasAria: "シロナガスクジラ、イルカ、サメ、魚、カニ、海藻がいるインタラクティブな海",
+        hint: "画面をタップして餌を落とします"
+      },
+      hi: {
+        title: "एक्वेरियम", loading: "एक्वेरियम बनाया जा रहा है…", controls: "समुद्र नियंत्रण",
+        back: "वापस", themeTooltip: "दिन / रात बदलें", themeAria: "दिन और रात के बीच बदलें",
+        soundTooltip: "पानी की आवाज़", soundAria: "पानी की आवाज़ चालू या बंद करें",
+        canvasAria: "नीली व्हेल, डॉल्फ़िन, शार्क, मछलियों, केकड़ों और समुद्री पौधों वाला इंटरैक्टिव समुद्र",
+        hint: "भोजन डालने के लिए स्क्रीन पर टैप करें"
+      },
+      es: {
+        title: "Acuario", loading: "Construyendo el acuario…", controls: "Controles del océano",
+        back: "Volver", themeTooltip: "Cambiar día / noche", themeAria: "Cambiar entre día y noche",
+        soundTooltip: "Sonido del agua", soundAria: "Activar o desactivar el sonido del agua",
+        canvasAria: "Océano interactivo con ballena azul, delfines, tiburones, peces, cangrejos y algas",
+        hint: "Toca la pantalla para soltar comida"
+      },
+      de: {
+        title: "Aquarium", loading: "Aquarium wird aufgebaut…", controls: "Ozeansteuerung",
+        back: "Zurück", themeTooltip: "Tag / Nacht wechseln", themeAria: "Zwischen Tag und Nacht wechseln",
+        soundTooltip: "Wassergeräusch", soundAria: "Wassergeräusch ein- oder ausschalten",
+        canvasAria: "Interaktiver Ozean mit Blauwal, Delfinen, Haien, Fischen, Krabben und Seetang",
+        hint: "Tippe auf den Bildschirm, um Futter fallen zu lassen"
+      }
+    });
+
+    let activeSiteLanguage = "";
+    let aquariumLanguageRequest = 0;
+    let aquariumTranslationCache = null;
+
+    function readLocalStorage(key) {
+      try { return localStorage.getItem(key); } catch (_) { return null; }
+    }
+
+    function writeLocalStorage(key, value) {
+      try { localStorage.setItem(key, value); } catch (_) { /* Storage may be blocked. */ }
+    }
+
+    function getTranslationCache() {
+      if (aquariumTranslationCache) return aquariumTranslationCache;
+      try {
+        const parsed = JSON.parse(readLocalStorage("ntsTranslationCache") || "{}");
+        aquariumTranslationCache = parsed && typeof parsed === "object" ? parsed : {};
+      } catch (_) {
+        aquariumTranslationCache = {};
+      }
+      return aquariumTranslationCache;
+    }
+
+    function resolveTranslationLanguage(siteLanguage) {
+      const raw = String(siteLanguage || "vi").trim();
+      if (!raw || raw === "vi") return "vi";
+      if (raw === "zh") return "zh-CN";
+      if (/^zh(?:-TW|-Hant)$/i.test(raw)) return "zh-TW";
+      if (/^zh(?:-CN|-Hans)?$/i.test(raw)) return "zh-CN";
+      const countryMatch = raw.match(/^country-([A-Z]{2})$/i);
+      if (countryMatch) return COUNTRY_LANGUAGE[countryMatch[1].toUpperCase()] || "en";
+      return raw.replace(/_/g, "-");
+    }
+
+    function builtInLanguage(target) {
+      return AQUARIUM_I18N[target] || AQUARIUM_I18N[target.split("-")[0]] || null;
+    }
+
+    function applyAquariumLanguage(messages, target) {
+      if (!messages) return;
+      document.documentElement.lang = target;
+      document.title = messages.title;
+      if (loadingText) loadingText.textContent = messages.loading;
+      if (controls) controls.setAttribute("aria-label", messages.controls);
+      backButton.dataset.tooltip = messages.back;
+      backButton.setAttribute("aria-label", messages.back);
+      themeButton.dataset.tooltip = messages.themeTooltip;
+      themeButton.setAttribute("aria-label", messages.themeAria);
+      soundButton.dataset.tooltip = messages.soundTooltip;
+      soundButton.setAttribute("aria-label", messages.soundAria);
+      canvas.setAttribute("aria-label", messages.canvasAria);
+      if (hintText) hintText.textContent = messages.hint;
+    }
+
+    async function translateAquariumText(sourceText, target) {
+      if (!sourceText || target === "vi") return sourceText;
+      const cache = getTranslationCache();
+      const cacheKey = `${target}|${sourceText}`;
+      if (cache[cacheKey] && typeof cache[cacheKey] === "string") return cache[cacheKey];
+
+      try {
+        const endpoint = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(sourceText)}&langpair=vi|${encodeURIComponent(target)}`;
+        const response = await fetch(endpoint, { headers: { Accept: "application/json" }, cache: "force-cache" });
+        if (!response.ok) throw new Error(`Translation API ${response.status}`);
+        const data = await response.json();
+        const translated = String(data?.responseData?.translatedText || "").trim();
+        const match = Number(data?.responseData?.match ?? 1);
+        if (!translated || match === 0 || /MYMEMORY WARNING/i.test(translated)) throw new Error("Unsupported translation");
+        cache[cacheKey] = translated;
+        writeLocalStorage("ntsTranslationCache", JSON.stringify(cache));
+        return translated;
+      } catch (error) {
+        console.warn(`Aquarium translation fallback for ${target}:`, error);
+        return null;
+      }
+    }
+
+    async function syncLanguageFromHome(force = false) {
+      const siteLanguage = readLocalStorage("siteLang") || "vi";
+      if (!force && siteLanguage === activeSiteLanguage) return;
+
+      activeSiteLanguage = siteLanguage;
+      const requestId = ++aquariumLanguageRequest;
+      const target = resolveTranslationLanguage(siteLanguage);
+      const localMessages = builtInLanguage(target);
+
+      if (localMessages) {
+        applyAquariumLanguage(localMessages, target);
+        return;
+      }
+
+      // Apply any translations already cached by the homepage immediately.
+      const cache = getTranslationCache();
+      const cachedMessages = {};
+      let hasEveryCachedMessage = true;
+      for (const [key, sourceText] of Object.entries(AQUARIUM_I18N_SOURCE)) {
+        const cached = cache[`${target}|${sourceText}`];
+        if (typeof cached === "string" && cached.trim()) cachedMessages[key] = cached;
+        else hasEveryCachedMessage = false;
+      }
+      if (hasEveryCachedMessage) {
+        applyAquariumLanguage(cachedMessages, target);
+        return;
+      }
+
+      // Keep the interface usable while uncached languages translate in parallel.
+      applyAquariumLanguage(AQUARIUM_I18N.en, "en");
+      const translatedEntries = await Promise.all(
+        Object.entries(AQUARIUM_I18N_SOURCE).map(async ([key, sourceText]) => [
+          key,
+          await translateAquariumText(sourceText, target)
+        ])
+      );
+      if (requestId !== aquariumLanguageRequest) return;
+
+      const translatedMessages = {};
+      for (const [key, translated] of translatedEntries) {
+        translatedMessages[key] = translated || AQUARIUM_I18N.en[key] || AQUARIUM_I18N_SOURCE[key];
+      }
+      applyAquariumLanguage(translatedMessages, target);
+    }
+
+    // Apply immediately on entry, and re-check after returning from the homepage.
+    syncLanguageFromHome(true);
+    window.addEventListener("pageshow", () => syncLanguageFromHome());
+    window.addEventListener("focus", () => syncLanguageFromHome());
+    window.addEventListener("storage", event => {
+      if (event.key === "siteLang") syncLanguageFromHome(true);
+    });
 
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
