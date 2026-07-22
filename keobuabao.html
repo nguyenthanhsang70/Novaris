@@ -2,8 +2,15 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Búa Kéo Bao - NTS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="color-scheme" content="dark">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Búa Kéo Bao">
+    <meta name="format-detection" content="telephone=no">
+    <title>Búa Kéo Bao</title>
     <style>
         :root {
             --bg: #0f172a;
@@ -16,25 +23,56 @@
             --text: #f8fafc;
             --shadow: 0 10px 25px rgba(0,0,0,0.4);
         }
+        html {
+            width: 100%;
+            min-height: 100%;
+            background: var(--bg);
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+            touch-action: manipulation;
+        }
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             user-select: none;
+            -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit;
+        }
+        input,
+        select,
+        textarea {
+            font-size: 16px;
+            user-select: text;
+            -webkit-user-select: text;
+            -webkit-touch-callout: default;
         }
         body {
             background: var(--bg);
             background-image:
                 radial-gradient(circle at 10% 20%, rgba(56,189,248,0.12) 0%, transparent 25%),
                 radial-gradient(circle at 90% 80%, rgba(244,114,182,0.12) 0%, transparent 25%);
+            min-height: 100vh;
+            min-height: 100svh;
             min-height: 100dvh;
             display: flex;
             justify-content: center;
             align-items: center;
             color: var(--text);
-            padding: clamp(1rem, 4vw, 1.5rem);
+            overflow-x: hidden;
+            overscroll-behavior: none;
+            padding-top: calc(clamp(1rem, 4vw, 1.5rem) + env(safe-area-inset-top));
+            padding-right: calc(clamp(1rem, 4vw, 1.5rem) + env(safe-area-inset-right));
+            padding-bottom: calc(clamp(1rem, 4vw, 1.5rem) + env(safe-area-inset-bottom));
+            padding-left: calc(clamp(1rem, 4vw, 1.5rem) + env(safe-area-inset-left));
         }
         .game-container {
             background: rgba(30,41,59,0.75);
@@ -85,6 +123,7 @@
             text-transform: uppercase;
             letter-spacing: 1.2px;
             margin-bottom: 0.4rem;
+            min-height: 1.1rem;
         }
         .score-value {
             font-size: clamp(1.8rem, 7vw, 2.8rem);
@@ -245,12 +284,147 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 2rem;
             border-radius: 1.5rem;
-            max-width: 450px;
+            max-width: 500px;
             width: 90%;
+            max-height: calc(100dvh - 2rem);
+            overflow-y: auto;
             box-shadow: var(--shadow);
             transform: translateY(30px);
             transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             text-align: center;
+        }
+        .online-setup-card {
+            width: min(96vw, 780px);
+            max-width: 780px;
+            padding: clamp(1.2rem, 3.5vw, 2rem);
+            border-radius: 2rem;
+            background: linear-gradient(145deg, #10243c 0%, #0c1b31 100%);
+            border-color: rgba(125, 211, 252, 0.17);
+            text-align: left;
+        }
+        .setup-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        .setup-title {
+            font-size: clamp(1.75rem, 5vw, 2.15rem);
+            font-weight: 900;
+            letter-spacing: -0.6px;
+            color: #f8fafc;
+        }
+        .setup-subtitle {
+            margin-top: 0.35rem;
+            color: #94a3b8;
+            font-size: clamp(0.95rem, 2.6vw, 1.1rem);
+        }
+        .setup-close {
+            width: 48px;
+            height: 48px;
+            flex: 0 0 48px;
+            border-radius: 1rem;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.06);
+            color: #f8fafc;
+            font-size: 1.7rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .setup-progress {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.55rem;
+            margin: 1.35rem 0 1.55rem;
+        }
+        .setup-progress span {
+            height: 6px;
+            border-radius: 999px;
+            background: #263b54;
+        }
+        .setup-progress span.active {
+            background: linear-gradient(90deg, #2dd4f7, #a855f7);
+            box-shadow: 0 0 12px rgba(56,189,248,0.2);
+        }
+        .setup-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #a8b6c9;
+            font-size: 0.83rem;
+            font-weight: 850;
+            letter-spacing: 0.35px;
+            text-transform: uppercase;
+        }
+        .setup-name-input {
+            width: min(100%, 360px);
+            margin-bottom: 1rem;
+        }
+        .setup-room-box {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 1rem;
+            border: 1px dashed rgba(34, 211, 238, 0.5);
+            background: rgba(15, 52, 75, 0.62);
+        }
+        .setup-field {
+            min-width: 0;
+        }
+        .setup-code-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 60px;
+            gap: 0.65rem;
+        }
+        .setup-select {
+            appearance: auto;
+            cursor: pointer;
+        }
+        .refresh-code-btn {
+            border-radius: 1rem;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.07);
+            color: white;
+            font-size: 1.45rem;
+            cursor: pointer;
+        }
+        .refresh-code-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+        .setup-help {
+            margin: 0.9rem 0 0;
+            color: #9eabc0;
+            font-size: 0.91rem;
+            line-height: 1.55;
+        }
+        .setup-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 1.35rem;
+        }
+        .setup-footer .btn {
+            min-width: 154px;
+        }
+        .btn-continue {
+            background: linear-gradient(100deg, #119bd4, #4f46e5);
+            color: white;
+            box-shadow: 0 8px 24px rgba(37,99,235,0.3);
+        }
+        .guide-step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            flex: 0 0 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-blue), #8b5cf6);
+            color: white;
+            font-size: 0.82rem;
+            font-weight: 900;
         }
         .modal-overlay.open .modal-content {
             transform: translateY(0);
@@ -291,6 +465,321 @@
             font-size: 1rem;
             box-shadow: 0 4px 15px rgba(56,189,248,0.3);
         }
+        .target-selector-card {
+            margin: 0 0 1.25rem;
+            padding: 1rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(56,189,248,0.22);
+            background: rgba(15,23,42,0.62);
+            text-align: left;
+        }
+        .target-selector-card label {
+            display: block;
+            margin-bottom: 0.55rem;
+            color: #e2e8f0;
+            font-size: 0.92rem;
+            font-weight: 800;
+        }
+        .target-score-select {
+            width: 100%;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: #0f172a;
+            color: white;
+            border-radius: 0.85rem;
+            padding: 0.85rem 1rem;
+            font-size: 1rem;
+            font-weight: 800;
+            outline: none;
+            cursor: pointer;
+        }
+        .target-score-select:focus {
+            border-color: var(--accent-blue);
+        }
+        .target-selector-note {
+            margin-top: 0.55rem;
+            color: #94a3b8;
+            font-size: 0.82rem;
+            line-height: 1.4;
+        }
+        .status-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.85rem;
+            margin: -0.8rem auto 1.35rem;
+        }
+        .target-score-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 34px;
+            margin: 0;
+            padding: 0.45rem 0.95rem;
+            border-radius: 999px;
+            border: 1px solid rgba(251,191,36,0.26);
+            background: rgba(251,191,36,0.08);
+            color: #fde68a;
+            font-size: 0.86rem;
+            font-weight: 850;
+            text-align: center;
+        }
+        .setup-room-box.three-fields {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .setup-select:disabled,
+        .target-score-select:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+        .match-finished {
+            animation: finalWinnerPulse 1s ease-in-out infinite alternate;
+        }
+        @keyframes finalWinnerPulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.035); }
+        }
+        .mode-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .mode-card {
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(15,23,42,0.72);
+            color: var(--text);
+            border-radius: 1.2rem;
+            padding: 1.3rem 1rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .mode-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 14px 30px rgba(56,189,248,0.18);
+        }
+        .mode-icon {
+            display: block;
+            font-size: 2.8rem;
+            margin-bottom: 0.55rem;
+        }
+        .mode-name {
+            display: block;
+            font-size: 1.05rem;
+            font-weight: 850;
+            margin-bottom: 0.35rem;
+        }
+        .mode-desc {
+            display: block;
+            color: #94a3b8;
+            font-size: 0.84rem;
+            line-height: 1.4;
+        }
+        .connection-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 34px;
+            margin: 0;
+            padding: 0.45rem 0.9rem;
+            border-radius: 999px;
+            background: rgba(15,23,42,0.65);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #cbd5e1;
+            font-size: 0.84rem;
+            font-weight: 700;
+            text-align: center;
+        }
+        .celebration-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+        .field-label {
+            display: block;
+            margin-bottom: 0.4rem;
+            color: #cbd5e1;
+            font-size: 0.86rem;
+            font-weight: 700;
+        }
+        .input-stack {
+            display: grid;
+            gap: 0.75rem;
+        }
+        .room-code {
+            margin: 0.8rem 0;
+            padding: 0.8rem;
+            border-radius: 0.8rem;
+            background: rgba(0,0,0,0.28);
+            color: var(--tie);
+            font-size: 1.55rem;
+            font-weight: 900;
+            letter-spacing: 0.22rem;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+        }
+        .join-row {
+            display: flex;
+            gap: 0.7rem;
+        }
+        .room-input {
+            width: 100%;
+            min-width: 0;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(15,23,42,0.82);
+            color: white;
+            border-radius: 0.85rem;
+            padding: 0.85rem 1rem;
+            font-size: 1rem;
+            outline: none;
+        }
+        #joinCode, .uppercase-input {
+            text-transform: uppercase;
+        }
+        .room-input:focus { border-color: var(--accent-blue); }
+        .online-status {
+            min-height: 1.4rem;
+            margin-top: 0.8rem;
+            color: #cbd5e1;
+            font-size: 0.88rem;
+            line-height: 1.4;
+        }
+        .online-status.error {
+            color: #fca5a5;
+        }
+        .btn-online {
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-pink));
+            color: white;
+        }
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+        .choice-btn:disabled {
+            opacity: 0.42;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none;
+        }
+        .device-support {
+            margin-top: 1.15rem;
+            color: #94a3b8;
+            font-size: 0.78rem;
+            line-height: 1.4;
+            letter-spacing: 0.02em;
+        }
+        .source-protection-toast {
+            position: fixed;
+            left: 50%;
+            bottom: calc(1rem + env(safe-area-inset-bottom));
+            z-index: 2000;
+            max-width: calc(100vw - 2rem);
+            transform: translate(-50%, 20px);
+            padding: 0.7rem 1rem;
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 999px;
+            background: rgba(15,23,42,0.96);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.45);
+            color: #f8fafc;
+            font-size: 0.84rem;
+            font-weight: 750;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        .source-protection-toast.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+        .hidden { display: none !important; }
+
+        @media (hover: none), (pointer: coarse) {
+            .score-card:hover,
+            .choice-btn:hover,
+            .mode-card:hover,
+            .btn:hover {
+                transform: none;
+            }
+        }
+
+        @media (max-width: 620px) {
+            body { align-items: flex-start; }
+            .game-container {
+                max-width: 100%;
+                padding: 1.25rem 1rem;
+                border-radius: 1.35rem;
+            }
+            h1 {
+                font-size: clamp(2rem, 13vw, 3rem);
+                margin-bottom: 1.5rem;
+            }
+            .mode-grid { grid-template-columns: 1fr; }
+            .join-row { flex-direction: column; }
+            .scoreboard { gap: 0.7rem; }
+            .score-card { min-width: 0; }
+            .battle-zone {
+                min-height: 205px;
+                padding: 1.15rem 0.85rem;
+            }
+            .choices-menu { gap: 0.65rem; }
+            .choice-btn {
+                width: min(27vw, 92px);
+                height: min(27vw, 92px);
+            }
+            .actions {
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+            .actions .btn,
+            .actions a.btn {
+                width: 100%;
+                min-width: 0;
+            }
+            .online-setup-card {
+                width: calc(100vw - 1rem);
+                border-radius: 1.4rem;
+            }
+            .setup-room-box,
+            .setup-room-box.three-fields {
+                grid-template-columns: 1fr;
+            }
+            .setup-footer {
+                align-items: stretch;
+            }
+            .setup-footer .btn {
+                min-width: 0;
+                flex: 1;
+                padding-left: 0.7rem;
+                padding-right: 0.7rem;
+            }
+        }
+
+        @media (max-width: 390px) {
+            .emoji-box { font-size: clamp(3.7rem, 20vw, 5rem); }
+            .vs-circle {
+                width: 48px;
+                height: 48px;
+                font-size: 0.95rem;
+            }
+            .status-stack { width: 100%; }
+            .connection-status,
+            .target-score-display { width: 100%; }
+        }
+
+        @media (orientation: landscape) and (max-height: 620px) {
+            body { align-items: flex-start; }
+            .game-container { max-width: 900px; padding: 1.1rem 1.4rem; }
+            h1 { margin-bottom: 0.9rem; font-size: clamp(2rem, 7vw, 2.8rem); }
+            .status-stack { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+            .scoreboard { margin-bottom: 1rem; }
+            .battle-zone { min-height: 170px; margin-bottom: 1rem; padding: 1rem; }
+            .choices-menu { margin-bottom: 1rem; }
+        }
 
         @media (min-width: 768px) {
             .game-container { padding: 3rem 4rem; }
@@ -301,31 +790,128 @@
     </style>
 </head>
 <body>
-    <div class="modal-overlay" id="guideModal">
+    <div class="modal-overlay" id="modeModal">
         <div class="modal-content">
-            <div class="modal-title">🎮 HƯỚNG DẪN CHƠI</div>
-            <ul class="guide-list">
-                <li>✨ Nhấp chọn một trong ba biểu tượng ✊ (Búa), ✌️ (Kéo), hoặc ✋ (Bao) ở phía dưới để ra chiêu.</li>
-                <li>✨ Hệ thống máy sẽ tự động tính toán và đưa ra lựa chọn đối lập ngay sau đó.</li>
-                <li>✨ Điểm số của bạn và Máy sẽ liên tục được cập nhật ở bảng phía trên.</li>
-            </ul>
-            <div class="rules-summary">
-                🎯 Quy luật: Búa thắng Kéo • Kéo thắng Bao • Bao thắng Búa.
+            <div class="modal-title">🎮 CHỌN CHẾ ĐỘ CHƠI</div>
+            <div class="target-selector-card">
+                <label for="targetScoreSelect">🏆 Điểm để thắng chung cuộc</label>
+                <select id="targetScoreSelect" class="target-score-select" onchange="setTargetScore(this.value)">
+                    <option value="4">4 điểm</option>
+                    <option value="6">6 điểm</option>
+                    <option value="10" selected>10 điểm</option>
+                    <option value="15">15 điểm</option>
+                    <option value="20">20 điểm</option>
+                    <option value="40">40 điểm</option>
+                    <option value="60">60 điểm</option>
+                    <option value="80">80 điểm</option>
+                    <option value="100">100 điểm</option>
+                </select>
+                <div class="target-selector-note">Người đầu tiên đạt số điểm đã chọn sẽ thắng toàn bộ trận đấu.</div>
             </div>
-            <button class="btn btn-start" onclick="closeGuide()">Bắt đầu chơi ngay</button>
+            <div class="mode-grid">
+                <button class="mode-card" onclick="selectMode('computer')">
+                    <span class="mode-icon">🤖</span>
+                    <span class="mode-name">Chơi với máy</span>
+                    <span class="mode-desc">Chơi ngay trên thiết bị này với máy.</span>
+                </button>
+                <button class="mode-card" onclick="selectMode('online')">
+                    <span class="mode-icon">🌐</span>
+                    <span class="mode-name">Chơi với người online</span>
+                    <span class="mode-desc">Nhập tên, tạo mã phòng hoặc tham gia cùng bạn bè.</span>
+                </button>
+            </div>
         </div>
     </div>
 
+    <div class="modal-overlay" id="onlineModal">
+        <div class="modal-content online-setup-card">
+            <div class="setup-header">
+                <div>
+                    <div class="setup-title">Thiết lập trận đấu</div>
+                    <div class="setup-subtitle">Nhập thông tin hai người chơi.</div>
+                </div>
+                <button class="setup-close" type="button" aria-label="Đóng" onclick="cancelOnlineMode()">×</button>
+            </div>
+
+            <div class="setup-progress" aria-hidden="true">
+                <span class="active"></span>
+                <span class="active"></span>
+                <span></span>
+            </div>
+
+            <label class="setup-label" for="onlinePlayerName">Tên người chơi 1</label>
+            <input id="onlinePlayerName" class="room-input setup-name-input" maxlength="16" placeholder="Bắt buộc nhập tên người chơi 1">
+
+            <div class="setup-room-box three-fields">
+                <div class="setup-field">
+                    <label class="setup-label" for="onlineRoomType">Loại phòng</label>
+                    <select id="onlineRoomType" class="room-input setup-select" onchange="handleRoomTypeChange()">
+                        <option value="create">Tạo phòng mới</option>
+                        <option value="join">Tham gia phòng</option>
+                    </select>
+                </div>
+                <div class="setup-field">
+                    <label class="setup-label" id="roomCodeLabel" for="onlineRoomCode">Mã phòng của bạn</label>
+                    <div class="setup-code-row">
+                        <input id="onlineRoomCode" class="room-input uppercase-input" maxlength="6" value="" readonly>
+                        <button id="refreshRoomCodeButton" class="refresh-code-btn" type="button" title="Tạo mã phòng mới" onclick="refreshSetupRoomCode()">⟳</button>
+                    </div>
+                </div>
+                <div class="setup-field">
+                    <label class="setup-label" for="onlineTargetScore">Điểm để thắng</label>
+                    <select id="onlineTargetScore" class="room-input setup-select" onchange="handleTargetScoreChange(this.value)">
+                        <option value="4">4 điểm</option>
+                        <option value="6">6 điểm</option>
+                        <option value="10" selected>10 điểm</option>
+                        <option value="15">15 điểm</option>
+                        <option value="20">20 điểm</option>
+                        <option value="40">40 điểm</option>
+                        <option value="60">60 điểm</option>
+                        <option value="80">80 điểm</option>
+                        <option value="100">100 điểm</option>
+                    </select>
+                </div>
+            </div>
+
+            <p class="setup-help" id="setupHelpText">
+                Người tạo phòng chọn “Tạo phòng mới” để lấy mã. Người còn lại chọn “Tham gia phòng”, nhập đúng mã rồi nhấn vào phòng để vào chung trận.
+            </p>
+            <div class="online-status" id="onlineStatus">Điền tên người chơi, chọn điểm thắng và nhấn “Tiếp tục”.</div>
+
+            <div class="setup-footer">
+                <button class="btn btn-back" type="button" onclick="cancelOnlineMode()">← Quay lại</button>
+                <button class="btn btn-continue" type="button" onclick="continueOnlineSetup()">Tiếp tục →</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="guideModal">
+        <div class="modal-content">
+            <div class="modal-title" id="guideTitle">🎮 HƯỚNG DẪN CHƠI</div>
+            <ul class="guide-list" id="guideList"></ul>
+            <div class="rules-summary">
+                🎯 Quy luật: Búa thắng Kéo • Kéo thắng Bao • Bao thắng Búa.
+            </div>
+            <button class="btn btn-start" id="guideActionButton" onclick="closeGuide()">Bắt đầu chơi ngay</button>
+        </div>
+    </div>
+
+    <canvas id="fireworksCanvas" class="celebration-canvas"></canvas>
+
     <div class="game-container">
         <h1>BÚA KÉO BAO</h1>
+        <div class="status-stack">
+            <div class="connection-status" id="connectionStatus">Chưa chọn chế độ</div>
+            <div class="target-score-display" id="targetScoreDisplay">🏆 Chạm 10 điểm để thắng chung cuộc</div>
+        </div>
 
         <div class="scoreboard">
             <div class="score-card">
-                <div class="score-label">Bạn</div>
+                <div class="score-label" id="playerLabel">Bạn</div>
                 <div class="score-value" id="playerScore">0</div>
             </div>
             <div class="score-card">
-                <div class="score-label">Máy</div>
+                <div class="score-label" id="opponentLabel">Máy</div>
                 <div class="score-value" id="computerScore">0</div>
             </div>
         </div>
@@ -340,33 +926,47 @@
         </div>
 
         <div class="choices-menu">
-            <button class="choice-btn" onclick="playGame('rock')">✊</button>
-            <button class="choice-btn" onclick="playGame('scissors')">✌️</button>
-            <button class="choice-btn" onclick="playGame('paper')">✋</button>
+            <button class="choice-btn" onclick="handleChoice('rock')">✊</button>
+            <button class="choice-btn" onclick="handleChoice('scissors')">✌️</button>
+            <button class="choice-btn" onclick="handleChoice('paper')">✋</button>
         </div>
 
         <div class="actions">
-            <button class="btn btn-reset" onclick="resetGame()">🔄 Chơi lại</button>
+            <button class="btn btn-reset" onclick="resetGame()">🔄 Đặt lại điểm</button>
+            <button class="btn btn-secondary" onclick="changeMode()">🎮 Đổi chế độ</button>
             <a href="game.html" class="btn btn-back">Quay lại</a>
         </div>
+        <div class="device-support" id="deviceSupport">Tối ưu hiển thị: Android • iOS • Máy tính</div>
+    </div>
+
+    <div class="source-protection-toast" id="sourceProtectionToast" role="status" aria-live="polite">
+        Chức năng xem mã nguồn đã bị khóa trên trang này.
     </div>
 
     <audio id="winSound" src="win.mp3"></audio>
     <audio id="loseSound" src="lose.mp3"></audio>
     <audio id="tieSound" src="tie.mp3"></audio>
 
+    <script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
     <script>
         let playerScore = 0;
         let computerScore = 0;
         let isPlaying = false;
+        let gameMode = null;
 
-        window.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('guideModal').classList.add('open');
-        });
-
-        function closeGuide() {
-            document.getElementById('guideModal').classList.remove('open');
-        }
+        let peer = null;
+        let connection = null;
+        let currentRound = 1;
+        let onlineRounds = {};
+        let currentRoomCode = '';
+        let localPlayerName = 'Bạn';
+        let remotePlayerName = 'Đối thủ';
+        let guideNextAction = 'play';
+        const allowedTargetScores = [4, 6, 10, 15, 20, 40, 60, 80, 100];
+        let targetScore = 10;
+        let matchFinished = false;
+        let isRoomHost = false;
+        let fireworksController = null;
 
         const choices = {
             rock: { emoji: '✊', name: 'Búa' },
@@ -380,48 +980,653 @@
             scissors: 'paper'
         };
 
-        // Mảng hỗ trợ lấy nước đi ngẫu nhiên hoàn toàn
-        const choiceKeys = ['rock', 'paper', 'scissors'];
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('modeModal').classList.add('open');
+            setChoiceButtonsEnabled(false);
+            setTargetScore(targetScore);
+            resizeFireworksCanvas();
+            updateDeviceSupportLabel();
+            enableSourceProtection();
+            window.addEventListener('resize', resizeFireworksCanvas, { passive: true });
+            window.addEventListener('orientationchange', () => setTimeout(resizeFireworksCanvas, 150), { passive: true });
+        });
 
-        /* --- LOGIC ĐÃ ĐƯỢC THAY ĐỔI TẠI ĐÂY --- */
+        function setChoiceButtonsEnabled(enabled) {
+            document.querySelectorAll('.choice-btn').forEach(btn => btn.disabled = !enabled);
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('open');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+
+        function updateDeviceSupportLabel() {
+            const label = document.getElementById('deviceSupport');
+            if (!label) return;
+            const ua = navigator.userAgent || '';
+            let currentDevice = 'Máy tính';
+            if (/android/i.test(ua)) currentDevice = 'Android';
+            else if (/iPad|iPhone|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) currentDevice = 'iOS';
+            label.textContent = `Đang hiển thị trên ${currentDevice} • Tương thích Android, iOS và máy tính`;
+        }
+
+        function showSourceProtectionNotice() {
+            const toast = document.getElementById('sourceProtectionToast');
+            if (!toast) return;
+            toast.classList.add('show');
+            clearTimeout(showSourceProtectionNotice.timer);
+            showSourceProtectionNotice.timer = setTimeout(() => toast.classList.remove('show'), 1800);
+        }
+
+        function enableSourceProtection() {
+            document.addEventListener('contextmenu', event => {
+                event.preventDefault();
+                showSourceProtectionNotice();
+            });
+
+            document.addEventListener('dragstart', event => event.preventDefault());
+
+            document.addEventListener('selectstart', event => {
+                const target = event.target;
+                const editable = target && target.closest && target.closest('input, textarea, select, [contenteditable="true"]');
+                if (!editable) event.preventDefault();
+            });
+
+            document.addEventListener('keydown', event => {
+                const key = String(event.key || '').toLowerCase();
+                const ctrlOrMeta = event.ctrlKey || event.metaKey;
+                const blocked =
+                    event.key === 'F12' ||
+                    (event.ctrlKey && key === 'u') ||
+                    (event.ctrlKey && event.shiftKey && ['i', 'j', 'c'].includes(key)) ||
+                    (event.metaKey && event.altKey && ['i', 'j', 'c', 'u'].includes(key)) ||
+                    (ctrlOrMeta && key === 's');
+
+                if (blocked) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    showSourceProtectionNotice();
+                }
+            }, true);
+        }
+
+        function resizeFireworksCanvas() {
+            const canvas = document.getElementById('fireworksCanvas');
+            if (!canvas) return;
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = Math.floor(window.innerWidth * ratio);
+            canvas.height = Math.floor(window.innerHeight * ratio);
+            canvas.style.width = `${window.innerWidth}px`;
+            canvas.style.height = `${window.innerHeight}px`;
+            const ctx = canvas.getContext('2d');
+            if (ctx) ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+        }
+
+        function stopFireworks() {
+            if (!fireworksController) return;
+            fireworksController.active = false;
+            cancelAnimationFrame(fireworksController.frameId);
+            clearTimeout(fireworksController.burstTimer);
+            const canvas = document.getElementById('fireworksCanvas');
+            const ctx = canvas ? canvas.getContext('2d') : null;
+            if (ctx && canvas) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            fireworksController = null;
+        }
+
+        function createFireworkBurst(particles, x, y) {
+            const colors = ['#38bdf8', '#f472b6', '#fbbf24', '#4ade80', '#ffffff'];
+            const particleCount = 30 + Math.floor(Math.random() * 18);
+            for (let i = 0; i < particleCount; i++) {
+                const angle = (Math.PI * 2 * i) / particleCount + (Math.random() * 0.35);
+                const speed = 1.6 + Math.random() * 3.9;
+                particles.push({
+                    x,
+                    y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    alpha: 1,
+                    decay: 0.010 + Math.random() * 0.02,
+                    radius: 1.6 + Math.random() * 2.8,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    gravity: 0.03 + Math.random() * 0.04
+                });
+            }
+        }
+
+        function launchWinnerFireworks() {
+            stopFireworks();
+            resizeFireworksCanvas();
+            const canvas = document.getElementById('fireworksCanvas');
+            const ctx = canvas ? canvas.getContext('2d') : null;
+            if (!canvas || !ctx) return;
+
+            const particles = [];
+            const duration = 3200;
+            const startTime = performance.now();
+            fireworksController = { active: true, frameId: 0, burstTimer: 0 };
+
+            const scheduleBurst = () => {
+                if (!fireworksController || !fireworksController.active) return;
+                const x = window.innerWidth * (0.12 + Math.random() * 0.76);
+                const y = window.innerHeight * (0.12 + Math.random() * 0.42);
+                createFireworkBurst(particles, x, y);
+                fireworksController.burstTimer = setTimeout(scheduleBurst, 190 + Math.random() * 160);
+            };
+            scheduleBurst();
+
+            const animate = (now) => {
+                if (!fireworksController || !fireworksController.active) return;
+                ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += p.gravity;
+                    p.vx *= 0.992;
+                    p.vy *= 0.992;
+                    p.alpha -= p.decay;
+                    if (p.alpha <= 0) {
+                        particles.splice(i, 1);
+                        continue;
+                    }
+                    ctx.globalAlpha = Math.max(p.alpha, 0);
+                    ctx.beginPath();
+                    ctx.fillStyle = p.color;
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.globalAlpha = 1;
+
+                if (now - startTime < duration || particles.length > 0) {
+                    fireworksController.frameId = requestAnimationFrame(animate);
+                } else {
+                    stopFireworks();
+                }
+            };
+            fireworksController.frameId = requestAnimationFrame(animate);
+        }
+
+        function normalizeTargetScore(value) {
+            const parsed = Number.parseInt(value, 10);
+            return allowedTargetScores.includes(parsed) ? parsed : 10;
+        }
+
+        function setTargetScore(value) {
+            targetScore = normalizeTargetScore(value);
+            ['targetScoreSelect', 'onlineTargetScore'].forEach(id => {
+                const control = document.getElementById(id);
+                if (control) control.value = String(targetScore);
+            });
+            updateTargetScoreDisplay();
+        }
+
+        function updateTargetScoreDisplay() {
+            const display = document.getElementById('targetScoreDisplay');
+            if (display) display.textContent = `🏆 Chạm ${targetScore} điểm để thắng chung cuộc`;
+        }
+
+        function handleTargetScoreChange(value) {
+            setTargetScore(value);
+            const roomType = document.getElementById('onlineRoomType');
+            if (roomType && roomType.value === 'create') {
+                const helpText = document.getElementById('setupHelpText');
+                if (helpText) {
+                    helpText.textContent = `Người tạo phòng chọn điểm thắng, lấy mã và gửi mã cho người còn lại. Trận đấu kết thúc khi một người đạt ${targetScore} điểm.`;
+                }
+                setOnlineStatus(`Chủ phòng đang chọn đích ${targetScore} điểm.`);
+            }
+        }
+
+        function safeUpperName(name) {
+            return (name || '').toLocaleUpperCase('vi-VN');
+        }
+
+        function cleanName(value) {
+            return (value || '').trim().replace(/\s+/g, ' ').slice(0, 16);
+        }
+
+        function updateScoreLabels() {
+            if (gameMode === 'online') {
+                document.getElementById('playerLabel').textContent = localPlayerName || 'Bạn';
+                document.getElementById('opponentLabel').textContent = remotePlayerName || 'Đối thủ';
+            } else {
+                document.getElementById('playerLabel').textContent = 'Bạn';
+                document.getElementById('opponentLabel').textContent = 'Máy';
+            }
+        }
+
+        function setOnlineStatus(message, isError = false) {
+            const el = document.getElementById('onlineStatus');
+            el.textContent = message;
+            el.classList.toggle('error', isError);
+        }
+
+        function validateName(inputId, errorMessage) {
+            const input = document.getElementById(inputId);
+            const name = cleanName(input.value);
+            input.value = name;
+            if (!name) {
+                setOnlineStatus(errorMessage, true);
+                input.focus();
+                return null;
+            }
+            return name;
+        }
+
+        function updateConnectionText(text) {
+            document.getElementById('connectionStatus').textContent = text;
+        }
+
+        function selectMode(mode) {
+            setTargetScore(document.getElementById('targetScoreSelect').value);
+            closeModal('modeModal');
+            gameMode = mode;
+            resetLocalGame(false);
+
+            if (mode === 'computer') {
+                localPlayerName = 'Bạn';
+                remotePlayerName = 'Máy';
+                updateScoreLabels();
+                updateConnectionText(`🤖 Chơi với máy — Đích ${targetScore} điểm`);
+                setChoiceButtonsEnabled(true);
+                showGuide('play');
+            } else {
+                localPlayerName = 'Bạn';
+                remotePlayerName = 'Đối thủ';
+                updateScoreLabels();
+                updateConnectionText('🌐 Chưa kết nối đối thủ');
+                setChoiceButtonsEnabled(false);
+                prepareOnlineSetup();
+                showGuide('setup');
+            }
+        }
+
+        function showGuide(nextAction = 'play') {
+            guideNextAction = nextAction;
+            const list = document.getElementById('guideList');
+            const title = document.getElementById('guideTitle');
+            const actionButton = document.getElementById('guideActionButton');
+
+            if (gameMode === 'online') {
+                title.textContent = '🌐 HƯỚNG DẪN CHƠI ONLINE';
+                list.innerHTML = `
+                    <li><span class="guide-step-number">1</span><span>Người thứ nhất nhập tên, chọn <b>Tạo phòng mới</b> rồi gửi mã phòng cho bạn chơi.</span></li>
+                    <li><span class="guide-step-number">2</span><span>Người thứ hai nhập tên, chọn <b>Tham gia phòng</b> và nhập đúng mã 6 ký tự.</span></li>
+                    <li><span class="guide-step-number">3</span><span>Khi đã kết nối, cả hai chọn ✊ Búa, ✌️ Kéo hoặc ✋ Bao. Kết quả chỉ hiện sau khi hai người đều ra chiêu.</span></li>
+                    <li><span class="guide-step-number">4</span><span>Người đầu tiên đạt <b>${targetScore} điểm</b> sẽ thắng chung cuộc. Nút “Đặt lại điểm” sẽ đặt lại trận đấu trên cả hai thiết bị.</span></li>`;
+                actionButton.textContent = nextAction === 'setup' ? 'Tiếp tục thiết lập →' : 'Đã hiểu, vào trận';
+            } else {
+                title.textContent = '🎮 HƯỚNG DẪN CHƠI';
+                list.innerHTML = `
+                    <li><span class="guide-step-number">1</span><span>Nhấp chọn ✊ Búa, ✌️ Kéo hoặc ✋ Bao để ra chiêu.</span></li>
+                    <li><span class="guide-step-number">2</span><span>Máy sẽ tự động đưa ra lựa chọn ngay sau đó.</span></li>
+                    <li><span class="guide-step-number">3</span><span>Người đầu tiên đạt <b>${targetScore} điểm</b> sẽ thắng chung cuộc.</span></li>`;
+                actionButton.textContent = 'Bắt đầu chơi ngay';
+            }
+            openModal('guideModal');
+        }
+
+        function closeGuide() {
+            closeModal('guideModal');
+            if (gameMode === 'online' && guideNextAction === 'setup') {
+                openModal('onlineModal');
+                setTimeout(() => document.getElementById('onlinePlayerName').focus(), 80);
+            }
+            guideNextAction = 'play';
+        }
+
+        function changeMode() {
+            disconnectPeer();
+            gameMode = null;
+            isRoomHost = false;
+            localPlayerName = 'Bạn';
+            remotePlayerName = 'Máy';
+            resetLocalGame(false);
+            updateScoreLabels();
+            updateConnectionText('Chưa chọn chế độ');
+            setChoiceButtonsEnabled(false);
+            closeModal('guideModal');
+            closeModal('onlineModal');
+            openModal('modeModal');
+        }
+
+        function cancelOnlineMode() {
+            stopFireworks();
+            disconnectPeer();
+            gameMode = null;
+            isRoomHost = false;
+            localPlayerName = 'Bạn';
+            remotePlayerName = 'Máy';
+            updateScoreLabels();
+            closeModal('guideModal');
+            closeModal('onlineModal');
+            openModal('modeModal');
+            updateConnectionText('Chưa chọn chế độ');
+        }
+
+        function prepareOnlineSetup() {
+            const nameInput = document.getElementById('onlinePlayerName');
+            const roomType = document.getElementById('onlineRoomType');
+            roomType.value = 'create';
+            nameInput.value = localPlayerName === 'Bạn' ? '' : localPlayerName;
+            currentRoomCode = generateRoomCode();
+            document.getElementById('onlineRoomCode').value = currentRoomCode;
+            document.getElementById('onlineTargetScore').value = String(targetScore);
+            setOnlineStatus('Điền tên người chơi, chọn điểm thắng và nhấn “Tiếp tục”.');
+            handleRoomTypeChange();
+        }
+
+        function handleRoomTypeChange() {
+            const isCreate = document.getElementById('onlineRoomType').value === 'create';
+            const codeInput = document.getElementById('onlineRoomCode');
+            const refreshButton = document.getElementById('refreshRoomCodeButton');
+            const codeLabel = document.getElementById('roomCodeLabel');
+            const helpText = document.getElementById('setupHelpText');
+            const targetSelect = document.getElementById('onlineTargetScore');
+
+            codeInput.readOnly = isCreate;
+            targetSelect.disabled = !isCreate;
+            refreshButton.disabled = !isCreate;
+            codeLabel.textContent = isCreate ? 'Mã phòng của bạn' : 'Mã phòng tham gia';
+            helpText.textContent = isCreate
+                ? `Người tạo phòng chọn điểm thắng, lấy mã và gửi mã cho người còn lại. Trận đấu kết thúc khi một người đạt ${targetScore} điểm.`
+                : 'Nhập đúng mã 6 ký tự do người tạo phòng gửi. Điểm thắng sẽ tự động đồng bộ theo chủ phòng sau khi kết nối.';
+
+            if (isCreate) {
+                if (!currentRoomCode) currentRoomCode = generateRoomCode();
+                codeInput.value = currentRoomCode;
+            } else {
+                codeInput.value = '';
+                setTimeout(() => codeInput.focus(), 40);
+            }
+            setOnlineStatus(isCreate ? `Chủ phòng đang chọn đích ${targetScore} điểm.` : 'Điểm thắng sẽ theo thiết lập của chủ phòng.');
+        }
+
+        function refreshSetupRoomCode() {
+            if (document.getElementById('onlineRoomType').value !== 'create') return;
+            currentRoomCode = generateRoomCode();
+            document.getElementById('onlineRoomCode').value = currentRoomCode;
+            setOnlineStatus('Đã tạo mã phòng mới.');
+        }
+
+        function continueOnlineSetup() {
+            const mode = document.getElementById('onlineRoomType').value;
+            if (mode === 'create') {
+                setTargetScore(document.getElementById('onlineTargetScore').value);
+                createOnlineRoom();
+            } else {
+                joinOnlineRoom();
+            }
+        }
+
+        function generateRoomCode() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let code = '';
+            for (let i = 0; i < 6; i++) {
+                code += chars[Math.floor(Math.random() * chars.length)];
+            }
+            return code;
+        }
+
+        function createOnlineRoom(retry = 0) {
+            const name = validateName('onlinePlayerName', 'Vui lòng nhập tên người chơi 1 trước khi tạo phòng.');
+            if (!name) return;
+
+            if (typeof Peer === 'undefined') {
+                setOnlineStatus('Không tải được hệ thống online. Hãy kiểm tra kết nối Internet.', true);
+                return;
+            }
+
+            const requestedCode = retry > 0
+                ? generateRoomCode()
+                : (document.getElementById('onlineRoomCode').value.trim().toUpperCase() || generateRoomCode());
+            disconnectPeer(false);
+            isRoomHost = true;
+            localPlayerName = name;
+            remotePlayerName = 'Đang chờ...';
+            updateScoreLabels();
+            currentRoomCode = requestedCode;
+            document.getElementById('onlineRoomCode').value = currentRoomCode;
+            setOnlineStatus('Đang tạo phòng...');
+            updateConnectionText(`🌐 ${localPlayerName} đang tạo phòng...`);
+
+            peer = new Peer(`bkb-${currentRoomCode.toLowerCase()}`);
+            peer.on('open', () => {
+                setOnlineStatus(`Đã tạo phòng ${currentRoomCode}. Gửi mã này cho bạn bè và chờ họ tham gia.`);
+                updateConnectionText(`🌐 Phòng ${currentRoomCode} — ${localPlayerName} đang chờ đối thủ`);
+            });
+            peer.on('connection', conn => {
+                if (connection && connection.open) {
+                    conn.close();
+                    return;
+                }
+                setupConnection(conn);
+            });
+            peer.on('error', err => {
+                if (err.type === 'unavailable-id' && retry < 3) {
+                    createOnlineRoom(retry + 1);
+                    return;
+                }
+                handlePeerError(err);
+            });
+        }
+
+        function joinOnlineRoom() {
+            const name = validateName('onlinePlayerName', 'Vui lòng nhập tên người chơi 1 trước khi tham gia phòng.');
+            if (!name) return;
+
+            const codeInput = document.getElementById('onlineRoomCode');
+            const code = codeInput.value.trim().toUpperCase();
+            codeInput.value = code;
+            if (!/^[A-Z2-9]{6}$/.test(code)) {
+                setOnlineStatus('Vui lòng nhập đúng mã phòng gồm 6 ký tự.', true);
+                codeInput.focus();
+                return;
+            }
+            if (typeof Peer === 'undefined') {
+                setOnlineStatus('Không tải được hệ thống online. Hãy kiểm tra kết nối Internet.', true);
+                return;
+            }
+
+            disconnectPeer(false);
+            isRoomHost = false;
+            localPlayerName = name;
+            remotePlayerName = 'Đối thủ';
+            updateScoreLabels();
+            currentRoomCode = code;
+            setOnlineStatus('Đang kết nối vào phòng...');
+            updateConnectionText(`🌐 ${localPlayerName} đang kết nối tới phòng ${code}`);
+            peer = new Peer();
+            peer.on('open', () => {
+                const conn = peer.connect(`bkb-${code.toLowerCase()}`, { reliable: true });
+                setupConnection(conn);
+            });
+            peer.on('error', handlePeerError);
+        }
+
+        function setupConnection(conn) {
+            connection = conn;
+            conn.on('open', () => {
+                connection.send({ type: 'profile', name: localPlayerName, targetScore, isHost: isRoomHost });
+                if (isRoomHost) {
+                    connection.send({ type: 'match_config', targetScore });
+                }
+                setOnlineStatus('Kết nối thành công! Đang đồng bộ tên và điểm thắng.');
+                closeModal('onlineModal');
+                resetLocalGame(false);
+                setChoiceButtonsEnabled(isRoomHost);
+                if (!remotePlayerName || remotePlayerName === 'Đối thủ') {
+                    remotePlayerName = 'Đối thủ';
+                }
+                updateScoreLabels();
+                updateConnectionText(`🟢 Đã kết nối — Phòng ${currentRoomCode} — Đích ${targetScore} điểm`);
+                const result = document.getElementById('result');
+                result.textContent = isRoomHost
+                    ? 'ĐÃ KẾT NỐI — HÃY RA CHIÊU!'
+                    : 'ĐÃ KẾT NỐI — ĐANG ĐỒNG BỘ ĐIỂM THẮNG...';
+                result.className = 'result-text win';
+            });
+
+            conn.on('data', handleOnlineData);
+            conn.on('close', handleDisconnect);
+            conn.on('error', () => {
+                setOnlineStatus('Kết nối bị lỗi. Vui lòng thử lại.', true);
+            });
+        }
+
+        function handleOnlineData(data) {
+            if (!data || typeof data !== 'object') return;
+
+            if (data.type === 'profile') {
+                remotePlayerName = cleanName(data.name) || 'Đối thủ';
+                if (data.isHost === true) {
+                    setTargetScore(data.targetScore);
+                    setChoiceButtonsEnabled(true);
+                    const result = document.getElementById('result');
+                    result.textContent = 'ĐÃ ĐỒNG BỘ — HÃY RA CHIÊU!';
+                    result.className = 'result-text win';
+                } else if (isRoomHost && connection && connection.open) {
+                    connection.send({ type: 'match_config', targetScore });
+                }
+                updateScoreLabels();
+                updateConnectionText(`🟢 ${localPlayerName} vs ${remotePlayerName} — Phòng ${currentRoomCode} — Đích ${targetScore} điểm`);
+                setOnlineStatus(`Đã kết nối với ${remotePlayerName}. Đích thắng: ${targetScore} điểm.`);
+                return;
+            }
+
+            if (data.type === 'match_config') {
+                setTargetScore(data.targetScore);
+                setChoiceButtonsEnabled(true);
+                const result = document.getElementById('result');
+                result.textContent = 'ĐÃ ĐỒNG BỘ — HÃY RA CHIÊU!';
+                result.className = 'result-text win';
+                updateConnectionText(`🟢 ${localPlayerName} vs ${remotePlayerName} — Phòng ${currentRoomCode} — Đích ${targetScore} điểm`);
+                setOnlineStatus(`Đã đồng bộ điểm thắng: ${targetScore} điểm.`);
+                return;
+            }
+
+            if (data.type === 'choice' && choices[data.choice] && Number.isInteger(data.round)) {
+                const state = getRoundState(data.round);
+                state.remote = data.choice;
+                tryResolveOnlineRound(data.round);
+            }
+
+            if (data.type === 'reset') {
+                if (data.targetScore) setTargetScore(data.targetScore);
+                resetLocalGame(false);
+                document.getElementById('result').textContent = `${safeUpperName(remotePlayerName)} ĐÃ ĐẶT LẠI ĐIỂM`;
+                updateConnectionText(`🟢 ${localPlayerName} vs ${remotePlayerName} — Phòng ${currentRoomCode} — Đích ${targetScore} điểm`);
+                setChoiceButtonsEnabled(true);
+            }
+        }
+
+        function handleDisconnect() {
+            connection = null;
+            setChoiceButtonsEnabled(false);
+            updateConnectionText('🔴 Đối thủ đã ngắt kết nối');
+            const result = document.getElementById('result');
+            result.textContent = 'MẤT KẾT NỐI VỚI ĐỐI THỦ';
+            result.className = 'result-text lose';
+        }
+
+        function handlePeerError(err) {
+            const messages = {
+                'peer-unavailable': 'Không tìm thấy phòng. Kiểm tra lại mã hoặc yêu cầu chủ phòng tạo lại.',
+                'network': 'Lỗi mạng. Hãy kiểm tra Internet và thử lại.',
+                'server-error': 'Máy chủ kết nối đang bận. Vui lòng thử lại.',
+                'socket-error': 'Không thể kết nối máy chủ online.'
+            };
+            setOnlineStatus(messages[err.type] || `Không thể kết nối: ${err.type || 'lỗi không xác định'}`, true);
+        }
+
+        function copyRoomCode() {
+            if (!currentRoomCode) return;
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(currentRoomCode)
+                    .then(() => setOnlineStatus('Đã sao chép mã phòng.'))
+                    .catch(() => fallbackCopyCode());
+            } else {
+                fallbackCopyCode();
+            }
+        }
+
+        function fallbackCopyCode() {
+            const input = document.createElement('textarea');
+            input.value = currentRoomCode;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            input.remove();
+            setOnlineStatus('Đã sao chép mã phòng.');
+        }
+
+        function disconnectPeer(resetStatus = true) {
+            if (connection) {
+                try { connection.close(); } catch (_) {}
+                connection = null;
+            }
+            if (peer) {
+                try { peer.destroy(); } catch (_) {}
+                peer = null;
+            }
+            currentRoomCode = '';
+            isRoomHost = false;
+            const codeInput = document.getElementById('onlineRoomCode');
+            if (codeInput) codeInput.value = '';
+            if (resetStatus) {
+                setOnlineStatus('Điền tên người chơi, chọn điểm thắng và nhấn “Tiếp tục”.');
+            }
+        }
+
+        function handleChoice(playerChoice) {
+            if (matchFinished) return;
+            if (gameMode === 'computer') {
+                playComputerGame(playerChoice);
+            } else if (gameMode === 'online') {
+                playOnlineGame(playerChoice);
+            }
+        }
+
         function getComputerChoice(playerChoice) {
-            const randomValue = Math.random(); // Trả về số ngẫu nhiên từ 0 đến dưới 1
+            const randomValue = Math.random();
 
             if (randomValue < 0.60) {
-                // 60% Tỷ lệ Máy ra chiêu thắng người chơi
                 if (playerChoice === 'rock') return 'paper';
                 if (playerChoice === 'paper') return 'scissors';
                 if (playerChoice === 'scissors') return 'rock';
             } else {
-                // 40% Tỷ lệ còn lại: Chia đều ngẫu nhiên cho việc Hòa hoặc Người chơi thắng
-                // (Mỗi trường hợp chiếm khoảng 20%)
-                const subRandom = Math.random();
-                if (subRandom < 0.5) {
-                    // Máy ra chiêu giống Người chơi -> Kết quả Hòa
-                    return playerChoice;
-                } else {
-                    // Máy ra chiêu để Người chơi thắng
-                    if (playerChoice === 'rock') return 'scissors';
-                    if (playerChoice === 'paper') return 'rock';
-                    if (playerChoice === 'scissors') return 'paper';
-                }
+                if (Math.random() < 0.5) return playerChoice;
+                if (playerChoice === 'rock') return 'scissors';
+                if (playerChoice === 'paper') return 'rock';
+                if (playerChoice === 'scissors') return 'paper';
             }
-            return 'rock'; // fallback phòng hờ lỗi lẻ
+            return 'rock';
         }
 
-        async function playGame(playerChoice) {
+        function determineResult(myChoice, opponentChoice) {
+            if (myChoice === opponentChoice) return 'tie';
+            return rules[myChoice] === opponentChoice ? 'win' : 'lose';
+        }
+
+        function playComputerGame(playerChoice) {
             if (isPlaying) return;
             isPlaying = true;
+            setChoiceButtonsEnabled(false);
 
             const resElem = document.getElementById('result');
             const pDisp = document.getElementById('playerChoice');
             const cDisp = document.getElementById('computerChoice');
             const displayArea = document.getElementById('choicesDisplay');
 
-            resElem.textContent = "Oẳn tù tì...";
-            resElem.className = "result-text";
+            resElem.textContent = 'Oẳn tù tì...';
+            resElem.className = 'result-text';
             displayArea.classList.add('show');
-
             pDisp.textContent = '✊';
             cDisp.textContent = '✊';
             pDisp.classList.add('shaking');
@@ -432,16 +1637,67 @@
                 cDisp.classList.remove('shaking');
 
                 const computerChoice = getComputerChoice(playerChoice);
-                let result = (playerChoice === computerChoice) ? 'tie' :
-                             (rules[playerChoice] === computerChoice ? 'win' : 'lose');
-
+                const result = determineResult(playerChoice, computerChoice);
                 pDisp.textContent = choices[playerChoice].emoji;
                 cDisp.textContent = choices[computerChoice].emoji;
 
-                updateScore(result);
-                displayResult(result);
+                const matchEnded = updateScore(result);
+                if (!matchEnded) displayResult(result);
                 isPlaying = false;
+                if (!matchEnded) setChoiceButtonsEnabled(true);
             }, 1200);
+        }
+
+        function getRoundState(round) {
+            if (!onlineRounds[round]) {
+                onlineRounds[round] = { local: null, remote: null, resolved: false };
+            }
+            return onlineRounds[round];
+        }
+
+        function playOnlineGame(playerChoice) {
+            if (!connection || !connection.open) {
+                const result = document.getElementById('result');
+                result.textContent = 'CHƯA KẾT NỐI ĐỐI THỦ';
+                result.className = 'result-text lose';
+                return;
+            }
+
+            const round = currentRound;
+            const state = getRoundState(round);
+            if (state.local || state.resolved) return;
+
+            state.local = playerChoice;
+            setChoiceButtonsEnabled(false);
+            document.getElementById('choicesDisplay').classList.add('show');
+            document.getElementById('playerChoice').textContent = choices[playerChoice].emoji;
+            document.getElementById('computerChoice').textContent = '⏳';
+
+            const result = document.getElementById('result');
+            result.textContent = 'ĐÃ CHỌN — ĐANG CHỜ ĐỐI THỦ...';
+            result.className = 'result-text';
+
+            connection.send({ type: 'choice', round, choice: playerChoice });
+            tryResolveOnlineRound(round);
+        }
+
+        function tryResolveOnlineRound(round) {
+            const state = getRoundState(round);
+            if (!state.local || !state.remote || state.resolved) return;
+
+            state.resolved = true;
+            const result = determineResult(state.local, state.remote);
+            document.getElementById('choicesDisplay').classList.add('show');
+            document.getElementById('playerChoice').textContent = choices[state.local].emoji;
+            document.getElementById('computerChoice').textContent = choices[state.remote].emoji;
+
+            const matchEnded = updateScore(result);
+            if (!matchEnded) displayResult(result);
+            currentRound = Math.max(currentRound, round + 1);
+
+            setTimeout(() => {
+                if (!matchEnded && connection && connection.open) setChoiceButtonsEnabled(true);
+            }, 650);
         }
 
         function updateScore(result) {
@@ -461,40 +1717,103 @@
             setTimeout(() => {
                 document.querySelectorAll('.score-card').forEach(el => el.classList.remove('pulse'));
             }, 600);
+
+            if (playerScore >= targetScore) {
+                finishMatch('local');
+                return true;
+            }
+            if (computerScore >= targetScore) {
+                finishMatch('opponent');
+                return true;
+            }
+            return false;
+        }
+
+        function finishMatch(winnerSide) {
+            matchFinished = true;
+            setChoiceButtonsEnabled(false);
+
+            const localWon = winnerSide === 'local';
+            const winnerName = localWon
+                ? (gameMode === 'online' ? localPlayerName : 'Bạn')
+                : (gameMode === 'online' ? remotePlayerName : 'Máy');
+            const result = document.getElementById('result');
+            result.textContent = `${safeUpperName(winnerName)} THẮNG CHUNG CUỘC ${targetScore} ĐIỂM! 🏆`;
+            result.className = `result-text ${localWon ? 'win' : 'lose'} match-finished`;
+
+            const sound = document.getElementById(localWon ? 'winSound' : 'loseSound');
+            sound.pause();
+            sound.currentTime = 0;
+            sound.play().catch(() => {});
+            launchWinnerFireworks();
+
+            if (gameMode === 'online') {
+                updateConnectionText(`🏆 ${winnerName} thắng chung cuộc — Phòng ${currentRoomCode}`);
+            } else {
+                updateConnectionText(`🏆 ${winnerName} thắng chung cuộc — Đích ${targetScore} điểm`);
+            }
         }
 
         function displayResult(result) {
             const resElem = document.getElementById('result');
-            const winSound  = document.getElementById('winSound');
+            const winSound = document.getElementById('winSound');
             const loseSound = document.getElementById('loseSound');
-            const tieSound  = document.getElementById('tieSound');
+            const tieSound = document.getElementById('tieSound');
 
-            [winSound, loseSound, tieSound].forEach(s => { s.pause(); s.currentTime = 0; });
+            [winSound, loseSound, tieSound].forEach(sound => {
+                sound.pause();
+                sound.currentTime = 0;
+            });
 
             if (result === 'win') {
-                resElem.textContent = "CHIẾN THẮNG! 🎉";
-                resElem.classList.add('win');
+                resElem.textContent = 'CHIẾN THẮNG! 🎉';
+                resElem.className = 'result-text win';
                 winSound.play().catch(() => {});
             } else if (result === 'lose') {
-                resElem.textContent = "THUA RỒI... 💀";
-                resElem.classList.add('lose');
+                resElem.textContent = 'THUA RỒI... 💀';
+                resElem.className = 'result-text lose';
                 loseSound.play().catch(() => {});
             } else {
-                resElem.textContent = "HÒA! 🤝";
-                resElem.classList.add('tie');
+                resElem.textContent = 'HÒA! 🤝';
+                resElem.className = 'result-text tie';
                 tieSound.play().catch(() => {});
+            }
+        }
+
+        function resetLocalGame(sendToOpponent = true) {
+            stopFireworks();
+            isPlaying = false;
+            matchFinished = false;
+            playerScore = 0;
+            computerScore = 0;
+            currentRound = 1;
+            onlineRounds = {};
+
+            document.getElementById('playerScore').textContent = '0';
+            document.getElementById('computerScore').textContent = '0';
+            document.getElementById('result').textContent = '';
+            document.getElementById('result').className = 'result-text';
+            document.getElementById('playerChoice').textContent = '❓';
+            document.getElementById('computerChoice').textContent = '❓';
+            document.getElementById('choicesDisplay').classList.remove('show');
+            updateScoreLabels();
+            updateTargetScoreDisplay();
+
+            if (sendToOpponent && gameMode === 'online' && connection && connection.open) {
+                connection.send({ type: 'reset', targetScore });
             }
         }
 
         function resetGame() {
             if (isPlaying) return;
-            playerScore = computerScore = 0;
-            document.getElementById('playerScore').textContent = '0';
-            document.getElementById('computerScore').textContent = '0';
-            document.getElementById('result').textContent = '';
-            document.getElementById('playerChoice').textContent = '❓';
-            document.getElementById('computerChoice').textContent = '❓';
-            document.getElementById('choicesDisplay').classList.remove('show');
+            resetLocalGame(true);
+            if (gameMode === 'computer') {
+                updateConnectionText(`🤖 Chơi với máy — Đích ${targetScore} điểm`);
+                setChoiceButtonsEnabled(true);
+            } else if (connection && connection.open) {
+                updateConnectionText(`🟢 ${localPlayerName} vs ${remotePlayerName} — Phòng ${currentRoomCode} — Đích ${targetScore} điểm`);
+                setChoiceButtonsEnabled(true);
+            }
         }
     </script>
 </body>
