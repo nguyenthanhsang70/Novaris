@@ -80,13 +80,20 @@ button,input,select{font:inherit}
 .cell.win{animation:pulseWin .75s infinite alternate;background:rgba(251,191,36,.35)}
 @keyframes pulseWin{to{filter:brightness(1.25)}}
 .message{min-height:27px;text-align:center;margin-top:12px;font-weight:800;color:#dbeafe}
-.bottom-controls{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}
+.bottom-controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px;margin-top:12px}
 .control-btn{border:1px solid var(--line);border-radius:14px;height:44px;background:rgba(255,255,255,.055);color:#fff;font-weight:800;cursor:pointer;transition:.2s}
 .control-btn.primary{background:linear-gradient(135deg,#0284c7,#4f46e5);border:0}
 .control-btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
+.control-btn.leave{border-color:rgba(251,191,36,.38);background:rgba(251,191,36,.12);color:#fde68a}
+.control-btn.dissolve{min-width:190px;padding:0 18px;display:inline-flex;align-items:center;justify-content:center;gap:9px;white-space:nowrap;overflow:hidden;border:1px solid rgba(255,255,255,.16);background:linear-gradient(135deg,#fb3f63 0%,#e11d48 48%,#be123c 100%);color:#fff;box-shadow:0 10px 24px rgba(225,29,72,.28),inset 0 1px 0 rgba(255,255,255,.18)}
+.control-btn.dissolve i{width:28px;height:28px;flex:0 0 28px;display:grid;place-items:center;border-radius:9px;background:rgba(255,255,255,.15);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.control-btn.dissolve:hover{transform:translateY(-3px);filter:brightness(1.08);box-shadow:0 14px 30px rgba(225,29,72,.36),inset 0 1px 0 rgba(255,255,255,.2)}
+.control-btn.dissolve:active{transform:translateY(0) scale(.98)}
+.hidden{display:none!important}
 .modal{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(2,6,23,.77);backdrop-filter:blur(12px)}
 .modal.show{display:flex}
 .modal-card{width:min(640px,100%);max-height:92vh;overflow:auto;border:1px solid rgba(255,255,255,.14);border-radius:26px;background:linear-gradient(155deg,#10233a,#091526);box-shadow:0 35px 100px rgba(0,0,0,.55);padding:24px}
+#setupModal .modal-card{width:min(980px,100%)}
 .modal-head{display:flex;justify-content:space-between;gap:15px;align-items:start}
 .modal-head h3{font-size:26px;margin:0}.modal-head p{color:var(--muted);margin:7px 0 0}
 .close-btn{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:#fff;cursor:pointer}
@@ -103,6 +110,29 @@ button,input,select{font:inherit}
 .inline-room{display:flex;gap:8px;align-items:center}.inline-room input{flex:1}.mini-btn{height:47px;min-width:47px;padding:0 14px;border-radius:13px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:#fff;cursor:pointer}.mini-btn:hover{background:rgba(255,255,255,.12)}
 .room-box,.computer-box{display:none;margin-top:13px;padding:15px;border-radius:15px;border:1px dashed rgba(34,211,238,.35);background:rgba(34,211,238,.06)}
 .room-box.show,.computer-box.show{display:block}
+.room-setup-layout{display:grid;grid-template-columns:1fr;gap:14px;align-items:start}
+.room-config-pane{min-width:0}
+.room-browser{min-width:0;padding:14px;border-radius:15px;border:1px solid rgba(139,92,246,.28);background:rgba(7,17,31,.72)}
+.room-browser-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.room-browser-title{font-size:14px;font-weight:900;color:#f8fafc}
+.room-refresh-btn{width:38px;height:38px;border-radius:11px;border:1px solid var(--line);background:rgba(255,255,255,.07);color:#fff;cursor:pointer;transition:.2s}
+.room-refresh-btn:hover{background:rgba(255,255,255,.13)}
+.room-refresh-btn.refreshing i{animation:roomSpin .65s linear infinite}
+@keyframes roomSpin{to{transform:rotate(360deg)}}
+.open-room-list{display:grid;gap:9px;max-height:300px;overflow:auto;padding-right:2px}
+.room-list-empty{padding:22px 12px;border:1px dashed rgba(148,163,184,.28);border-radius:13px;color:var(--muted);text-align:center;font-size:12px;line-height:1.55}
+.room-list-item{padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.045)}
+.room-list-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.room-host{font-weight:900;font-size:13px;line-height:1.35;overflow-wrap:anywhere}
+.room-code{color:#fde68a;font-weight:950;letter-spacing:.09em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.room-list-meta{display:flex;flex-wrap:wrap;gap:6px;margin:9px 0}
+.room-chip{display:inline-flex;align-items:center;min-height:27px;padding:4px 8px;border-radius:999px;border:1px solid rgba(125,211,252,.18);background:rgba(56,189,248,.07);color:#bae6fd;font-size:10px;font-weight:850;white-space:nowrap}
+.room-chip.waiting{border-color:rgba(34,197,94,.28);background:rgba(34,197,94,.1);color:#bbf7d0}
+.room-chip.full{border-color:rgba(251,191,36,.3);background:rgba(251,191,36,.1);color:#fde68a}
+.room-chip.playing{border-color:rgba(244,114,182,.3);background:rgba(244,114,182,.1);color:#fbcfe8}
+.room-join-button{width:100%;min-height:39px;border:0;border-radius:11px;background:linear-gradient(135deg,#0891b2,#4f46e5);color:#fff;font-size:12px;font-weight:900;cursor:pointer}
+.room-join-button:disabled{cursor:not-allowed;opacity:.46;background:rgba(148,163,184,.22)}
+.room-browser-note{margin-top:9px;color:#718096;font-size:10px;line-height:1.5}
 .piece-select{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px}
 .piece-choice{padding:18px;border:1px solid var(--line);border-radius:18px;text-align:center;background:rgba(255,255,255,.04)}
 .big-piece{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;margin:12px auto;font-size:34px;font-weight:900;background:#f8fafc}
@@ -113,7 +143,7 @@ button,input,select{font:inherit}
 .wizard-btn{height:47px;padding:0 20px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:#fff;font-weight:900;cursor:pointer}
 .wizard-btn.next{margin-left:auto;background:linear-gradient(135deg,#0891b2,#4f46e5);border:0}
 .result-card{text-align:center}.trophy{font-size:62px;color:var(--gold);filter:drop-shadow(0 12px 25px rgba(251,191,36,.25))}.result-card h3{font-size:30px;margin:10px 0 6px}.result-card p{color:var(--muted)}
-@media(max-width:900px){.game-layout{grid-template-columns:1fr 1fr}.center-panel{grid-column:1/-1;grid-row:1}.player-card{grid-row:2}.hero{grid-template-columns:1fr}.status-pill{justify-self:start}}
+@media(max-width:900px){.game-layout{grid-template-columns:1fr 1fr}.center-panel{grid-column:1/-1;grid-row:1}.player-card{grid-row:2}.hero{grid-template-columns:1fr}.status-pill{justify-self:start}.room-setup-layout{grid-template-columns:1fr}.open-room-list{max-height:245px}}
 @media(max-width:600px){.app{padding:12px}.brand p,.hero p{display:none}.hero{padding:16px}.game-layout{gap:10px}.player-card{padding:12px}.avatar{width:52px;height:52px;border-radius:16px}.stats{display:none}.piece-badge{font-size:12px}.center-panel{padding:10px;border-radius:18px}.board-shell{padding:8px}.match-bar{grid-template-columns:1fr auto}.turn-info{display:none}.bottom-controls{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.piece-select{grid-template-columns:1fr}.swap-btn{margin:auto;transform:rotate(90deg)}.modal-card{padding:18px}.top-actions .ghost-btn span{display:none}}
 </style>
 </head>
@@ -138,7 +168,7 @@ button,input,select{font:inherit}
   <section class="hero">
     <div>
       <h2>Chơi <span>Caro</span> theo cách của bạn</h2>
-      <p>Chơi với máy, chơi offline cùng bạn bè hoặc tạo cảm giác online với mã phòng và giao diện chuyên nghiệp.</p>
+      <p>Chơi với máy, chơi offline cùng bạn bè hoặc tạo và tham gia phòng online trên nhiều thiết bị.</p>
     </div>
     <div class="status-pill"><i class="fa-solid fa-circle-check"></i><span id="networkStatus">Sẵn sàng bắt đầu trận đấu</span></div>
   </section>
@@ -167,6 +197,8 @@ button,input,select{font:inherit}
         <button class="control-btn primary" onclick="resetRound()"><i class="fa-solid fa-rotate-right"></i> Chơi lại</button>
         <button class="control-btn" onclick="undoMove()"><i class="fa-solid fa-arrow-rotate-left"></i> Đi lại</button>
         <button class="control-btn" onclick="openSetup()"><i class="fa-solid fa-plus"></i> Trận mới</button>
+        <button class="control-btn leave hidden" id="leaveMatchButton" onclick="leaveOnlineMatch()"><i class="fa-solid fa-right-from-bracket"></i> Rời trận</button>
+        <button class="control-btn dissolve hidden" id="dissolveRoomButton" onclick="dissolveOnlineRoom()"><i class="fa-solid fa-trash-can"></i> Giải tán phòng</button>
       </div>
     </main>
 
@@ -206,7 +238,7 @@ button,input,select{font:inherit}
         </button>
         <button class="choice" data-mode="online" onclick="selectMode('online',this)">
           <i class="fa-solid fa-globe"></i><strong>Chơi với người - Online</strong>
-          <span>Giao diện có mã phòng để chơi như game thật. Kết nối nhiều thiết bị cần máy chủ riêng.</span>
+          <span>Tạo phòng hoặc chọn phòng đang chờ trong danh sách để chơi trên nhiều thiết bị.</span>
         </button>
       </div>
       <div class="wizard-actions"><a class="wizard-btn" href="game.html" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none"><i class="fa-solid fa-arrow-left"></i>&nbsp; Quay lại trang game</a><button class="wizard-btn next" onclick="nextStep()">Tiếp tục <i class="fa-solid fa-arrow-right"></i></button></div>
@@ -224,10 +256,24 @@ button,input,select{font:inherit}
         </div>
       </div>
       <div class="room-box" id="roomBox">
-        <div class="form-grid">
-          <div class="field"><label>LOẠI PHÒNG</label><select id="roomType"><option value="create">Tạo phòng mới</option><option value="join">Tham gia phòng</option></select></div>
-          <div class="field" id="createRoomField"><label>MÃ PHÒNG CỦA BẠN</label><div class="inline-room"><input id="roomCodeInput" maxlength="8" placeholder="Ví dụ: CARO88"><button type="button" class="mini-btn" onclick="generateRoomCode()" title="Tạo mã mới"><i class="fa-solid fa-rotate"></i></button></div></div>
-          <div class="field" id="joinRoomField" style="display:none"><label>NHẬP MÃ PHÒNG</label><input id="joinRoomCodeInput" maxlength="8" placeholder="Nhập mã phòng để tham gia"></div>
+        <div class="room-setup-layout">
+          <div class="room-config-pane">
+            <div class="form-grid">
+              <div class="field"><label>LOẠI PHÒNG</label><select id="roomType"><option value="create">Tạo phòng mới</option><option value="join">Tham gia phòng</option></select></div>
+              <div class="field" id="createRoomField"><label>MÃ PHÒNG CỦA BẠN</label><div class="inline-room"><input id="roomCodeInput" maxlength="8" placeholder="Ví dụ: CARO88" readonly><button type="button" class="mini-btn" onclick="generateRoomCode()" title="Tạo mã mới"><i class="fa-solid fa-rotate"></i></button></div></div>
+              <div class="field" id="joinRoomField" style="display:none"><label>NHẬP MÃ PHÒNG</label><input id="joinRoomCodeInput" maxlength="8" placeholder="Nhập mã phòng để tham gia"></div>
+            </div>
+          </div>
+          <aside class="room-browser" aria-label="Danh sách phòng Caro online">
+            <div class="room-browser-head">
+              <div class="room-browser-title"><i class="fa-solid fa-list"></i> DANH SÁCH PHÒNG</div>
+              <button class="room-refresh-btn" id="roomRefreshBtn" type="button" onclick="refreshOpenRooms(true)" title="Làm mới danh sách phòng"><i class="fa-solid fa-rotate"></i></button>
+            </div>
+            <div class="open-room-list" id="openRoomList">
+              <div class="room-list-empty">Đang tải danh sách phòng...</div>
+            </div>
+            <div class="room-browser-note">Phòng của chủ phòng mất kết nối sẽ tự ẩn sau 45 giây. Nhấn nút làm mới để cập nhật ngay.</div>
+          </aside>
         </div>
       </div>
       <div class="helper-text" id="onlineRoomHelp"></div>
@@ -265,7 +311,7 @@ button,input,select{font:inherit}
       <p><strong>3. Chọn quân cờ</strong><br>Người chơi có thể chọn X hoặc O. Quân X luôn được đi trước.</p>
       <p><strong>4. Luật thắng</strong><br>Người đầu tiên tạo đủ số ô liên tiếp theo chiều ngang, dọc hoặc chéo sẽ chiến thắng. Có thể chọn 3, 4, 5 hoặc 6 ô tùy chế độ.</p>
       <p><strong>5. Thời gian mỗi lượt</strong><br>Mỗi người có 20 hoặc 60 giây để đánh. Khi gần hết giờ, game sẽ phát âm thanh cảnh báo.</p>
-      <p><strong>6. Chơi Online</strong><br>Một người chọn Tạo phòng để lấy mã phòng. Người còn lại chọn Tham gia phòng, nhập đúng mã rồi nhấn Vào phòng.</p>
+      <p><strong>6. Chơi Online</strong><br>Một người chọn Tạo phòng để lấy mã. Người còn lại có thể chọn trực tiếp phòng đang chờ trong Danh sách phòng hoặc nhập mã thủ công rồi nhấn Vào phòng.</p>
       <p><strong>7. Kết thúc trận</strong><br>Khi thắng, thua hoặc hòa, bạn có thể chọn Đấu lại hoặc Thoát.</p>
     </div>
     <div class="wizard-actions">
@@ -319,6 +365,20 @@ let suppressNetworkSend = false;
 let devtoolsWarningShown = false;
 let toastTimer = null;
 let lastWarningSecond = null;
+let intentionalOnlineExit = '';
+const ROOM_DIRECTORY_API_BASE = 'https://mantledb.sh/v2';
+const ROOM_DIRECTORY_NAMESPACE = 'caro-zhaowen-global-rooms-2026-v1';
+const ROOM_DIRECTORY_PREFIX = 'rooms';
+const ROOM_TTL_MS = 45000;
+const ROOM_LIST_POLL_MS = 8000;
+let globalOpenRooms = [];
+let roomListPollTimer = null;
+let roomListRequestController = null;
+let roomHeartbeatTimer = null;
+let currentOnlineRoomCode = '';
+let currentRoomStatus = 'waiting';
+let currentRoomPlayerCount = 1;
+let roomCloudAvailable = true;
 
 const $ = id => document.getElementById(id);
 const boardEl = $('board');
@@ -333,6 +393,297 @@ function showToast(text, type = 'warn'){
   clearTimeout(toastTimer);
   requestAnimationFrame(() => toast.classList.add('show'));
   toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+}
+
+
+function cleanRoomName(value){
+  return String(value || '').trim().replace(/\s+/g,' ').slice(0,20);
+}
+
+function escapeRoomText(value){
+  return String(value || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
+
+function getRoomCloudUrl(code = ''){
+  const suffix = code ? '/' + ROOM_DIRECTORY_PREFIX + '/' + encodeURIComponent(String(code).toUpperCase()) : '';
+  return ROOM_DIRECTORY_API_BASE + '/' + ROOM_DIRECTORY_NAMESPACE + suffix;
+}
+
+function getRoomCloudListUrl(){
+  return ROOM_DIRECTORY_API_BASE + '/list/' + ROOM_DIRECTORY_NAMESPACE;
+}
+
+async function fetchJsonResponse(url, options = {}){
+  const response = await fetch(url, {
+    cache:'no-store',
+    ...options,
+    headers:{
+      'Accept':'application/json',
+      ...(options.body ? {'Content-Type':'application/json'} : {}),
+      ...(options.headers || {})
+    }
+  });
+  if(response.status === 404) return null;
+  if(!response.ok) throw new Error('HTTP ' + response.status);
+  const body = await response.text();
+  if(!body) return null;
+  try{ return JSON.parse(body); }catch(_){ return null; }
+}
+
+function sanitizeDirectoryRoom(room){
+  if(!room || typeof room !== 'object') return null;
+  const code = normalizeRoomCode(room.code || '');
+  if(code.length < 4) return null;
+  const playerCount = Math.min(Math.max(Number(room.playerCount) || 1,1),2);
+  const status = ['waiting','full','playing'].includes(room.status)
+    ? room.status
+    : (playerCount >= 2 ? 'full' : 'waiting');
+  return {
+    code,
+    hostName:cleanRoomName(room.hostName) || 'Người chơi',
+    winLength:[3,4,5,6].includes(Number(room.winLength)) ? Number(room.winLength) : 5,
+    turnTime:[20,60].includes(Number(room.turnTime)) ? Number(room.turnTime) : 20,
+    playerCount,
+    status,
+    createdAt:Number(room.createdAt || Date.now()),
+    lastSeen:Number(room.lastSeen || Date.now())
+  };
+}
+
+function extractRoomPaths(payload){
+  const entries = Array.isArray(payload) ? payload : (Array.isArray(payload?.entries) ? payload.entries : []);
+  const prefix = ROOM_DIRECTORY_PREFIX + '/';
+  return [...new Set(entries
+    .map(entry => typeof entry === 'string' ? entry : entry?.path)
+    .filter(path => typeof path === 'string' && path.startsWith(prefix))
+    .map(path => normalizeRoomCode(path.slice(prefix.length)))
+    .filter(code => code.length >= 4))];
+}
+
+function getActiveRooms(){
+  const now = Date.now();
+  return globalOpenRooms
+    .map(sanitizeDirectoryRoom)
+    .filter(Boolean)
+    .filter(room => now - room.lastSeen < ROOM_TTL_MS)
+    .sort((a,b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
+}
+
+function applyGlobalRoomList(rooms){
+  const now = Date.now();
+  const unique = new Map();
+  (Array.isArray(rooms) ? rooms : []).forEach(raw => {
+    const room = sanitizeDirectoryRoom(raw);
+    if(!room || now - room.lastSeen >= ROOM_TTL_MS) return;
+    const previous = unique.get(room.code);
+    if(!previous || room.lastSeen >= previous.lastSeen) unique.set(room.code, room);
+  });
+  globalOpenRooms = [...unique.values()];
+  renderOpenRooms();
+}
+
+function getRoomStatusInfo(room){
+  const status = room.status === 'playing' ? 'playing' : (room.playerCount >= 2 || room.status === 'full' ? 'full' : 'waiting');
+  if(status === 'playing') return {status,label:'Đang chơi',icon:'fa-gamepad'};
+  if(status === 'full') return {status,label:'Phòng đầy',icon:'fa-lock'};
+  return {status,label:'Đang chờ',icon:'fa-circle'};
+}
+
+function renderOpenRooms(){
+  const list = $('openRoomList');
+  if(!list) return;
+  const rooms = getActiveRooms();
+  if(!rooms.length){
+    list.innerHTML = '<div class="room-list-empty">Chưa có phòng nào đang chờ.<br>Hãy tạo phòng mới hoặc nhấn Làm mới.</div>';
+    return;
+  }
+  list.innerHTML = rooms.map(room => {
+    const info = getRoomStatusInfo(room);
+    const canJoin = info.status === 'waiting' && room.playerCount < 2;
+    const ownRoom = onlineRole === 'host' && currentOnlineRoomCode === room.code;
+    const buttonText = ownRoom ? 'Phòng của bạn' : (canJoin ? 'Tham gia phòng' : info.label);
+    return '<div class="room-list-item">' +
+      '<div class="room-list-top"><div class="room-host"><i class="fa-solid fa-crown"></i> ' + escapeRoomText(room.hostName) + '</div><div class="room-code">' + escapeRoomText(room.code) + '</div></div>' +
+      '<div class="room-list-meta">' +
+        '<span class="room-chip ' + info.status + '"><i class="fa-solid ' + info.icon + '"></i>&nbsp; ' + info.label + '</span>' +
+        '<span class="room-chip"><i class="fa-solid fa-users"></i>&nbsp; ' + room.playerCount + '/2</span>' +
+        '<span class="room-chip">Thắng ' + room.winLength + ' ô</span>' +
+        '<span class="room-chip">' + room.turnTime + ' giây/lượt</span>' +
+      '</div>' +
+      '<button class="room-join-button" type="button" ' + ((!canJoin || ownRoom) ? 'disabled' : '') + ' onclick="joinListedRoom(\'' + escapeRoomText(room.code) + '\')">' + buttonText + '</button>' +
+    '</div>';
+  }).join('');
+}
+
+async function deleteCloudRoom(code, silent = true){
+  const normalized = normalizeRoomCode(code);
+  if(!normalized) return false;
+  try{
+    const response = await fetch(getRoomCloudUrl(normalized), {method:'DELETE',cache:'no-store',keepalive:true,headers:{'Accept':'application/json'}});
+    if(!response.ok && response.status !== 404) throw new Error('HTTP ' + response.status);
+    return true;
+  }catch(_){
+    if(!silent) showToast('Không thể xóa phòng khỏi danh sách online.','warn');
+    return false;
+  }
+}
+
+async function upsertCloudRoom(room){
+  const cleanRoom = sanitizeDirectoryRoom(room);
+  if(!cleanRoom) return false;
+  try{
+    await fetchJsonResponse(getRoomCloudUrl(cleanRoom.code), {method:'POST',body:JSON.stringify(cleanRoom)});
+    roomCloudAvailable = true;
+    return true;
+  }catch(_){
+    roomCloudAvailable = false;
+    return false;
+  }
+}
+
+async function requestGlobalRooms(manual = false){
+  if(roomListRequestController) roomListRequestController.abort();
+  const controller = new AbortController();
+  roomListRequestController = controller;
+  const timeout = setTimeout(() => controller.abort(),7000);
+  try{
+    const listPayload = await fetchJsonResponse(getRoomCloudListUrl() + '?t=' + Date.now(), {signal:controller.signal});
+    const roomCodes = extractRoomPaths(listPayload);
+    const results = await Promise.allSettled(roomCodes.map(code => fetchJsonResponse(getRoomCloudUrl(code) + '?t=' + Date.now(), {signal:controller.signal})));
+    const activeRooms = [];
+    const staleCodes = [];
+    const now = Date.now();
+    results.forEach((result,index) => {
+      if(result.status !== 'fulfilled') return;
+      const room = sanitizeDirectoryRoom(result.value);
+      if(!room) return;
+      if(now - room.lastSeen >= ROOM_TTL_MS) staleCodes.push(roomCodes[index]);
+      else activeRooms.push(room);
+    });
+    applyGlobalRoomList(activeRooms);
+    roomCloudAvailable = true;
+    staleCodes.forEach(code => void deleteCloudRoom(code,true));
+    if(manual) showToast(activeRooms.length ? 'Đã tải ' + activeRooms.length + ' phòng đang hoạt động.' : 'Chưa có phòng nào đang hoạt động.','info');
+    return true;
+  }catch(error){
+    if(error?.name !== 'AbortError') roomCloudAvailable = false;
+    if(manual) showToast('Không thể tải danh sách phòng. Hãy kiểm tra Internet.','warn');
+    return false;
+  }finally{
+    clearTimeout(timeout);
+    if(roomListRequestController === controller) roomListRequestController = null;
+  }
+}
+
+async function refreshOpenRooms(manual = false){
+  const button = $('roomRefreshBtn');
+  if(button){ button.disabled = true; button.classList.add('refreshing'); }
+  if(onlineRole === 'host' && currentOnlineRoomCode) await publishCurrentRoom();
+  await requestGlobalRooms(manual);
+  if(button){ button.disabled = false; setTimeout(() => button.classList.remove('refreshing'),250); }
+}
+
+function initRoomDirectory(){
+  clearInterval(roomListPollTimer);
+  roomListPollTimer = setInterval(() => void requestGlobalRooms(false),ROOM_LIST_POLL_MS);
+  void requestGlobalRooms(false);
+}
+
+function stopRoomDirectory(){
+  clearInterval(roomListPollTimer);
+  roomListPollTimer = null;
+  if(roomListRequestController){ roomListRequestController.abort(); roomListRequestController = null; }
+}
+
+async function publishCurrentRoom(){
+  if(onlineRole !== 'host' || !currentOnlineRoomCode) return false;
+  const previous = globalOpenRooms.find(room => room.code === currentOnlineRoomCode);
+  const room = {
+    code:currentOnlineRoomCode,
+    hostName:p1Name || $('name1Input').value.trim() || 'Người chơi',
+    winLength,
+    turnTime,
+    playerCount:currentRoomPlayerCount,
+    status:currentRoomStatus,
+    createdAt:Number(previous?.createdAt || Date.now()),
+    lastSeen:Date.now()
+  };
+  globalOpenRooms = [room,...globalOpenRooms.filter(item => item.code !== room.code)];
+  renderOpenRooms();
+  return upsertCloudRoom(room);
+}
+
+function setCurrentRoomState(status, playerCount){
+  currentRoomStatus = ['waiting','full','playing'].includes(status) ? status : 'waiting';
+  currentRoomPlayerCount = Math.min(Math.max(Number(playerCount) || 1,1),2);
+  if(onlineRole === 'host' && currentOnlineRoomCode) void publishCurrentRoom();
+}
+
+async function startRoomHeartbeat(){
+  stopRoomHeartbeat();
+  const published = await publishCurrentRoom();
+  roomHeartbeatTimer = setInterval(() => void publishCurrentRoom(),10000);
+  return published;
+}
+
+function stopRoomHeartbeat(){
+  clearInterval(roomHeartbeatTimer);
+  roomHeartbeatTimer = null;
+}
+
+async function removePublishedRoom(code = currentOnlineRoomCode){
+  const normalized = normalizeRoomCode(code);
+  if(!normalized) return false;
+  globalOpenRooms = globalOpenRooms.filter(room => room.code !== normalized);
+  renderOpenRooms();
+  return deleteCloudRoom(normalized,true);
+}
+
+async function joinListedRoom(code){
+  const normalized = normalizeRoomCode(code);
+  let room = getActiveRooms().find(item => item.code === normalized);
+  if(!room){
+    await requestGlobalRooms(true);
+    room = getActiveRooms().find(item => item.code === normalized);
+  }
+  if(!room){
+    showToast('Không tìm thấy phòng hoặc chủ phòng đã mất kết nối.','warn');
+    renderOpenRooms();
+    return;
+  }
+  const roomInfo = getRoomStatusInfo(room);
+  if(roomInfo.status === 'playing'){
+    showToast('Phòng ' + normalized + ' đã bắt đầu trận. Vui lòng chọn phòng khác.','warn');
+    renderOpenRooms();
+    return;
+  }
+  if(roomInfo.status === 'full' || room.playerCount >= 2){
+    showToast('Phòng ' + normalized + ' đã đủ 2 người chơi. Vui lòng chọn phòng khác.','warn');
+    renderOpenRooms();
+    return;
+  }
+
+  const playerName = $('name1Input').value.trim();
+  if(!playerName){
+    showToast('Vui lòng nhập tên người chơi 1 trước khi tham gia phòng.','warn');
+    $('name1Input').focus();
+    return;
+  }
+
+  gameMode = 'online';
+  document.querySelectorAll('.choice').forEach(item => item.classList.toggle('selected', item.dataset.mode === 'online'));
+  $('roomType').value = 'join';
+  $('joinRoomCodeInput').value = normalized;
+  updateOnlineRoomFields();
+  updateOnlineRoleControls();
+  updateStartButtonLabel();
+
+  // Sau khi chọn phòng, chuyển sang bước xác nhận quân cờ và luật chơi.
+  // Người tham gia sẽ bấm “Vào phòng” ở bước này để kết nối thật sự.
+  showStep(3);
+  showToast('Đã chọn phòng ' + normalized + '. Kiểm tra thông tin rồi nhấn “Vào phòng”.','success');
 }
 
 function setupSourceProtection(){
@@ -453,11 +804,15 @@ function syncModeUI(){
   $('name2Input').disabled = !isOffline;
   $('name2Label').textContent = 'TÊN NGƯỜI CHƠI 2';
   $('onlineRoomHelp').textContent = isOnline
-    ? 'Người tạo phòng chọn “Tạo phòng mới” để lấy mã. Người còn lại chọn “Tham gia phòng”, nhập đúng mã rồi nhấn vào phòng để vào chung trận.'
+    ? 'Người tạo phòng chọn “Tạo phòng mới”. Người tham gia nhập tên, nhấn “Tham gia phòng” trong danh sách, sau đó kiểm tra thông tin và nhấn “Vào phòng”.'
     : '';
 
   if(isOnline && !$('roomCodeInput').value){
     generateRoomCode();
+  }
+  if(isOnline){
+    renderOpenRooms();
+    void requestGlobalRooms(false);
   }
 
   const win6Option = $('win6Option');
@@ -534,7 +889,7 @@ function applyPlayerUI(){
   $('p2Label').textContent = gameMode === 'computer' ? 'MÁY' : gameMode === 'online' ? (onlineRole === 'guest' ? 'BẠN • NGƯỜI THAM GIA' : 'NGƯỜI THAM GIA') : 'PLAYER 2';
 }
 
-function startOnlineMatch(){
+async function startOnlineMatch(){
   if(typeof Peer === 'undefined'){
     alert('Không thể tải chức năng kết nối online. Vui lòng kiểm tra Internet và thử lại.');
     return;
@@ -542,9 +897,59 @@ function startOnlineMatch(){
   const code = normalizeRoomCode($('roomType').value === 'create' ? $('roomCodeInput').value : $('joinRoomCodeInput').value);
   if(!code){ alert('Vui lòng nhập mã phòng.'); return; }
 
+  const requestedRole = $('roomType').value === 'create' ? 'host' : 'guest';
+  if(requestedRole === 'guest'){
+    const startButton = $('startMatchBtn');
+    const originalButtonHtml = startButton ? startButton.innerHTML : '';
+    if(startButton){
+      startButton.disabled = true;
+      startButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang kiểm tra phòng';
+    }
+    try{
+      let directoryRoom = null;
+      try{
+        const rawRoom = await fetchJsonResponse(getRoomCloudUrl(code) + '?t=' + Date.now());
+        directoryRoom = sanitizeDirectoryRoom(rawRoom);
+      }catch(_){
+        directoryRoom = getActiveRooms().find(item => item.code === code) || null;
+      }
+
+      if(directoryRoom){
+        const roomInfo = getRoomStatusInfo(directoryRoom);
+        if(roomInfo.status === 'playing'){
+          const blockedMessage = 'Phòng ' + code + ' đã bắt đầu trận. Bạn không thể vào lúc này.';
+          showToast(blockedMessage,'warn');
+          alert(blockedMessage);
+          $('pieceHelperText').textContent = blockedMessage + ' Vui lòng quay lại và chọn phòng khác.';
+          return;
+        }
+        if(roomInfo.status === 'full' || directoryRoom.playerCount >= 2){
+          const blockedMessage = 'Phòng ' + code + ' đã đủ 2 người chơi. Vui lòng chọn phòng khác.';
+          showToast(blockedMessage,'warn');
+          alert(blockedMessage);
+          $('pieceHelperText').textContent = blockedMessage;
+          return;
+        }
+        winLength = directoryRoom.winLength;
+        turnTime = directoryRoom.turnTime;
+        $('winLengthSelect').value = String(winLength);
+        $('turnTimeSelect').value = String(turnTime);
+      }
+    }finally{
+      if(startButton){
+        startButton.disabled = false;
+        startButton.innerHTML = originalButtonHtml;
+      }
+    }
+  }
+
   closeExistingPeer();
-  onlineRole = $('roomType').value === 'create' ? 'host' : 'guest';
+  onlineRole = requestedRole;
   gameMode = 'online';
+  currentOnlineRoomCode = code;
+  currentRoomStatus = 'waiting';
+  currentRoomPlayerCount = 1;
+  updateOnlineActionButtons();
   if(onlineRole === 'host'){ $('roomCodeInput').value = code; } else { $('joinRoomCodeInput').value = code; }
   onlineConnected = false;
   active = false;
@@ -572,12 +977,23 @@ function startOnlineMatch(){
   const hostPeerId = 'caro-arena-' + code.toLowerCase();
   if(onlineRole === 'host'){
     peer = new Peer(hostPeerId);
-    peer.on('open', () => {
-      $('networkStatus').textContent = 'Phòng đã tạo • Chờ người chơi';
-      message.textContent = 'Phòng ' + code + ' đã sẵn sàng. Gửi mã này cho người chơi thứ hai.';
+    peer.on('open', async () => {
+      const published = await startRoomHeartbeat();
+      $('networkStatus').textContent = published ? 'Phòng đã tạo • Đang chờ người chơi' : 'Phòng đã tạo • Chưa đăng được danh sách';
+      message.textContent = published
+        ? 'Phòng ' + code + ' đã xuất hiện trong danh sách. Đang chờ người chơi thứ hai.'
+        : 'Phòng ' + code + ' đã tạo nhưng chưa thể đăng lên danh sách. Người chơi khác vẫn có thể nhập mã trực tiếp.';
+      void requestGlobalRooms(false);
     });
     peer.on('connection', conn => {
-      if(connection && connection.open){ conn.close(); return; }
+      if(connection && connection.open){
+        const rejectionReason = currentRoomStatus === 'playing' ? 'playing' : 'full';
+        conn.on('open', () => {
+          try{ conn.send({type:'join_rejected', reason:rejectionReason, code:currentOnlineRoomCode}); }catch(_){ }
+          setTimeout(() => { try{ conn.close(); }catch(_){ } }, 180);
+        });
+        return;
+      }
       connection = conn;
       setupOnlineConnection();
     });
@@ -593,6 +1009,8 @@ function startOnlineMatch(){
 
 function normalizeRoomCode(value){ return value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8); }
 function generateRoomCode(){
+  const previousCode = currentOnlineRoomCode;
+  if(onlineRole === 'host' && previousCode) void removePublishedRoom(previousCode);
   $('roomCodeInput').value = 'CARO' + Math.floor(1000 + Math.random()*9000);
 }
 
@@ -633,16 +1051,84 @@ function updateStartButtonLabel(){
     btn.innerHTML = '<i class="fa-solid fa-play"></i> Bắt đầu trận';
   }
 }
-function closeExistingPeer(){
+
+function updateOnlineActionButtons(){
+  const leaveButton = $('leaveMatchButton');
+  const dissolveButton = $('dissolveRoomButton');
+  const hasOnlineRoom = gameMode === 'online' && Boolean(currentOnlineRoomCode);
+  if(leaveButton) leaveButton.classList.toggle('hidden', !(hasOnlineRoom && onlineRole === 'guest'));
+  if(dissolveButton) dissolveButton.classList.toggle('hidden', !(hasOnlineRoom && onlineRole === 'host'));
+}
+
+function returnToOnlineSetup(statusText, roomTypeValue){
+  active = false;
+  stopTimer();
+  closeResult();
+  gameMode = 'online';
+  document.querySelectorAll('.choice').forEach(item => item.classList.toggle('selected', item.dataset.mode === 'online'));
+  if(roomTypeValue) $('roomType').value = roomTypeValue;
+  updateOnlineRoomFields();
+  updateOnlineRoleControls();
+  updateStartButtonLabel();
+  updateOnlineActionButtons();
+  $('setupModal').classList.add('show');
+  showStep(2);
+  renderOpenRooms();
+  void requestGlobalRooms(false);
+  if(statusText) showToast(statusText,'success');
+}
+
+function leaveOnlineMatch(){
+  if(gameMode !== 'online' || onlineRole !== 'guest' || !currentOnlineRoomCode) return;
+  const roomCode = currentOnlineRoomCode;
+  if(connection && connection.open){
+    try{ connection.send({type:'participant_left', name:p2Name || $('name1Input').value.trim()}); }catch(_){ }
+  }
+  intentionalOnlineExit = 'guest-left';
+  closeExistingPeer(false);
+  onlineRole = null;
+  myOnlinePiece = null;
+  $('joinRoomCodeInput').value = '';
+  $('networkStatus').textContent = 'Bạn đã rời trận';
+  message.textContent = 'Bạn đã rời phòng ' + roomCode + '.';
+  returnToOnlineSetup('Bạn đã rời phòng ' + roomCode + '.','join');
+}
+
+async function dissolveOnlineRoom(){
+  if(gameMode !== 'online' || onlineRole !== 'host' || !currentOnlineRoomCode) return;
+  const roomCode = currentOnlineRoomCode;
+  if(!window.confirm('Giải tán phòng ' + roomCode + '?')) return;
+  if(connection && connection.open){
+    try{ connection.send({type:'room_dissolved', code:roomCode}); }catch(_){ }
+  }
+  await removePublishedRoom(roomCode);
+  intentionalOnlineExit = 'host-dissolved';
+  closeExistingPeer(false);
+  onlineRole = null;
+  myOnlinePiece = null;
+  generateRoomCode();
+  $('networkStatus').textContent = 'Phòng đã được giải tán';
+  message.textContent = 'Chủ phòng đã giải tán phòng ' + roomCode + '.';
+  returnToOnlineSetup('Đã giải tán phòng ' + roomCode + '.','create');
+}
+function closeExistingPeer(removeRoom = true){
+  const oldCode = currentOnlineRoomCode;
+  const wasHost = onlineRole === 'host';
+  stopRoomHeartbeat();
   try{ if(connection) connection.close(); }catch(e){}
   try{ if(peer) peer.destroy(); }catch(e){}
   connection = null; peer = null; onlineConnected = false;
+  if(removeRoom && wasHost && oldCode) void removePublishedRoom(oldCode);
+  currentOnlineRoomCode = '';
+  updateOnlineActionButtons();
 }
 
 function setupOnlineConnection(){
   connection.on('open', () => {
     onlineConnected = true;
+    if(onlineRole === 'host') setCurrentRoomState('full',2);
     $('networkStatus').textContent = 'Đã kết nối cùng phòng';
+    updateOnlineActionButtons();
     if(onlineRole === 'guest'){
       sendOnline({type:'hello', name:$('name1Input').value.trim()});
     }
@@ -650,8 +1136,23 @@ function setupOnlineConnection(){
   connection.on('data', handleOnlineData);
   connection.on('close', () => {
     onlineConnected = false; active = false; stopTimer();
-    $('networkStatus').textContent = 'Đã mất kết nối';
-    message.textContent = 'Người chơi còn lại đã rời phòng.';
+    if(intentionalOnlineExit){
+      intentionalOnlineExit = '';
+      updateOnlineActionButtons();
+      return;
+    }
+    if(onlineRole === 'host' && currentOnlineRoomCode){
+      p2Name = 'Đang chờ người chơi...';
+      applyPlayerUI();
+      setCurrentRoomState('waiting',1);
+      void startRoomHeartbeat();
+      $('networkStatus').textContent = 'Phòng đang mở lại';
+      message.textContent = 'Người chơi còn lại đã rời. Phòng tiếp tục chờ người mới.';
+    }else{
+      $('networkStatus').textContent = 'Đã mất kết nối';
+      message.textContent = 'Chủ phòng đã rời hoặc mất kết nối.';
+    }
+    updateOnlineActionButtons();
   });
   connection.on('error', () => {
     $('networkStatus').textContent = 'Lỗi kết nối';
@@ -686,11 +1187,52 @@ function handleOnlineData(data){
     stopTimer();
     currentPiece = currentPiece === 'X' ? 'O' : 'X';
     startTurnFlow();
+  }else if(data.type === 'participant_left' && onlineRole === 'host'){
+    onlineConnected = false;
+    active = false;
+    stopTimer();
+    p2Name = 'Đang chờ người chơi...';
+    applyPlayerUI();
+    setCurrentRoomState('waiting',1);
+    void startRoomHeartbeat();
+    $('networkStatus').textContent = 'Phòng đang mở lại';
+    message.textContent = (data.name || 'Người tham gia') + ' đã rời trận. Phòng đang chờ người chơi mới.';
+    try{ if(connection) connection.close(); }catch(_){ }
+    connection = null;
+    updateOnlineActionButtons();
+  }else if(data.type === 'join_rejected' && onlineRole === 'guest'){
+    const roomCode = currentOnlineRoomCode || data.code || '';
+    const rejectedMessage = data.reason === 'playing'
+      ? 'Phòng ' + roomCode + ' đã bắt đầu trận. Bạn không thể tham gia lúc này.'
+      : 'Phòng ' + roomCode + ' đã đủ 2 người chơi. Vui lòng chọn phòng khác.';
+    intentionalOnlineExit = 'join-rejected';
+    closeExistingPeer(false);
+    onlineRole = null;
+    myOnlinePiece = null;
+    $('networkStatus').textContent = 'Không thể vào phòng';
+    message.textContent = rejectedMessage;
+    returnToOnlineSetup('', 'join');
+    showToast(rejectedMessage,'warn');
+    alert(rejectedMessage);
+  }else if(data.type === 'room_dissolved' && onlineRole === 'guest'){
+    const roomCode = currentOnlineRoomCode || data.code || '';
+    intentionalOnlineExit = 'room-dissolved';
+    closeExistingPeer(false);
+    onlineRole = null;
+    myOnlinePiece = null;
+    $('joinRoomCodeInput').value = '';
+    $('networkStatus').textContent = 'Chủ phòng đã giải tán phòng';
+    message.textContent = 'Phòng ' + roomCode + ' đã được giải tán.';
+    returnToOnlineSetup('Chủ phòng đã giải tán phòng ' + roomCode + '.','join');
   }
 }
 
 function sendOnline(data){ if(connection && connection.open) connection.send(data); }
 function handlePeerError(error){
+  if(onlineRole === 'host'){
+    stopRoomHeartbeat();
+    if(currentOnlineRoomCode) void removePublishedRoom(currentOnlineRoomCode);
+  }
   const messageText = error && error.type === 'unavailable-id'
     ? 'Mã phòng này đã được tạo. Hãy chọn “Tham gia phòng” hoặc dùng mã khác.'
     : 'Không thể kết nối phòng. Kiểm tra mã phòng và kết nối Internet.';
@@ -701,6 +1243,7 @@ function handlePeerError(error){
 
 function resetRound(fromNetwork = false){
   if(gameMode === 'online' && !fromNetwork && onlineConnected) sendOnline({type:'reset'});
+  if(gameMode === 'online' && onlineRole === 'host' && onlineConnected) setCurrentRoomState('full',2);
   buildBoard();
   closeResult();
   currentPiece = 'X';
@@ -748,6 +1291,7 @@ function applyRemoteMove(data){
 }
 
 function completeTurnAfterMove(row, col, piece){
+  if(gameMode === 'online' && onlineRole === 'host') setCurrentRoomState('playing',2);
   if(checkFinish(row, col, piece)) return;
   currentPiece = currentPiece === 'X' ? 'O' : 'X';
   startTurnFlow();
@@ -794,6 +1338,7 @@ function checkFinish(row, col, piece){
 
 function finishGame(piece){
   active = false;
+  if(gameMode === 'online' && onlineRole === 'host' && onlineConnected) setCurrentRoomState('full',2);
   stopTimer();
   if(!piece){
     $('resultTitle').textContent = 'Hòa nhau!';
@@ -1049,14 +1594,21 @@ $('roomType').addEventListener('change', ()=>{
     updateStartButtonLabel();
     $('onlineRoomHelp').textContent = $('roomType').value === 'create'
       ? 'Phòng mới đã có mã. Hãy gửi mã này cho người chơi còn lại.'
-      : 'Nhập đúng mã phòng do chủ phòng gửi, sau đó nhấn “Vào phòng”.';
+      : 'Nhập tên trước, sau đó nhấn “Tham gia phòng” trong danh sách để sang bước xác nhận, rồi nhấn “Vào phòng”.';
   }
 });
 
 setupSourceProtection();
+initRoomDirectory();
+window.addEventListener('beforeunload', () => {
+  stopRoomHeartbeat();
+  stopRoomDirectory();
+  // Không xóa phòng ngay khi đóng trang; phòng sẽ tự hết hạn sau 45 giây.
+});
 buildBoard();
 selectMode('computer', document.querySelector('[data-mode="computer"]'));
 updatePiecePreview();
+updateOnlineActionButtons();
 showStep(1);
 openGuide();
 </script>
