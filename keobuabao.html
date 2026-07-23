@@ -387,6 +387,12 @@
             font-size: 1.15rem;
             cursor: pointer;
         }
+        .room-browser-refresh.refreshing {
+            animation: roomRefreshSpin 0.55s linear;
+        }
+        @keyframes roomRefreshSpin {
+            to { transform: rotate(360deg); }
+        }
         .room-list {
             display: grid;
             gap: 0.65rem;
@@ -481,18 +487,32 @@
             border: none;
             border-radius: 0.75rem;
             padding: 0.65rem 0.9rem;
+            min-height: 48px;
             background: linear-gradient(100deg, #06b6d4, #4f46e5);
             color: white;
             font-size: 0.8rem;
             font-weight: 850;
             cursor: pointer;
             white-space: nowrap;
+            touch-action: manipulation;
+            -webkit-appearance: none;
+            appearance: none;
         }
         .room-join-btn:disabled {
             cursor: not-allowed;
             opacity: 0.48;
             background: rgba(148,163,184,0.22);
             color: #cbd5e1;
+        }
+        .room-dissolve-btn,
+        .btn-dissolve {
+            background: linear-gradient(100deg, #e11d48, #be123c);
+            color: white;
+        }
+        .btn-leave {
+            background: rgba(251,191,36,0.13);
+            color: #fde68a;
+            border: 1px solid rgba(251,191,36,0.3);
         }
         .room-browser-note {
             margin-top: 0.75rem;
@@ -1051,12 +1071,12 @@
                 <aside class="room-browser-panel" aria-label="Danh sách phòng đã tạo">
                     <div class="room-browser-header">
                         <div class="room-browser-title">🎮 Danh sách phòng</div>
-                        <button class="room-browser-refresh" type="button" title="Làm mới danh sách phòng" onclick="renderOpenRooms()">⟳</button>
+                        <button class="room-browser-refresh" id="roomBrowserRefreshButton" type="button" title="Làm mới danh sách phòng" onclick="refreshOpenRooms()">⟳</button>
                     </div>
                     <div class="room-list" id="openRoomList">
                         <div class="room-list-empty">Chưa có phòng nào đang hoạt động.</div>
                     </div>
-                    <div class="room-browser-note">Trạng thái phòng tự cập nhật: Đang chờ, Phòng đầy hoặc Đang trong trận. Muốn đồng bộ danh sách giữa nhiều thiết bị cần thêm máy chủ lưu phòng.</div>
+                    <div class="room-browser-note">Danh sách được đồng bộ online giữa các thiết bị. Nếu chủ phòng mất kết nối quá 45 giây, phòng sẽ tự bị loại. Nhấn nút ⟳ để tải lại trạng thái mới nhất.</div>
                 </aside>
             </div>
 
@@ -1115,6 +1135,8 @@
 
         <div class="actions">
             <button class="btn btn-reset" onclick="resetGame()">🔄 Đặt lại điểm</button>
+            <button class="btn btn-leave hidden" id="leaveMatchButton" onclick="leaveOnlineMatch()">🚪 Rời trận</button>
+            <button class="btn btn-dissolve hidden" id="dissolveRoomButton" onclick="dissolveOnlineRoom()">🗑 Giải tán phòng</button>
             <button class="btn btn-secondary" onclick="changeMode()">🎮 Đổi chế độ</button>
             <a href="game.html" class="btn btn-back">Quay lại</a>
         </div>
@@ -1129,7 +1151,6 @@
     <audio id="loseSound" src="lose.mp3"></audio>
     <audio id="tieSound" src="tie.mp3"></audio>
 
-    <script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
     <script>
         let playerScore = 0;
         let computerScore = 0;
@@ -1149,14 +1170,36 @@
         let matchFinished = false;
         let isRoomHost = false;
         let fireworksController = null;
-        const ROOM_DIRECTORY_KEY = 'bkb-open-rooms-v1';
-        const ROOM_TTL_MS = 120000;
+        // Danh sách phòng dùng kho dữ liệu HTTP chung để mọi trình duyệt và thiết bị
+        // truy cập cùng bản game đều thấy một danh sách. PeerJS chỉ dùng để chơi trực tiếp.
+        const GLOBAL_ROOM_API_BASE = 'https://mantledb.sh/v2';
+        const GLOBAL_ROOM_NAMESPACE = 'bkb-zhaowen-global-rooms-7f4d91c2-v1';
+        const GLOBAL_ROOM_PATH_PREFIX = 'rooms';
+        const ROOM_TTL_MS = 45000;
+        const ROOM_LIST_POLL_MS = 8000;
         let roomHeartbeatTimer = null;
+        let roomListPollTimer = null;
+        let roomListRequestController = null;
         let currentRoomStatus = 'waiting';
         let currentRoomPlayerCount = 1;
-        const roomDirectoryChannel = typeof BroadcastChannel !== 'undefined'
-            ? new BroadcastChannel('bkb-room-directory')
-            : null;
+        let intentionalDisconnectAction = '';
+        let globalOpenRooms = [];
+        let roomCloudAvailable = true;
+        let peerLibraryPromise = null;
+        let joinInProgress = false;
+        let joinAttemptTimer = null;
+        let pendingJoinCode = '';
+        let cloudRelaySession = null;
+        let cloudRelayJoinFallbackStarted = false;
+        const CLOUD_RELAY_POLL_MS = 700;
+        const CLOUD_RELAY_HEARTBEAT_MS = 1800;
+        const CLOUD_RELAY_STALE_MS = 12000;
+        const PEERJS_CDN_SOURCES = [
+            'https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js',
+            'https://cdn.bootcdn.net/ajax/libs/peerjs/1.5.5/peerjs.min.js',
+            'https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js',
+            'https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js'
+        ];
 
         const choices = {
             rock: { emoji: '✊', name: 'Búa' },
@@ -1178,19 +1221,131 @@
             updateDeviceSupportLabel();
             enableSourceProtection();
             renderOpenRooms();
-            window.addEventListener('storage', event => {
-                if (event.key === ROOM_DIRECTORY_KEY) renderOpenRooms();
-            });
-            if (roomDirectoryChannel) {
-                roomDirectoryChannel.addEventListener('message', renderOpenRooms);
+            const openRoomList = document.getElementById('openRoomList');
+            if (openRoomList) {
+                openRoomList.addEventListener('click', event => {
+                    const button = event.target.closest('[data-action="join-room"]');
+                    if (!button || button.disabled) return;
+                    event.preventDefault();
+                    void joinListedRoom(button.dataset.roomCode || '');
+                });
             }
-            window.addEventListener('beforeunload', () => stopRoomHeartbeat(true));
+            initGlobalRoomDirectory();
+            const nameInput = document.getElementById('onlinePlayerName');
+            if (nameInput) {
+                nameInput.addEventListener('keydown', event => {
+                    if (event.key !== 'Enter') return;
+                    const roomType = document.getElementById('onlineRoomType');
+                    if (roomType && roomType.value === 'join') {
+                        event.preventDefault();
+                        continueOnlineSetup();
+                    }
+                });
+            }
+            window.addEventListener('beforeunload', () => {
+                // Không xóa phòng ngay khi chủ phòng đóng trang hoặc mất mạng.
+                // Heartbeat dừng lại và phòng chỉ bị loại sau 45 giây không còn tín hiệu.
+                stopRoomHeartbeat(false);
+                stopCloudRelay(true, false);
+                shutdownGlobalRoomDirectory();
+            });
             window.addEventListener('resize', resizeFireworksCanvas, { passive: true });
             window.addEventListener('orientationchange', () => setTimeout(resizeFireworksCanvas, 150), { passive: true });
         });
 
         function setChoiceButtonsEnabled(enabled) {
             document.querySelectorAll('.choice-btn').forEach(btn => btn.disabled = !enabled);
+        }
+
+        function updateOnlineActionButtons() {
+            const leaveButton = document.getElementById('leaveMatchButton');
+            const dissolveButton = document.getElementById('dissolveRoomButton');
+            const hasOpenConnection = Boolean(connection && connection.open);
+            const hasHostedRoom = Boolean(gameMode === 'online' && isRoomHost && currentRoomCode);
+            const isJoinedPlayer = Boolean(gameMode === 'online' && !isRoomHost && currentRoomCode && hasOpenConnection);
+            if (leaveButton) leaveButton.classList.toggle('hidden', !isJoinedPlayer);
+            if (dissolveButton) dissolveButton.classList.toggle('hidden', !hasHostedRoom);
+        }
+
+        function setJoinBusy(busy, message = '') {
+            joinInProgress = Boolean(busy);
+            const continueButton = document.querySelector('.setup-footer .btn-continue');
+            if (continueButton) {
+                continueButton.disabled = joinInProgress;
+                continueButton.textContent = joinInProgress ? 'Đang kết nối...' : 'Tiếp tục →';
+            }
+            renderOpenRooms();
+            if (message) setOnlineStatus(message);
+        }
+
+        function clearJoinAttempt() {
+            if (joinAttemptTimer) {
+                clearTimeout(joinAttemptTimer);
+                joinAttemptTimer = null;
+            }
+            setJoinBusy(false);
+        }
+
+        function loadPeerScript(url, timeoutMs = 7000) {
+            return new Promise(resolve => {
+                if (typeof window.Peer !== 'undefined') {
+                    resolve(true);
+                    return;
+                }
+                const existing = Array.from(document.scripts).find(script => script.src === url);
+                const script = existing || document.createElement('script');
+                let finished = false;
+                const finish = ok => {
+                    if (finished) return;
+                    finished = true;
+                    clearTimeout(timer);
+                    script.onload = null;
+                    script.onerror = null;
+                    resolve(Boolean(ok && typeof window.Peer !== 'undefined'));
+                };
+                const timer = setTimeout(() => finish(false), timeoutMs);
+                script.onload = () => finish(true);
+                script.onerror = () => finish(false);
+                if (!existing) {
+                    script.src = url;
+                    script.async = true;
+                    script.crossOrigin = 'anonymous';
+                    script.referrerPolicy = 'no-referrer';
+                    document.head.appendChild(script);
+                }
+            });
+        }
+
+        async function ensurePeerJsLoaded() {
+            if (typeof window.Peer !== 'undefined') return true;
+            if (peerLibraryPromise) return peerLibraryPromise;
+            peerLibraryPromise = (async () => {
+                for (const source of PEERJS_CDN_SOURCES) {
+                    if (await loadPeerScript(source)) return true;
+                }
+                return false;
+            })();
+            const loaded = await peerLibraryPromise;
+            if (!loaded) peerLibraryPromise = null;
+            return loaded;
+        }
+
+        function createConfiguredPeer(id = '') {
+            const options = {
+                host: '0.peerjs.com',
+                port: 443,
+                path: '/',
+                secure: true,
+                debug: 1,
+                pingInterval: 5000,
+                config: {
+                    iceServers: [
+                        { urls: 'stun:stun.l.google.com:19302' },
+                        { urls: 'stun:global.stun.twilio.com:3478' }
+                    ]
+                }
+            };
+            return id ? new Peer(id, options) : new Peer(options);
         }
 
         function openModal(id) {
@@ -1489,6 +1644,7 @@
             updateScoreLabels();
             updateConnectionText('Chưa chọn chế độ');
             setChoiceButtonsEnabled(false);
+            updateOnlineActionButtons();
             closeModal('guideModal');
             closeModal('onlineModal');
             openModal('modeModal');
@@ -1502,40 +1658,26 @@
             localPlayerName = 'Bạn';
             remotePlayerName = 'Máy';
             updateScoreLabels();
+            updateOnlineActionButtons();
             closeModal('guideModal');
             closeModal('onlineModal');
             openModal('modeModal');
             updateConnectionText('Chưa chọn chế độ');
         }
 
-        function getStoredRooms() {
-            try {
-                const value = JSON.parse(localStorage.getItem(ROOM_DIRECTORY_KEY) || '[]');
-                return Array.isArray(value) ? value : [];
-            } catch (_) {
-                return [];
-            }
-        }
-
-        function saveStoredRooms(rooms) {
-            try {
-                localStorage.setItem(ROOM_DIRECTORY_KEY, JSON.stringify(rooms));
-                if (roomDirectoryChannel) roomDirectoryChannel.postMessage({ type: 'refresh' });
-            } catch (_) {}
-            renderOpenRooms();
-        }
-
-        function getActiveRooms() {
-            const now = Date.now();
-            const rooms = getStoredRooms()
-                .filter(room => room && /^[A-Z2-9]{6}$/.test(room.code || ''))
-                .filter(room => now - Number(room.lastSeen || 0) < ROOM_TTL_MS)
-                .sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
-
-            if (rooms.length !== getStoredRooms().length) {
-                try { localStorage.setItem(ROOM_DIRECTORY_KEY, JSON.stringify(rooms)); } catch (_) {}
-            }
-            return rooms;
+        function sanitizeDirectoryRoom(room) {
+            if (!room || typeof room !== 'object') return null;
+            const code = String(room.code || '').trim().toUpperCase();
+            if (!/^[A-Z2-9]{6}$/.test(code)) return null;
+            return {
+                code,
+                hostName: cleanName(room.hostName) || 'Người chơi',
+                targetScore: normalizeTargetScore(room.targetScore),
+                playerCount: Math.min(Math.max(Number(room.playerCount) || 1, 1), 2),
+                status: ['waiting', 'full', 'playing'].includes(room.status) ? room.status : 'waiting',
+                createdAt: Number(room.createdAt || Date.now()),
+                lastSeen: Number(room.lastSeen || Date.now())
+            };
         }
 
         function escapeRoomText(value) {
@@ -1564,6 +1706,348 @@
             return { label: '🟢 Đang chờ', className: 'room-status-waiting', button: 'Tham gia' };
         }
 
+        function getActiveRooms() {
+            const now = Date.now();
+            return globalOpenRooms
+                .map(sanitizeDirectoryRoom)
+                .filter(Boolean)
+                .filter(room => now - room.lastSeen < ROOM_TTL_MS)
+                .sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
+        }
+
+        function applyGlobalRoomList(rooms) {
+            const now = Date.now();
+            const unique = new Map();
+            (Array.isArray(rooms) ? rooms : []).forEach(rawRoom => {
+                const room = sanitizeDirectoryRoom(rawRoom);
+                if (!room || now - room.lastSeen >= ROOM_TTL_MS) return;
+                const previous = unique.get(room.code);
+                if (!previous || room.lastSeen >= previous.lastSeen) unique.set(room.code, room);
+            });
+            globalOpenRooms = Array.from(unique.values());
+            renderOpenRooms();
+        }
+
+        function getRoomCloudUrl(code = '') {
+            const suffix = code
+                ? `/${GLOBAL_ROOM_PATH_PREFIX}/${encodeURIComponent(String(code).toUpperCase())}`
+                : '';
+            return `${GLOBAL_ROOM_API_BASE}/${GLOBAL_ROOM_NAMESPACE}${suffix}`;
+        }
+
+        function getRoomCloudListUrl() {
+            return `${GLOBAL_ROOM_API_BASE}/list/${GLOBAL_ROOM_NAMESPACE}`;
+        }
+
+        async function fetchJsonResponse(url, options = {}) {
+            const response = await fetch(url, {
+                cache: 'no-store',
+                ...options,
+                headers: {
+                    'Accept': 'application/json',
+                    ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+                    ...(options.headers || {})
+                }
+            });
+            if (response.status === 404) return null;
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const text = await response.text();
+            if (!text) return null;
+            try { return JSON.parse(text); } catch (_) { return null; }
+        }
+
+
+        function isMobileBrowser() {
+            const ua = navigator.userAgent || '';
+            return /Android|iPhone|iPad|iPod|Mobile/i.test(ua)
+                || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        }
+
+        function getCloudRelayUrl(code, role) {
+            const safeCode = String(code || '').trim().toUpperCase();
+            const safeRole = role === 'host' ? 'host' : 'guest';
+            return `${GLOBAL_ROOM_API_BASE}/${GLOBAL_ROOM_NAMESPACE}/relay-${safeCode}-${safeRole}`;
+        }
+
+        function createCloudDataConnection() {
+            const listeners = { open: [], data: [], close: [], error: [] };
+            return {
+                open: false,
+                _closed: false,
+                on(type, handler) {
+                    if (listeners[type] && typeof handler === 'function') listeners[type].push(handler);
+                },
+                _emit(type, payload) {
+                    (listeners[type] || []).slice().forEach(handler => {
+                        try { handler(payload); } catch (error) { console.error(error); }
+                    });
+                },
+                send(data) {
+                    if (this._closed || !cloudRelaySession || cloudRelaySession.conn !== this) {
+                        throw new Error('Cloud relay is not active');
+                    }
+                    queueCloudRelayMessage(data);
+                },
+                close() {
+                    if (this._closed) return;
+                    this._closed = true;
+                    this.open = false;
+                    stopCloudRelay(true, false);
+                    this._emit('close');
+                }
+            };
+        }
+
+        async function writeCloudRelayState(session = cloudRelaySession) {
+            if (!session || session.stopped) return false;
+            const payload = {
+                code: session.code,
+                role: session.role,
+                name: localPlayerName,
+                updatedAt: Date.now(),
+                closed: Boolean(session.closed),
+                messages: session.messages.slice(-40)
+            };
+            session.writeChain = session.writeChain
+                .catch(() => {})
+                .then(() => fetchJsonResponse(getCloudRelayUrl(session.code, session.role), {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                }))
+                .catch(() => null);
+            await session.writeChain;
+            return true;
+        }
+
+        function queueCloudRelayMessage(data) {
+            const session = cloudRelaySession;
+            if (!session || session.stopped) return;
+            session.localSeq += 1;
+            session.messages.push({ seq: session.localSeq, at: Date.now(), data });
+            if (session.messages.length > 40) session.messages.splice(0, session.messages.length - 40);
+            void writeCloudRelayState(session);
+        }
+
+        async function pollCloudRelay(session = cloudRelaySession) {
+            if (!session || session.stopped || session.polling) return;
+            session.polling = true;
+            try {
+                const remote = await fetchJsonResponse(`${getCloudRelayUrl(session.code, session.remoteRole)}?t=${Date.now()}`);
+                if (!remote || typeof remote !== 'object') return;
+
+                const messages = Array.isArray(remote.messages) ? remote.messages : [];
+                messages
+                    .filter(message => Number(message?.seq) > session.remoteSeq)
+                    .sort((a, b) => Number(a.seq) - Number(b.seq))
+                    .forEach(message => {
+                        session.remoteSeq = Math.max(session.remoteSeq, Number(message.seq) || 0);
+                        session.conn._emit('data', message.data);
+                    });
+
+                const remoteFresh = Date.now() - Number(remote.updatedAt || 0) < CLOUD_RELAY_STALE_MS;
+                if (remoteFresh && !remote.closed && !session.conn.open && !session.conn._closed) {
+                    if (connection && connection !== session.conn && connection.open) {
+                        stopCloudRelay(true, false);
+                        return;
+                    }
+                    session.conn.open = true;
+                    session.conn._emit('open');
+                } else if ((!remoteFresh || remote.closed) && session.conn.open && !session.conn._closed) {
+                    session.conn.open = false;
+                    session.conn._emit('close');
+                }
+            } catch (_) {
+                // Giữ phiên để lần thăm dò kế tiếp tự thử lại khi mạng điện thoại ổn định.
+            } finally {
+                session.polling = false;
+            }
+        }
+
+        function startCloudRelay(role, code) {
+            stopCloudRelay(false, false);
+            const conn = createCloudDataConnection();
+            const session = {
+                code: String(code || '').trim().toUpperCase(),
+                role: role === 'host' ? 'host' : 'guest',
+                remoteRole: role === 'host' ? 'guest' : 'host',
+                conn,
+                localSeq: 0,
+                remoteSeq: 0,
+                messages: [],
+                writeChain: Promise.resolve(),
+                polling: false,
+                closed: false,
+                stopped: false,
+                pollTimer: null,
+                heartbeatTimer: null
+            };
+            cloudRelaySession = session;
+            setupConnection(conn);
+            void writeCloudRelayState(session);
+            void pollCloudRelay(session);
+            session.pollTimer = setInterval(() => void pollCloudRelay(session), CLOUD_RELAY_POLL_MS);
+            session.heartbeatTimer = setInterval(() => void writeCloudRelayState(session), CLOUD_RELAY_HEARTBEAT_MS);
+            return conn;
+        }
+
+        function stopCloudRelay(markClosed = true, emitClose = false) {
+            const session = cloudRelaySession;
+            if (!session) return;
+            cloudRelaySession = null;
+            session.stopped = true;
+            clearInterval(session.pollTimer);
+            clearInterval(session.heartbeatTimer);
+            if (markClosed) {
+                session.stopped = false;
+                session.closed = true;
+                void writeCloudRelayState(session).finally(() => { session.stopped = true; });
+            }
+            if (emitClose && session.conn.open && !session.conn._closed) {
+                session.conn.open = false;
+                session.conn._emit('close');
+            }
+        }
+
+        function ensureCloudHostRelay() {
+            if (!isRoomHost || !currentRoomCode) return;
+            if (cloudRelaySession && cloudRelaySession.code === currentRoomCode && cloudRelaySession.role === 'host') return;
+            startCloudRelay('host', currentRoomCode);
+        }
+
+        function startCloudGuestJoin(code, reason = 'Đang kết nối bằng chế độ tương thích điện thoại...') {
+            cloudRelayJoinFallbackStarted = true;
+            clearTimeout(joinAttemptTimer);
+            joinAttemptTimer = null;
+            try { peer?.destroy(); } catch (_) {}
+            peer = null;
+            try {
+                if (connection && connection.open) connection.close();
+            } catch (_) {}
+            connection = null;
+            setJoinBusy(true, reason);
+            startCloudRelay('guest', code);
+            joinAttemptTimer = setTimeout(() => {
+                if (!joinInProgress) return;
+                stopCloudRelay(true, false);
+                connection = null;
+                clearJoinAttempt();
+                setOnlineStatus(`Không thể vào phòng ${code}. Hãy kiểm tra Internet, nhấn Làm mới và thử lại.`, true);
+                updateConnectionText('🔴 Kết nối phòng thất bại');
+            }, 22000);
+        }
+
+        function extractRoomPaths(listPayload) {
+            const entries = Array.isArray(listPayload)
+                ? listPayload
+                : (Array.isArray(listPayload?.entries) ? listPayload.entries : []);
+            const prefix = `${GLOBAL_ROOM_PATH_PREFIX}/`;
+            return [...new Set(entries
+                .map(entry => typeof entry === 'string' ? entry : entry?.path)
+                .filter(path => typeof path === 'string' && path.startsWith(prefix))
+                .map(path => path.slice(prefix.length).trim().toUpperCase())
+                .filter(code => /^[A-Z2-9]{6}$/.test(code)))];
+        }
+
+        async function deleteCloudRoom(code, silent = true) {
+            const normalizedCode = String(code || '').trim().toUpperCase();
+            if (!/^[A-Z2-9]{6}$/.test(normalizedCode)) return false;
+            try {
+                const response = await fetch(getRoomCloudUrl(normalizedCode), {
+                    method: 'DELETE',
+                    cache: 'no-store',
+                    keepalive: true,
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (!response.ok && response.status !== 404) throw new Error(`HTTP ${response.status}`);
+                return true;
+            } catch (error) {
+                if (!silent) setOnlineStatus('Không thể xóa phòng khỏi danh sách online. Hãy thử lại.', true);
+                return false;
+            }
+        }
+
+        async function upsertCloudRoom(room) {
+            const cleanRoom = sanitizeDirectoryRoom(room);
+            if (!cleanRoom) return false;
+            try {
+                await fetchJsonResponse(getRoomCloudUrl(cleanRoom.code), {
+                    method: 'POST',
+                    body: JSON.stringify(cleanRoom)
+                });
+                roomCloudAvailable = true;
+                return true;
+            } catch (error) {
+                roomCloudAvailable = false;
+                return false;
+            }
+        }
+
+        async function requestGlobalRooms(manual = false) {
+            if (roomListRequestController) roomListRequestController.abort();
+            const controller = new AbortController();
+            roomListRequestController = controller;
+            const timeout = setTimeout(() => controller.abort(), 7000);
+
+            try {
+                const listPayload = await fetchJsonResponse(`${getRoomCloudListUrl()}?t=${Date.now()}`, {
+                    signal: controller.signal
+                });
+                const roomCodes = extractRoomPaths(listPayload);
+                const results = await Promise.allSettled(roomCodes.map(code =>
+                    fetchJsonResponse(`${getRoomCloudUrl(code)}?t=${Date.now()}`, { signal: controller.signal })
+                ));
+
+                const now = Date.now();
+                const activeRooms = [];
+                const staleCodes = [];
+                results.forEach((result, index) => {
+                    if (result.status !== 'fulfilled') return;
+                    const room = sanitizeDirectoryRoom(result.value);
+                    if (!room) return;
+                    if (now - room.lastSeen >= ROOM_TTL_MS) staleCodes.push(roomCodes[index]);
+                    else activeRooms.push(room);
+                });
+
+                applyGlobalRoomList(activeRooms);
+                roomCloudAvailable = true;
+                staleCodes.forEach(code => void deleteCloudRoom(code, true));
+
+                if (manual) {
+                    const count = getActiveRooms().length;
+                    setOnlineStatus(count
+                        ? `Đã làm mới: ${count} phòng đang hoạt động trên tất cả trình duyệt.`
+                        : 'Đã làm mới: chưa có phòng nào đang hoạt động.');
+                }
+                return true;
+            } catch (error) {
+                if (error?.name !== 'AbortError') roomCloudAvailable = false;
+                if (manual) {
+                    setOnlineStatus('Không thể tải danh sách phòng chung. Kiểm tra Internet rồi nhấn Làm mới.', true);
+                }
+                return false;
+            } finally {
+                clearTimeout(timeout);
+                if (roomListRequestController === controller) roomListRequestController = null;
+            }
+        }
+
+        function initGlobalRoomDirectory(force = false) {
+            if (force || !roomListPollTimer) {
+                clearInterval(roomListPollTimer);
+                roomListPollTimer = setInterval(() => void requestGlobalRooms(false), ROOM_LIST_POLL_MS);
+            }
+            void requestGlobalRooms(false);
+        }
+
+        function shutdownGlobalRoomDirectory() {
+            clearInterval(roomListPollTimer);
+            roomListPollTimer = null;
+            if (roomListRequestController) {
+                roomListRequestController.abort();
+                roomListRequestController = null;
+            }
+        }
+
         function renderOpenRooms() {
             const list = document.getElementById('openRoomList');
             if (!list) return;
@@ -1578,6 +2062,10 @@
                 const status = normalizeRoomStatus(room);
                 const statusInfo = getRoomStatusInfo(status);
                 const canJoin = status === 'waiting' && playerCount < 2;
+                const isOwnRoom = Boolean(isRoomHost && currentRoomCode === room.code);
+                const roomAction = isOwnRoom
+                    ? `<button class="room-join-btn room-dissolve-btn" type="button" onclick="dissolveOnlineRoom()">Giải tán</button>`
+                    : `<button class="room-join-btn" type="button" ${(canJoin && !joinInProgress) ? '' : 'disabled'} data-action="join-room" data-room-code="${escapeRoomText(room.code)}">${joinInProgress && canJoin ? 'Đang kết nối...' : statusInfo.button}</button>`;
                 return `
                 <div class="room-list-item" data-room-status="${status}">
                     <div class="room-list-host">👑 Chủ phòng: ${escapeRoomText(room.hostName || 'Người chơi')}</div>
@@ -1588,27 +2076,54 @@
                         </div>
                         <div class="room-player-count">👥 ${playerCount}/2 người</div>
                         <div class="room-status-badge ${statusInfo.className}">${statusInfo.label}</div>
-                        <button class="room-join-btn" type="button"
-                            ${canJoin ? '' : 'disabled'}
-                            onclick="joinListedRoom('${escapeRoomText(room.code)}')">${statusInfo.button}</button>
+                        ${roomAction}
                     </div>
                 </div>`;
             }).join('');
         }
 
+        async function refreshOpenRooms() {
+            const refreshButton = document.getElementById('roomBrowserRefreshButton');
+            if (refreshButton) {
+                refreshButton.disabled = true;
+                refreshButton.classList.remove('refreshing');
+                void refreshButton.offsetWidth;
+                refreshButton.classList.add('refreshing');
+            }
+
+            if (isRoomHost && currentRoomCode) {
+                const opponentStillConnected = Boolean(connection && connection.open);
+                if (!opponentStillConnected) {
+                    currentRoomStatus = 'waiting';
+                    currentRoomPlayerCount = 1;
+                    remotePlayerName = 'Đang chờ...';
+                    updateScoreLabels();
+                }
+                await publishCurrentRoom();
+            }
+
+            setOnlineStatus('Đang làm mới danh sách phòng chung...');
+            const refreshed = await requestGlobalRooms(true);
+            if (refreshed) setOnlineStatus(`Đã làm mới: ${getActiveRooms().length} phòng đang hoạt động.`);
+
+            if (refreshButton) {
+                refreshButton.disabled = false;
+                setTimeout(() => refreshButton.classList.remove('refreshing'), 250);
+            }
+        }
+
         function setCurrentRoomState(status, playerCount) {
             currentRoomStatus = ['waiting', 'full', 'playing'].includes(status) ? status : 'waiting';
             currentRoomPlayerCount = Math.min(Math.max(Number(playerCount) || 1, 1), 2);
-            if (isRoomHost && currentRoomCode) publishCurrentRoom();
+            if (isRoomHost && currentRoomCode) void publishCurrentRoom();
+            updateOnlineActionButtons();
         }
 
-        function publishCurrentRoom() {
-            if (!isRoomHost || !currentRoomCode) return;
+        async function publishCurrentRoom() {
+            if (!isRoomHost || !currentRoomCode) return false;
             const now = Date.now();
-            const activeRooms = getActiveRooms();
-            const previousRoom = activeRooms.find(room => room.code === currentRoomCode);
-            const rooms = activeRooms.filter(room => room.code !== currentRoomCode);
-            rooms.unshift({
+            const previousRoom = globalOpenRooms.find(room => room.code === currentRoomCode);
+            const room = {
                 code: currentRoomCode,
                 hostName: localPlayerName,
                 targetScore,
@@ -1616,20 +2131,26 @@
                 status: currentRoomStatus,
                 createdAt: Number(previousRoom?.createdAt || now),
                 lastSeen: now
-            });
-            saveStoredRooms(rooms);
+            };
+
+            globalOpenRooms = [room, ...globalOpenRooms.filter(item => item.code !== currentRoomCode)];
+            renderOpenRooms();
+            return upsertCloudRoom(room);
         }
 
-        function removePublishedRoom(code = currentRoomCode) {
-            if (!code) return;
-            const rooms = getStoredRooms().filter(room => room && room.code !== code);
-            saveStoredRooms(rooms);
+        async function removePublishedRoom(code = currentRoomCode) {
+            const normalizedCode = String(code || '').trim().toUpperCase();
+            if (!normalizedCode) return false;
+            globalOpenRooms = globalOpenRooms.filter(room => room.code !== normalizedCode);
+            renderOpenRooms();
+            return deleteCloudRoom(normalizedCode, true);
         }
 
-        function startRoomHeartbeat() {
+        async function startRoomHeartbeat() {
             stopRoomHeartbeat(false);
-            publishCurrentRoom();
-            roomHeartbeatTimer = setInterval(publishCurrentRoom, 20000);
+            const published = await publishCurrentRoom();
+            roomHeartbeatTimer = setInterval(() => void publishCurrentRoom(), 10000);
+            return published;
         }
 
         function stopRoomHeartbeat(removeRoom = false) {
@@ -1640,27 +2161,36 @@
             if (removeRoom && isRoomHost) removePublishedRoom();
         }
 
-        function joinListedRoom(code) {
-            const selectedRoom = getActiveRooms().find(room => room.code === String(code || '').toUpperCase());
+        async function joinListedRoom(code) {
+            if (joinInProgress) return;
+            const normalizedCode = String(code || '').trim().toUpperCase();
+            let selectedRoom = getActiveRooms().find(room => room.code === normalizedCode);
+            if (!selectedRoom) {
+                await requestGlobalRooms(true);
+                selectedRoom = getActiveRooms().find(room => room.code === normalizedCode);
+            }
             if (!selectedRoom || normalizeRoomStatus(selectedRoom) !== 'waiting' || Number(selectedRoom.playerCount) >= 2) {
                 renderOpenRooms();
-                setOnlineStatus('Phòng này hiện đã đầy hoặc đang trong trận.', true);
+                setOnlineStatus('Phòng này đã đầy, đang chơi hoặc chủ phòng không còn kết nối.', true);
                 return;
             }
+
+            pendingJoinCode = normalizedCode;
             const roomType = document.getElementById('onlineRoomType');
             const codeInput = document.getElementById('onlineRoomCode');
             roomType.value = 'join';
             handleRoomTypeChange();
-            codeInput.value = String(code || '').toUpperCase();
-            setOnlineStatus(`Đã chọn phòng ${codeInput.value}.`);
+            codeInput.value = normalizedCode;
+            openModal('onlineModal');
 
             const nameInput = document.getElementById('onlinePlayerName');
             if (!cleanName(nameInput.value)) {
-                setOnlineStatus(`Nhập tên người chơi rồi nhấn “Tham gia” phòng ${codeInput.value}.`);
+                setOnlineStatus(`Đã chọn phòng ${normalizedCode}. Nhập tên rồi nhấn Enter hoặc “Tiếp tục”.`);
                 nameInput.focus();
+                nameInput.select();
                 return;
             }
-            joinOnlineRoom();
+            await joinOnlineRoom(normalizedCode);
         }
 
         function prepareOnlineSetup() {
@@ -1693,13 +2223,16 @@
                 : 'Nhập đúng mã 6 ký tự do người tạo phòng gửi. Điểm thắng sẽ tự động đồng bộ theo chủ phòng sau khi kết nối.';
 
             if (isCreate) {
+                pendingJoinCode = '';
                 if (!currentRoomCode) currentRoomCode = generateRoomCode();
                 codeInput.value = currentRoomCode;
             } else {
-                codeInput.value = '';
-                setTimeout(() => codeInput.focus(), 40);
+                codeInput.value = pendingJoinCode || '';
+                setTimeout(() => {
+                    if (!codeInput.value) codeInput.focus();
+                }, 40);
             }
-            setOnlineStatus(isCreate ? `Chủ phòng đang chọn đích ${targetScore} điểm.` : 'Điểm thắng sẽ theo thiết lập của chủ phòng.');
+            setOnlineStatus(isCreate ? `Chủ phòng đang chọn đích ${targetScore} điểm.` : 'Chọn phòng bên dưới hoặc nhập đúng mã 6 ký tự.');
         }
 
         function refreshSetupRoomCode() {
@@ -1711,13 +2244,14 @@
             renderOpenRooms();
         }
 
-        function continueOnlineSetup() {
+        async function continueOnlineSetup() {
+            if (joinInProgress) return;
             const mode = document.getElementById('onlineRoomType').value;
             if (mode === 'create') {
                 setTargetScore(document.getElementById('onlineTargetScore').value);
-                createOnlineRoom();
+                await createOnlineRoom();
             } else {
-                joinOnlineRoom();
+                await joinOnlineRoom(pendingJoinCode);
             }
         }
 
@@ -1730,14 +2264,9 @@
             return code;
         }
 
-        function createOnlineRoom(retry = 0) {
+        async function createOnlineRoom(retry = 0) {
             const name = validateName('onlinePlayerName', 'Vui lòng nhập tên người chơi 1 trước khi tạo phòng.');
             if (!name) return;
-
-            if (typeof Peer === 'undefined') {
-                setOnlineStatus('Không tải được hệ thống online. Hãy kiểm tra kết nối Internet.', true);
-                return;
-            }
 
             const requestedCode = retry > 0
                 ? generateRoomCode()
@@ -1751,74 +2280,136 @@
             updateScoreLabels();
             currentRoomCode = requestedCode;
             document.getElementById('onlineRoomCode').value = currentRoomCode;
-            setOnlineStatus('Đang tạo phòng...');
+            setOnlineStatus('Đang tạo phòng online...');
             updateConnectionText(`🌐 ${localPlayerName} đang tạo phòng...`);
 
-            peer = new Peer(`bkb-${currentRoomCode.toLowerCase()}`);
-            peer.on('open', () => {
-                startRoomHeartbeat();
-                setOnlineStatus(`Đã tạo phòng ${currentRoomCode}. Phòng đã xuất hiện trong danh sách bên dưới.`);
-                updateConnectionText(`🌐 Phòng ${currentRoomCode} — ${localPlayerName} đang chờ đối thủ`);
-            });
-            peer.on('connection', conn => {
-                if (connection && connection.open) {
-                    conn.close();
-                    return;
-                }
-                setupConnection(conn);
-            });
-            peer.on('error', err => {
-                if (err.type === 'unavailable-id' && retry < 3) {
-                    createOnlineRoom(retry + 1);
-                    return;
-                }
-                handlePeerError(err);
-            });
+            const published = await startRoomHeartbeat();
+            ensureCloudHostRelay();
+            updateOnlineActionButtons();
+            setOnlineStatus(published
+                ? `Đã tạo phòng ${currentRoomCode}. Điện thoại và máy tính đều có thể tham gia.`
+                : `Đã tạo phòng ${currentRoomCode}, nhưng chưa thể đăng lên danh sách chung. Hãy kiểm tra Internet và nhấn Làm mới.`,
+                !published);
+            updateConnectionText(`🌐 Phòng ${currentRoomCode} — ${localPlayerName} đang chờ đối thủ`);
+
+            const peerLoaded = await ensurePeerJsLoaded();
+            if (!peerLoaded || !isRoomHost || currentRoomCode !== requestedCode) {
+                if (!peerLoaded) setOnlineStatus(`Phòng ${currentRoomCode} đang dùng chế độ tương thích điện thoại.`);
+                return;
+            }
+
+            try {
+                peer = createConfiguredPeer(`bkb-${currentRoomCode.toLowerCase()}`);
+                peer.on('open', () => {
+                    setOnlineStatus(`Đã tạo phòng ${currentRoomCode}. Điện thoại và máy tính đều có thể tham gia.`);
+                });
+                peer.on('connection', conn => {
+                    if (connection && connection.open) {
+                        conn.close();
+                        return;
+                    }
+                    setupConnection(conn);
+                });
+                peer.on('error', err => {
+                    if (err.type === 'unavailable-id') {
+                        setOnlineStatus(`Phòng ${currentRoomCode} đang dùng chế độ tương thích điện thoại.`);
+                        return;
+                    }
+                    if (!connection || !connection.open) {
+                        setOnlineStatus('Kết nối trực tiếp không khả dụng; phòng vẫn hoạt động bằng chế độ tương thích.', false);
+                    }
+                });
+            } catch (_) {
+                peer = null;
+                setOnlineStatus(`Phòng ${currentRoomCode} đang dùng chế độ tương thích điện thoại.`);
+            }
         }
 
-        function joinOnlineRoom() {
-            const name = validateName('onlinePlayerName', 'Vui lòng nhập tên người chơi 1 trước khi tham gia phòng.');
+        async function joinOnlineRoom(preselectedCode = '') {
+            if (joinInProgress) return;
+            const name = validateName('onlinePlayerName', 'Vui lòng nhập tên người chơi trước khi tham gia phòng.');
             if (!name) return;
 
             const codeInput = document.getElementById('onlineRoomCode');
-            const code = codeInput.value.trim().toUpperCase();
+            const code = String(preselectedCode || codeInput.value || '').trim().toUpperCase();
             codeInput.value = code;
+            pendingJoinCode = code;
             if (!/^[A-Z2-9]{6}$/.test(code)) {
-                setOnlineStatus('Vui lòng nhập đúng mã phòng gồm 6 ký tự.', true);
+                setOnlineStatus('Vui lòng chọn phòng hoặc nhập đúng mã gồm 6 ký tự.', true);
                 codeInput.focus();
-                return;
-            }
-            if (typeof Peer === 'undefined') {
-                setOnlineStatus('Không tải được hệ thống online. Hãy kiểm tra kết nối Internet.', true);
                 return;
             }
 
             disconnectPeer(false);
+            cloudRelayJoinFallbackStarted = false;
             isRoomHost = false;
             localPlayerName = name;
             remotePlayerName = 'Đối thủ';
             updateScoreLabels();
             currentRoomCode = code;
-            setOnlineStatus('Đang kết nối vào phòng...');
+            codeInput.value = code;
             updateConnectionText(`🌐 ${localPlayerName} đang kết nối tới phòng ${code}`);
-            peer = new Peer();
-            peer.on('open', () => {
-                const conn = peer.connect(`bkb-${code.toLowerCase()}`, { reliable: true });
-                setupConnection(conn);
-            });
-            peer.on('error', handlePeerError);
+
+            if (isMobileBrowser()) {
+                setJoinBusy(true);
+                startCloudGuestJoin(code, `Đang vào phòng ${code} bằng chế độ dành cho điện thoại...`);
+                return;
+            }
+
+            setJoinBusy(true, `Đang chuẩn bị kết nối vào phòng ${code}...`);
+            if (!await ensurePeerJsLoaded()) {
+                startCloudGuestJoin(code, `Đang vào phòng ${code} bằng kết nối dự phòng...`);
+                return;
+            }
+
+            try {
+                peer = createConfiguredPeer();
+                joinAttemptTimer = setTimeout(() => {
+                    if (!joinInProgress || cloudRelayJoinFallbackStarted) return;
+                    startCloudGuestJoin(code, 'Kết nối trực tiếp chậm; đang chuyển sang chế độ tương thích...');
+                }, 7000);
+
+                peer.on('open', () => {
+                    if (!joinInProgress || cloudRelayJoinFallbackStarted) return;
+                    setOnlineStatus(`Đã kết nối máy chủ. Đang mở phòng ${code}...`);
+                    const conn = peer.connect(`bkb-${code.toLowerCase()}`, {
+                        reliable: true,
+                        serialization: 'json'
+                    });
+                    setupConnection(conn);
+                });
+                peer.on('error', () => {
+                    if (joinInProgress && !cloudRelayJoinFallbackStarted) {
+                        startCloudGuestJoin(code, 'Kết nối trực tiếp bị chặn; đang chuyển sang chế độ tương thích...');
+                    }
+                });
+                peer.on('disconnected', () => {
+                    if (joinInProgress && !cloudRelayJoinFallbackStarted) {
+                        startCloudGuestJoin(code, 'Mạng không ổn định; đang chuyển sang chế độ tương thích...');
+                    }
+                });
+            } catch (_) {
+                startCloudGuestJoin(code, 'Đang chuyển sang chế độ tương thích điện thoại...');
+            }
         }
 
         function setupConnection(conn) {
-            connection = conn;
+            if (!connection || !connection.open) connection = conn;
             conn.on('open', () => {
+                if (connection && connection !== conn && connection.open) {
+                    try { conn.close(); } catch (_) {}
+                    return;
+                }
+                connection = conn;
+                clearJoinAttempt();
+                pendingJoinCode = '';
                 if (isRoomHost) {
                     setCurrentRoomState('full', 2);
                     startRoomHeartbeat();
                 }
-                connection.send({ type: 'profile', name: localPlayerName, targetScore, isHost: isRoomHost });
+                conn.send({ type: 'profile', name: localPlayerName, targetScore, isHost: isRoomHost });
                 if (isRoomHost) {
-                    connection.send({ type: 'match_config', targetScore });
+                    conn.send({ type: 'match_config', targetScore });
                 }
                 setOnlineStatus('Kết nối thành công! Đang đồng bộ tên và điểm thắng.');
                 closeModal('onlineModal');
@@ -1828,6 +2419,7 @@
                     remotePlayerName = 'Đối thủ';
                 }
                 updateScoreLabels();
+                updateOnlineActionButtons();
                 updateConnectionText(`🟢 Đã kết nối — Phòng ${currentRoomCode} — Đích ${targetScore} điểm`);
                 const result = document.getElementById('result');
                 result.textContent = isRoomHost
@@ -1837,9 +2429,10 @@
             });
 
             conn.on('data', handleOnlineData);
-            conn.on('close', handleDisconnect);
+            conn.on('close', () => handleDisconnect(conn));
             conn.on('error', () => {
-                setOnlineStatus('Kết nối bị lỗi. Vui lòng thử lại.', true);
+                clearJoinAttempt();
+                setOnlineStatus('Kết nối phòng bị lỗi. Hãy nhấn Làm mới và thử lại.', true);
             });
         }
 
@@ -1874,6 +2467,31 @@
                 return;
             }
 
+            if (data.type === 'participant_left' && isRoomHost) {
+                connection = null;
+                remotePlayerName = 'Đang chờ...';
+                resetLocalGame(false, false);
+                setCurrentRoomState('waiting', 1);
+                setChoiceButtonsEnabled(false);
+                updateScoreLabels();
+                updateConnectionText(`🌐 Phòng ${currentRoomCode} — ${localPlayerName} đang chờ người chơi mới`);
+                setOnlineStatus(`${cleanName(data.name) || 'Người chơi'} đã rời trận. Phòng đã mở lại.`);
+                return;
+            }
+
+            if (data.type === 'room_dissolved' && !isRoomHost) {
+                const dissolvedCode = currentRoomCode;
+                disconnectPeer(false, 'room-dissolved');
+                resetLocalGame(false, false);
+                remotePlayerName = 'Đối thủ';
+                updateScoreLabels();
+                prepareOnlineSetup();
+                openModal('onlineModal');
+                setOnlineStatus(`Chủ phòng đã giải tán phòng ${dissolvedCode}.`, true);
+                updateConnectionText('🌐 Phòng đã được giải tán');
+                return;
+            }
+
             if (data.type === 'choice' && choices[data.choice] && Number.isInteger(data.round)) {
                 if (isRoomHost) setCurrentRoomState('playing', 2);
                 const state = getRoundState(data.round);
@@ -1891,21 +2509,50 @@
             }
         }
 
-        function handleDisconnect() {
-            connection = null;
-            if (isRoomHost && peer && !peer.destroyed) {
+        function handleDisconnect(closedConnection = connection) {
+            if (connection === closedConnection) connection = null;
+
+            if (intentionalDisconnectAction) {
+                intentionalDisconnectAction = '';
+                updateOnlineActionButtons();
+                return;
+            }
+
+            if (isRoomHost && currentRoomCode) {
+                remotePlayerName = 'Đang chờ...';
+                resetLocalGame(false, false);
                 setCurrentRoomState('waiting', 1);
                 startRoomHeartbeat();
+                ensureCloudHostRelay();
+                setChoiceButtonsEnabled(false);
+                updateScoreLabels();
+                updateConnectionText(`🌐 Phòng ${currentRoomCode} — đang chờ người chơi mới`);
+                const result = document.getElementById('result');
+                result.textContent = 'ĐỐI THỦ ĐÃ RỜI — PHÒNG ĐANG MỞ LẠI';
+                result.className = 'result-text tie';
+                setOnlineStatus('Đối thủ đã rời. Nhấn Làm mới để kiểm tra danh sách phòng.');
+            } else {
+                setChoiceButtonsEnabled(false);
+                updateConnectionText('🔴 Đã mất kết nối với chủ phòng');
+                const result = document.getElementById('result');
+                result.textContent = 'MẤT KẾT NỐI VỚI CHỦ PHÒNG';
+                result.className = 'result-text lose';
             }
-            setChoiceButtonsEnabled(false);
-            updateConnectionText('🔴 Đối thủ đã ngắt kết nối');
-            const result = document.getElementById('result');
-            result.textContent = 'MẤT KẾT NỐI VỚI ĐỐI THỦ';
-            result.className = 'result-text lose';
+            updateOnlineActionButtons();
         }
 
         function handlePeerError(err) {
-            stopRoomHeartbeat(isRoomHost);
+            const wasJoining = joinInProgress;
+            clearJoinAttempt();
+            if (wasJoining && !isRoomHost) {
+                try { connection?.close(); } catch (_) {}
+                try { peer?.destroy(); } catch (_) {}
+                connection = null;
+                peer = null;
+            }
+            // Lỗi mạng chỉ dừng heartbeat; danh sách chung sẽ tự loại phòng
+            // sau ROOM_TTL_MS nếu chủ phòng không kết nối lại.
+            stopRoomHeartbeat(false);
             const messages = {
                 'peer-unavailable': 'Không tìm thấy phòng. Kiểm tra lại mã hoặc yêu cầu chủ phòng tạo lại.',
                 'network': 'Lỗi mạng. Hãy kiểm tra Internet và thử lại.',
@@ -1936,25 +2583,72 @@
             setOnlineStatus('Đã sao chép mã phòng.');
         }
 
-        function disconnectPeer(resetStatus = true) {
-            stopRoomHeartbeat(true);
+        function disconnectPeer(resetStatus = true, action = 'internal') {
+            // Chỉ nút “Giải tán phòng” mới xóa phòng ngay. Các trường hợp
+            // ngắt kết nối thông thường phải chờ đủ 45 giây mới hết hạn.
+            stopRoomHeartbeat(false);
+            stopCloudRelay(true, false);
+            cloudRelayJoinFallbackStarted = false;
             if (connection) {
+                intentionalDisconnectAction = action;
                 try { connection.close(); } catch (_) {}
                 connection = null;
+                setTimeout(() => {
+                    if (intentionalDisconnectAction === action) intentionalDisconnectAction = '';
+                }, 800);
             }
             if (peer) {
                 try { peer.destroy(); } catch (_) {}
                 peer = null;
             }
             currentRoomCode = '';
+            if (action !== 'internal') pendingJoinCode = '';
             isRoomHost = false;
             currentRoomStatus = 'waiting';
             currentRoomPlayerCount = 1;
             const codeInput = document.getElementById('onlineRoomCode');
             if (codeInput) codeInput.value = '';
+            updateOnlineActionButtons();
             if (resetStatus) {
                 setOnlineStatus('Điền tên người chơi, chọn điểm thắng và nhấn “Tiếp tục”.');
             }
+        }
+
+        function leaveOnlineMatch() {
+            if (gameMode !== 'online' || isRoomHost || !currentRoomCode) return;
+            const roomCode = currentRoomCode;
+            if (connection && connection.open) {
+                try { connection.send({ type: 'participant_left', name: localPlayerName }); } catch (_) {}
+            }
+            disconnectPeer(false, 'participant-left');
+            resetLocalGame(false, false);
+            remotePlayerName = 'Đối thủ';
+            updateScoreLabels();
+            prepareOnlineSetup();
+            document.getElementById('onlineRoomType').value = 'join';
+            handleRoomTypeChange();
+            openModal('onlineModal');
+            setOnlineStatus(`Bạn đã rời phòng ${roomCode}. Có thể chọn một phòng khác.`);
+            updateConnectionText('🌐 Bạn đã rời trận');
+        }
+
+        function dissolveOnlineRoom() {
+            if (gameMode !== 'online' || !isRoomHost || !currentRoomCode) return;
+            const roomCode = currentRoomCode;
+            if (!window.confirm(`Giải tán phòng ${roomCode}?`)) return;
+            if (connection && connection.open) {
+                try { connection.send({ type: 'room_dissolved', code: roomCode }); } catch (_) {}
+            }
+            removePublishedRoom(roomCode);
+            disconnectPeer(false, 'host-dissolved');
+            resetLocalGame(false, false);
+            remotePlayerName = 'Đối thủ';
+            updateScoreLabels();
+            prepareOnlineSetup();
+            openModal('onlineModal');
+            setOnlineStatus(`Đã giải tán phòng ${roomCode}.`);
+            updateConnectionText('🌐 Chủ phòng đã giải tán phòng');
+            renderOpenRooms();
         }
 
         function handleChoice(playerChoice) {
@@ -2156,7 +2850,7 @@
             }
         }
 
-        function resetLocalGame(sendToOpponent = true) {
+        function resetLocalGame(sendToOpponent = true, syncRoomState = true) {
             stopFireworks();
             isPlaying = false;
             matchFinished = false;
@@ -2175,7 +2869,7 @@
             updateScoreLabels();
             updateTargetScoreDisplay();
 
-            if (gameMode === 'online' && connection && connection.open && isRoomHost) {
+            if (syncRoomState && gameMode === 'online' && connection && connection.open && isRoomHost) {
                 setCurrentRoomState('full', 2);
             }
             if (sendToOpponent && gameMode === 'online' && connection && connection.open) {
